@@ -6,5 +6,6 @@ Makefile
 .idea/
 cmake-build-debug/
 
-cgi-bin/
+/bin/
+/lib/
 public_html/cgi-bin

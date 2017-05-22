@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "service/CgiHttpRequest.h"
-#include "service/exceptions.h"
+#include "webservice/CgiHttpRequest.h"
+#include "webservice/exceptions.h"
 
 using namespace std;
 using namespace pb2;
