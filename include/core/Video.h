@@ -9,13 +9,14 @@ namespace pb2 {
     class Video : public Medium {
     private:
         std::unique_ptr<Video_priv> priv;
+        Video(const std::string & ean);
 
     public:
         /**
          * Creates a new Video Medium
          * @param ean @see Medium constructor
          */
-        Video(const std::string & ean);
+        static std::shared_ptr<Video> construct(const std::string & ean);
 
         virtual std::string getType() const;
     };

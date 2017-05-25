@@ -10,6 +10,10 @@ Video::Video(const string & ean)
 
 }
 
+shared_ptr<Video> Video::construct(const string &ean) {
+    return shared_ptr<Video>(new Video(ean));
+}
+
 string Video::getType() const {
     return "video";
 }

@@ -15,6 +15,10 @@ Book::Book(const string &isbn)
 
 }
 
+shared_ptr<Book> Book::construct(const string &isbn) {
+    return shared_ptr<Book>(new Book(isbn));
+}
+
 string Book::getType() const {
     return "book";
 }

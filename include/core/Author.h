@@ -7,11 +7,14 @@
 namespace pb2 {
     class Author_priv;
 
-    class Author {
+    class Author : public std::enable_shared_from_this<Author> {
     private:
         std::unique_ptr<Author_priv> priv;
-    public:
+    protected:
         Author();
+
+    public:
+        static std::shared_ptr<Author> construct();
         
         std::string getFirstName() const;
         void setFirstName(const std::string & firstName);

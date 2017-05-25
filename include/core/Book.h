@@ -11,6 +11,7 @@ namespace pb2 {
     class Book : public Medium {
     private:
         std::unique_ptr<Book_priv> priv;
+        Book(const std::string & isbn);
 
     public:
         /**
@@ -19,7 +20,7 @@ namespace pb2 {
          * specified in the constructor of Medium) or enter any valid ISBN-10 for it to
          * be transferred into the corresponding EAN-13.
          */
-        Book(const std::string & isbn);
+        static std::shared_ptr<Book> construct(const std::string & isbn);
 
         virtual std::string getType() const;
     };

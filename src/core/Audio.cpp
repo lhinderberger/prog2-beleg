@@ -10,6 +10,11 @@ Audio::Audio(const string & ean)
 
 }
 
+shared_ptr<Audio> Audio::construct(const string &ean) {
+    // make_shared does not see the private constructor, so we need this instead
+    return shared_ptr<Audio>(new Audio(ean));
+}
+
 string Audio::getType() const {
     return "audio";
 }

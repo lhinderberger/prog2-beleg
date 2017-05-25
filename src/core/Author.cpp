@@ -9,6 +9,9 @@ Author::Author() {
     priv = make_unique<Author_priv>();
 }
 
+shared_ptr<Author> Author::construct() {
+    return shared_ptr<Author>(new Author());
+}
 
 string Author::getFirstName() const {
     return priv->firstName;

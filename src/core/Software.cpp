@@ -10,6 +10,10 @@ Software::Software(const string & ean)
 
 }
 
+shared_ptr<Software> Software::construct(const string &ean) {
+    return shared_ptr<Software>(new Software(ean));
+}
+
 string Software::getType() const {
     return "software";
 }

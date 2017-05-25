@@ -8,13 +8,11 @@
 namespace pb2 {
     class Medium_priv;
 
-    class Medium {
+    class Medium : public std::enable_shared_from_this<Medium> {
     private:
         std::unique_ptr<Medium_priv> priv;
 
-    public:
-        static const std::vector<std::string> & allowedFormats();
-
+    protected:
         /**
          * Creates a new Medium
          *
@@ -22,6 +20,9 @@ namespace pb2 {
          * unused local EAN number in the GS1 020-029 range on insertion.
          */
         Medium(const std::string & ean);
+
+    public:
+        static const std::vector<std::string> & allowedFormats();
 
         virtual ~Medium();
 
