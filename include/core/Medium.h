@@ -7,6 +7,7 @@
 
 namespace pb2 {
     class Medium_priv;
+    class MediumCopy;
 
     class Medium : public std::enable_shared_from_this<Medium> {
     private:
@@ -30,6 +31,16 @@ namespace pb2 {
          * Lower-case class name of the concrete Medium object (such as "book", "video")
          */
         virtual std::string getType() const = 0;
+
+        /**
+         * Returns all copies of the Medium that currently are available in the library.
+         * This function will trigger a database query and return new MediumCopy instances
+         */
+        std::vector<std::shared_ptr<MediumCopy>> queryCopies() const;
+
+
+
+        // Getters / setters:
 
         /**
          * The EAN identifies any Medium in the library (acts as primary key).
@@ -57,5 +68,7 @@ namespace pb2 {
         void setTitle(const std::string & title);
     };
 }
+
+#include "MediumCopy.h"
 
 #endif

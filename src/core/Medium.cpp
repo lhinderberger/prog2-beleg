@@ -24,6 +24,11 @@ const vector<string>& Medium::allowedFormats() {
     return formats;
 }
 
+vector<shared_ptr<MediumCopy>> Medium::queryCopies() const {
+    //TODO: Query database, return MediumCopies
+    throw NotImplementedException();
+}
+
 string Medium::getEAN() const {
     return priv->ean;
 }
