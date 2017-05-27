@@ -33,8 +33,7 @@ namespace pb2 {
         virtual std::string getType() const = 0;
 
         /**
-         * Returns all copies of the Medium that currently are available in the library.
-         * This function will trigger a database query and return new MediumCopy instances
+         * Lazy-loads all copies of the Medium that currently are available in the library.
          */
         std::vector<std::shared_ptr<MediumCopy>> queryCopies() const;
 
