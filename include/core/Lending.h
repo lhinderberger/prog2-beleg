@@ -14,7 +14,7 @@ namespace pb2 {
      * Relationship between a MediumCopy and a LibraryUser, basically meaning what media
      * the user has lent and for how long.
      */
-    class Lending : public std::enable_shared_from_this {
+    class Lending : public std::enable_shared_from_this<Lending> {
     private:
         std::unique_ptr<Lending_priv> priv;
         Lending(

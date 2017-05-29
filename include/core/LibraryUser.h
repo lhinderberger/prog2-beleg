@@ -10,7 +10,7 @@
 namespace pb2 {
     class LibraryUser_priv;
 
-    class LibraryUser : public std::enable_shared_from_this {
+    class LibraryUser : public std::enable_shared_from_this<LibraryUser> {
     private:
         std::unique_ptr<LibraryUser_priv> priv;
 
