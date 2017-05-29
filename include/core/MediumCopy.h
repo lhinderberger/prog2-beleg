@@ -5,6 +5,7 @@
 #include "Medium.h"
 
 namespace pb2 {
+    class Lending;
     class MediumCopy_priv;
 
     /**
@@ -30,6 +31,12 @@ namespace pb2 {
          */
         static std::shared_ptr<MediumCopy> construct(std::shared_ptr<Medium> medium, int serialNumber);
 
+        /**
+         * If a LibraryUser has currently lent the copy, this will return a pointer
+         * to the relevant Lending instance. Otherwise it will return a null pointer.
+         */
+        std::shared_ptr<Lending> getActiveLending() const;
+
         std::shared_ptr<Medium> getMedium() const;
 
         /**
@@ -47,5 +54,7 @@ namespace pb2 {
         int getSerialNumber() const;
     };
 }
+
+#include "Lending.h"
 
 #endif

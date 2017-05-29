@@ -24,6 +24,10 @@ shared_ptr<MediumCopy> MediumCopy::construct(shared_ptr<Medium> medium, int seri
     return shared_ptr<MediumCopy>(new MediumCopy(medium, serialNumber));
 }
 
+shared_ptr<Lending> MediumCopy::getActiveLending() const {
+    throw NotImplementedException();
+}
+
 bool MediumCopy::getDeaccessioned() const {
     return priv->deaccessioned;
 }
