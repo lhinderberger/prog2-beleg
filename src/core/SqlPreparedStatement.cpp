@@ -1,0 +1,118 @@
+#include "core/SqlPreparedStatement.h"
+#include "core/SqlPreparedStatement.priv.h"
+#include "core/SqlConnection.priv.h"
+#include "core/exceptions.h"
+
+#include <climits>
+
+using namespace std;
+using namespace pb2;
+
+SqlPreparedStatement::SqlPreparedStatement(
+        shared_ptr<SqlConnection> connection, const string & sql
+) {
+    if (!connection)
+        throw NullPointerException();
+
+    priv = make_unique<SqlPreparedStatement_priv>();
+    priv->connection = connection;
+
+    /* Get statement size */
+    auto statementSize = sql.size();
+    if (statementSize > INT_MAX)
+        throw StringTooLongException();
+
+    /* Prepare statement */
+    if (sqlite3_prepare_v2(
+            connection->priv->connection,
+            sql.c_str(),
+            (int)sql.size(),
+            &priv->statement,
+            NULL
+    ))
+        throw connection->buildException();
+}
+
+SqlPreparedStatement::~SqlPreparedStatement() {
+    if (priv->statement) {
+        int res = sqlite3_finalize(priv->statement);
+        if (res != SQLITE_OK) {
+            //TODO: Is it a good idea to throw from destructor?
+            if (priv->connection)
+                throw priv->connection->buildException();
+            else
+                throw SqliteException(res);
+        }
+    }
+}
+
+bool SqlPreparedStatement::step() {
+    int res = sqlite3_step(priv->statement);
+    if (res == SQLITE_OK || res == SQLITE_ROW) // Row obtained, statement still valid
+        return true;
+    else if (res == SQLITE_DONE)
+        return false;
+    else
+        throw priv->connection->buildException();
+}
+
+void SqlPreparedStatement::reset() {
+    if (sqlite3_reset(priv->statement) != SQLITE_OK)
+        throw priv->connection->buildException();
+}
+
+void SqlPreparedStatement::bindBlob(int paramIndex, void * value, int valueBytes) {
+    if (sqlite3_bind_blob(priv->statement, paramIndex, value, valueBytes, NULL) != SQLITE_OK)
+        throw priv->connection->buildException();
+}
+
+void SqlPreparedStatement::bindInt(int paramIndex, int value) {
+    if (sqlite3_bind_int(priv->statement, paramIndex, value) != SQLITE_OK)
+        throw priv->connection->buildException();
+}
+
+void SqlPreparedStatement::bindNull(int paramIndex) {
+    if (sqlite3_bind_null(priv->statement, paramIndex) != SQLITE_OK)
+        throw priv->connection->buildException();
+}
+
+void SqlPreparedStatement::bindString(int paramIndex, const string & value) {
+    auto valSize = value.size();
+    if (valSize > INT_MAX)
+        throw StringTooLongException();
+
+    if (sqlite3_bind_text(priv->statement, paramIndex, value.c_str(), (int)value.size(), NULL) != SQLITE_OK)
+        throw priv->connection->buildException();
+}
+
+const void* SqlPreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
+    const void * data = sqlite3_column_blob(priv->statement, columnIndex);
+    if (!data)
+        throw priv->connection->buildException();
+    if (bytesOut)
+        *bytesOut = sqlite3_column_bytes(priv->statement, columnIndex);
+
+    return data;
+}
+
+int SqlPreparedStatement::columnInt(int columnIndex) {
+    int result = sqlite3_column_int(priv->statement, columnIndex);
+
+    int errcode = sqlite3_errcode(priv->connection->priv->connection);
+    if (!result && errcode != SQLITE_OK && errcode != SQLITE_ROW)
+        throw priv->connection->buildException();
+
+    return result;
+}
+
+std::string SqlPreparedStatement::columnString(int columnIndex) {
+    auto column = (const char *)sqlite3_column_text(priv->statement, columnIndex);
+    if (!column)
+        throw priv->connection->buildException();
+
+    return string(column);
+}
+
+shared_ptr<SqlConnection> SqlPreparedStatement::getConnection() const {
+    return priv->connection;
+}

@@ -2,6 +2,7 @@
 #define PROG2_BELEG_CORE_EXCEPTIONS_H
 
 #include <stdexcept>
+#include <sqlite3.h>
 
 namespace pb2 {
     class Exception : public std::exception {};
@@ -10,6 +11,53 @@ namespace pb2 {
     class NotImplementedException : public CoreException {
     public:
         NotImplementedException() {}
+    };
+
+    class NullPointerException : public CoreException {
+    public:
+        NullPointerException() {}
+    };
+
+    class StringTooLongException : public CoreException {
+    public:
+        StringTooLongException() {}
+    };
+
+    class ValidationException : public CoreException {
+    public:
+        ValidationException() {}
+    };
+
+    class FileExistsException : public CoreException {
+    private:
+        std::string filename;
+    public:
+        FileExistsException(const std::string & filename);
+    };
+
+    class DatabaseVersionException : public CoreException {
+    private:
+        int databaseVersion;
+    public:
+        inline DatabaseVersionException(int databaseVersion) { this->databaseVersion = databaseVersion; }
+        inline int getDatabaseVersion() const { return databaseVersion; }
+    };
+
+    class SqliteException : public CoreException {
+    private:
+        int sqliteErrorCode;
+        std::string sqliteErrorString, whatString;
+
+        void buildWhatString();
+
+    public:
+        SqliteException(int errorCode);
+        SqliteException(sqlite3 * db);
+
+        virtual const char * what() const noexcept override;
+
+        inline int getSqliteErrorCode() const { return sqliteErrorCode; }
+        inline std::string getSqliteErrorString() const { return sqliteErrorString; }
     };
 }
 
