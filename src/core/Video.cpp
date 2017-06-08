@@ -5,15 +5,16 @@
 using namespace std;
 using namespace pb2;
 
-Video::Video(const string & ean)
-        : Medium(ean){
+Video::Video(shared_ptr<Database> database, const string & ean)
+        : Medium(database, ean){
 
 }
 
-shared_ptr<Video> Video::construct(const string &ean) {
-    return shared_ptr<Video>(new Video(ean));
+shared_ptr<Video> Video::construct(shared_ptr<Database> database, const string &ean) {
+    return shared_ptr<Video>(new Video(database, ean));
 }
 
-string Video::getType() const {
-    return "video";
+const string & Video::getType() const {
+    static string t("video");
+    return t;
 }

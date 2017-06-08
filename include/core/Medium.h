@@ -5,11 +5,13 @@
 #include <string>
 #include <vector>
 
+#include "DatabaseObject.h"
+
 namespace pb2 {
     class Medium_priv;
     class MediumCopy;
 
-    class Medium : public std::enable_shared_from_this<Medium> {
+    class Medium : public DatabaseObject {
     private:
         std::unique_ptr<Medium_priv> priv;
 
@@ -20,17 +22,18 @@ namespace pb2 {
          * @param ean A valid EAN number or the string "generate" to generate a new,
          * unused local EAN number in the GS1 020-029 range on insertion.
          */
-        Medium(const std::string & ean);
+        Medium(std::shared_ptr<Database> database, const std::string & ean);
 
     public:
         static const std::vector<std::string> & allowedFormats();
 
         virtual ~Medium();
+        virtual const std::string & getTableName() const override;
 
-        /**
-         * Lower-case class name of the concrete Medium object (such as "book", "video")
-         */
-        virtual std::string getType() const = 0;
+        virtual void load(SqlPreparedStatement & query,
+            const std::map<std::string, std::string> & alternativeColumnNames
+            = std::map<std::string, std::string>()) override;
+        virtual void persist() override;
 
         /**
          * Lazy-loads all copies of the Medium that currently are available in the library.

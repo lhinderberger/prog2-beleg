@@ -4,17 +4,18 @@
 #include <memory>
 #include <string>
 
+#include "DatabaseObject.h"
 #include "PostalAddress.h"
 #include "TelephoneNumber.h"
 
 namespace pb2 {
     class LibraryUser_priv;
 
-    class LibraryUser : public std::enable_shared_from_this<LibraryUser> {
+    class LibraryUser : public DatabaseObject {
     private:
         std::unique_ptr<LibraryUser_priv> priv;
 
-        LibraryUser(int id);
+        LibraryUser(std::shared_ptr<Database> database, int id);
 
     public:
         /**
@@ -23,7 +24,17 @@ namespace pb2 {
          * @param id Pass in 0 or less to auto-generate an ID on insert.
          * Otherwise pass in a valid ID.
          */
-        static std::shared_ptr<LibraryUser> construct(int id);
+        static std::shared_ptr<LibraryUser> construct(std::shared_ptr<Database> database,
+                                                      int id);
+
+        virtual const std::string & getTableName() const override;
+        virtual const std::string & getType() const override;
+
+        virtual void load(SqlPreparedStatement & query,
+            const std::map<std::string, std::string> & alternativeColumnNames
+            = std::map<std::string, std::string>()) override;
+        virtual void persist() override;
+
 
         int getId() const;
 

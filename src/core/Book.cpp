@@ -10,15 +10,16 @@ string isbn_to_ean(const string & isbn) {
     throw NotImplementedException();
 }
 
-Book::Book(const string &isbn)
-: Medium(isbn_to_ean(isbn)){
+Book::Book(shared_ptr<Database> database, const string &isbn)
+: Medium(database, isbn_to_ean(isbn)){
 
 }
 
-shared_ptr<Book> Book::construct(const string &isbn) {
-    return shared_ptr<Book>(new Book(isbn));
+shared_ptr<Book> Book::construct(shared_ptr<Database> database, const string &isbn) {
+    return shared_ptr<Book>(new Book(database, isbn));
 }
 
-string Book::getType() const {
-    return "book";
+const string & Book::getType() const {
+    static string t("book");
+    return t;
 }

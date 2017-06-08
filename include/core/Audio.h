@@ -9,16 +9,17 @@ namespace pb2 {
     class Audio : public Medium {
     private:
         std::unique_ptr<Audio_priv> priv;
-        Audio(const std::string & ean);
+        Audio(std::shared_ptr<Database> database, const std::string & ean);
 
     public:
         /**
          * Creates a new Audio Medium
          * @param ean @see Medium constructor
          */
-        static std::shared_ptr<Audio> construct(const std::string & ean);
+        static std::shared_ptr<Audio> construct(std::shared_ptr<Database> database,
+                                                const std::string & ean);
 
-        virtual std::string getType() const;
+        virtual const std::string & getType() const override;
     };
 }
 

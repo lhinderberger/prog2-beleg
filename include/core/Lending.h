@@ -4,6 +4,7 @@
 #include <ctime>
 #include <memory>
 
+#include "DatabaseObject.h"
 #include "LibraryUser.h"
 #include "MediumCopy.h"
 
@@ -14,10 +15,11 @@ namespace pb2 {
      * Relationship between a MediumCopy and a LibraryUser, basically meaning what media
      * the user has lent and for how long.
      */
-    class Lending : public std::enable_shared_from_this<Lending> {
+    class Lending : public DatabaseObject {
     private:
         std::unique_ptr<Lending_priv> priv;
         Lending(
+                std::shared_ptr<Database> database,
                 std::shared_ptr<MediumCopy> mediumCopy,
                 std::shared_ptr<LibraryUser> libraryUser,
                 time_t timestampLent
@@ -34,10 +36,19 @@ namespace pb2 {
          * @return
          */
         static std::shared_ptr<Lending> construct(
+                std::shared_ptr<Database> database,
                 std::shared_ptr<MediumCopy> mediumCopy,
                 std::shared_ptr<LibraryUser> libraryUser,
                 time_t timestampLent = -1
         );
+
+        virtual const std::string & getTableName() const override;
+        virtual const std::string & getType() const override;
+
+        virtual void load(SqlPreparedStatement & query,
+            const std::map<std::string, std::string> & alternativeColumnNames
+            = std::map<std::string, std::string>()) override;
+        virtual void persist() override;
 
         // Getters for read-only values set in constructor.
         std::shared_ptr<MediumCopy> getMediumCopy();

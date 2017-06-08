@@ -7,8 +7,9 @@
 using namespace std;
 using namespace pb2;
 
-Lending::Lending(shared_ptr<MediumCopy> mediumCopy,
-                 shared_ptr<LibraryUser> libraryUser, time_t timestampLent) {
+Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
+                 shared_ptr<LibraryUser> libraryUser, time_t timestampLent)
+        : DatabaseObject(database){
     priv = make_unique<Lending_priv>();
     priv->timesExtended = 0;
     priv->timestampReturned = 0;
@@ -29,10 +30,31 @@ Lending::Lending(shared_ptr<MediumCopy> mediumCopy,
     priv->runtime = 14;
 }
 
-std::shared_ptr<Lending> Lending::construct(std::shared_ptr<MediumCopy> mediumCopy,
-                                            std::shared_ptr<LibraryUser> libraryUser,
+std::shared_ptr<Lending> Lending::construct(shared_ptr<Database> database,
+                                            shared_ptr<MediumCopy> mediumCopy,
+                                            shared_ptr<LibraryUser> libraryUser,
                                             time_t timestampLent) {
-    return shared_ptr<Lending>(new Lending(mediumCopy, libraryUser, timestampLent));
+    return shared_ptr<Lending>(new Lending(database, mediumCopy, libraryUser, timestampLent));
+}
+
+const string & Lending::getTableName() const {
+    static string t("lending");
+    return t;
+}
+
+const string & Lending::getType() const {
+    static string t("lending");
+    return t;
+}
+
+
+void Lending::load(SqlPreparedStatement & query,
+                  const map<string, string> & alternativeColumnNames) {
+    throw NotImplementedException();
+}
+
+void Lending::persist() {
+    throw NotImplementedException();
 }
 
 shared_ptr<MediumCopy> Lending::getMediumCopy() {

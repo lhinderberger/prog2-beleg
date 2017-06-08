@@ -5,12 +5,32 @@
 using namespace std;
 using namespace pb2;
 
-Author::Author() {
+Author::Author(shared_ptr<Database> database) : DatabaseObject(database) {
     priv = make_unique<Author_priv>();
 }
 
-shared_ptr<Author> Author::construct() {
-    return shared_ptr<Author>(new Author());
+shared_ptr<Author> Author::construct(shared_ptr<Database> database) {
+    return shared_ptr<Author>(new Author(database));
+}
+
+const string & Author::getTableName() const {
+    static string t("author");
+    return t;
+}
+
+const std::string & Author::getType() const {
+    static string t("author");
+    return t;
+}
+
+
+void Author::load(SqlPreparedStatement & query,
+                  const map<string, string> & alternativeColumnNames) {
+    throw NotImplementedException();
+}
+
+void Author::persist() {
+    throw NotImplementedException();
 }
 
 string Author::getFirstName() const {

@@ -5,14 +5,35 @@
 using namespace std;
 using namespace pb2;
 
-LibraryUser::LibraryUser(int id) {
+LibraryUser::LibraryUser(shared_ptr<Database> database, int id)
+        : DatabaseObject(database) {
     priv = make_unique<LibraryUser_priv>();
 
     priv->id = id;
 }
 
-shared_ptr<LibraryUser> LibraryUser::construct(int id) {
-    return shared_ptr<LibraryUser>(new LibraryUser(id));
+shared_ptr<LibraryUser> LibraryUser::construct(shared_ptr<Database> database, int id) {
+    return shared_ptr<LibraryUser>(new LibraryUser(database, id));
+}
+
+const string & LibraryUser::getTableName() const {
+    static string t("library_user");
+    return t;
+}
+
+const string & LibraryUser::getType() const {
+    static string t("libraryuser");
+    return t;
+}
+
+
+void LibraryUser::load(SqlPreparedStatement & query,
+                   const map<string, string> & alternativeColumnNames) {
+    throw NotImplementedException();
+}
+
+void LibraryUser::persist() {
+    throw NotImplementedException();
 }
 
 

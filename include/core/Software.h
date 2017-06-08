@@ -9,16 +9,17 @@ namespace pb2 {
     class Software : public Medium {
     private:
         std::unique_ptr<Software_priv> priv;
-        Software(const std::string & ean);
+        Software(std::shared_ptr<Database> database, const std::string & ean);
 
     public:
         /**
          * Creates a new Software Medium
          * @param ean @see Medium constructor
          */
-        static std::shared_ptr<Software> construct(const std::string & ean);
+        static std::shared_ptr<Software> construct(std::shared_ptr<Database> database,
+                                                   const std::string & ean);
 
-        virtual std::string getType() const;
+        virtual const std::string & getType() const override;
     };
 }
 

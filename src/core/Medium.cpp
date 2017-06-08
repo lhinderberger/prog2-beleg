@@ -5,7 +5,8 @@
 using namespace pb2;
 using namespace std;
 
-Medium::Medium(const string & ean) {
+Medium::Medium(shared_ptr<Database> database, const string & ean)
+        : DatabaseObject(database){
     priv = make_unique<Medium_priv>();
 
     //TODO: Validate
@@ -15,6 +16,22 @@ Medium::Medium(const string & ean) {
 }
 
 Medium::~Medium() {}
+
+const string & Medium::getTableName() const {
+    static string t("medium");
+    return t;
+}
+
+
+void Medium::load(SqlPreparedStatement & query,
+                       const map<string, string> & alternativeColumnNames) {
+    throw NotImplementedException();
+}
+
+void Medium::persist() {
+    throw NotImplementedException();
+}
+
 
 const vector<string>& Medium::allowedFormats() {
     static vector<string> formats {
