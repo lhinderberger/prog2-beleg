@@ -25,8 +25,7 @@ namespace pb2 {
         Medium(std::shared_ptr<Database> database, const std::string & ean);
 
         virtual void loadImpl(SqlPreparedStatement & query,
-            const std::map<std::string, std::string> & alternativeColumnNames
-            = std::map<std::string, std::string>()) override;
+            const std::map<std::string, int> & columnIndexes) override;
         virtual void persistImpl() override;
 
     public:

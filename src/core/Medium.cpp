@@ -23,8 +23,7 @@ const string & Medium::getTableName() const {
 }
 
 
-void Medium::loadImpl(SqlPreparedStatement & query,
-                       const map<string, string> & alternativeColumnNames) {
+void Medium::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
     throw NotImplementedException();
 }
 

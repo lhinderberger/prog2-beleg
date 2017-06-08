@@ -16,8 +16,7 @@ namespace pb2 {
         Author(std::shared_ptr<Database> database, int id);
 
         virtual void loadImpl(SqlPreparedStatement & query,
-            const std::map<std::string, std::string> & alternativeColumnNames
-            = std::map<std::string, std::string>()) override;
+            const std::map<std::string, int> & columnIndexes) override;
         virtual void persistImpl() override;
 
     public:

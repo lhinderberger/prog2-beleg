@@ -25,8 +25,7 @@ const std::string & Author::getType() const {
 }
 
 
-void Author::loadImpl(SqlPreparedStatement & query,
-                  const map<string, string> & alternativeColumnNames) {
+void Author::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
     throw NotImplementedException();
 }
 

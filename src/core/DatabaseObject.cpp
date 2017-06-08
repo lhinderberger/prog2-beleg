@@ -40,8 +40,18 @@ DatabaseObject::~DatabaseObject() {}
 
 void DatabaseObject::load(SqlPreparedStatement & query,
                           const map<string, string> & alternativeColumnNames) {
-    loadImpl(query, alternativeColumnNames);
+    /* Build column indexes map, incorporate alternatives */
+    map<string,int> columnIndexes = query.columnIndexes();
+    for (const auto & alternative : alternativeColumnNames)
+        columnIndexes[alternative.first] = query.getColumnIndex(alternative.second);
+
+    /* Call load implementation */
+    loadImpl(query, columnIndexes);
     priv->loaded = true;
+}
+
+void DatabaseObject::persist() {
+    persistImpl();
 }
 
 string DatabaseObject::buildInsertQuery(vector<string> columnNames, int nObjects) const {
@@ -80,6 +90,26 @@ string DatabaseObject::buildUpdateQuery(vector<string> columnNames,
 
     /* Return including where clause */
     return query + ' ' + whereClause;
+}
+
+string DatabaseObject::getFullColumnName(const string & columnName) const {
+    return string(getTableName()) + '.' + columnName;
+}
+
+string DatabaseObject::getFullColumnName(
+        const string & columnName,
+        const map<string, string> & alternativeNames
+) const {
+    /* Retrieve regular full column name first */
+    auto fullColumnName = getFullColumnName(columnName);
+
+    /* Search alternative names to see if there is an alternative for this name */
+    auto i = alternativeNames.find(fullColumnName);
+    if (i == alternativeNames.end())
+        return fullColumnName;
+
+    /* Return depending on search result */
+    return (i == alternativeNames.end()) ? fullColumnName : i->second;
 }
 
 const shared_ptr<SqlConnection> DatabaseObject::getConnection() const {

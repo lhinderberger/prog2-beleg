@@ -36,8 +36,7 @@ const string & MediumCopy::getType() const {
     return t;
 }
 
-void MediumCopy::loadImpl(SqlPreparedStatement & query,
-                      const map<string, string> & alternativeColumnNames) {
+void MediumCopy::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
     throw NotImplementedException();
 }
 

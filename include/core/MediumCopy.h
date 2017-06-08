@@ -23,8 +23,7 @@ namespace pb2 {
 
     protected:
         virtual void loadImpl(SqlPreparedStatement & query,
-            const std::map<std::string, std::string> & alternativeColumnNames
-            = std::map<std::string, std::string>()) override;
+            const std::map<std::string, int> & columnIndexes) override;
         virtual void persistImpl() override;
 
     public:

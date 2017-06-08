@@ -27,8 +27,7 @@ const string & LibraryUser::getType() const {
 }
 
 
-void LibraryUser::loadImpl(SqlPreparedStatement & query,
-                   const map<string, string> & alternativeColumnNames) {
+void LibraryUser::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
     throw NotImplementedException();
 }
 

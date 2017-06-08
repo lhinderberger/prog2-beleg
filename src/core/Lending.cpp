@@ -48,8 +48,7 @@ const string & Lending::getType() const {
 }
 
 
-void Lending::loadImpl(SqlPreparedStatement & query,
-                  const map<string, string> & alternativeColumnNames) {
+void Lending::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
     throw NotImplementedException();
 }
 
