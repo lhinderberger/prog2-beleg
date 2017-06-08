@@ -26,11 +26,30 @@ const std::string & Author::getType() const {
 
 
 void Author::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
-    throw NotImplementedException();
+    //TODO: Use template or macro
+    priv->id = query.columnInt(columnIndexes.at("id"));
+    priv->firstName = query.columnString(columnIndexes.at("firstName"));
+    priv->lastName = query.columnString(columnIndexes.at("lastName"));
 }
 
 void Author::persistImpl() {
-    throw NotImplementedException();
+    /* Prepare statement */
+    SqlPreparedStatement statement(getConnection(), isLoaded() ?
+        buildUpdateQuery({"firstName", "lastName"}, "WHERE id=?") :
+        buildInsertQuery({"firstName", "lastName", "id"}, 1)
+    );
+
+    /* Bind parameters */
+    statement.bindString(0, priv->firstName);
+    statement.bindString(1, priv->lastName);
+    statement.bindInt(2, priv->id);
+
+    /* Execute */
+    statement.step();
+}
+
+int Author::getId() const {
+    return priv->id;
 }
 
 string Author::getFirstName() const {

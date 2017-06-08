@@ -24,6 +24,8 @@ namespace pb2 {
 
         virtual const std::string & getTableName() const override;
         virtual const std::string & getType() const override;
+
+        int getId() const;
         
         std::string getFirstName() const;
         void setFirstName(const std::string & firstName);
