@@ -15,10 +15,11 @@ namespace pb2 {
      * 1 for the first copy, 2 for the second copy and so on.
      * Copies can be lent to Users.
      */
-    class MediumCopy : public std::enable_shared_from_this<MediumCopy> {
+    class MediumCopy : public DatabaseObject {
     private:
         std::unique_ptr<MediumCopy_priv> priv;
-        MediumCopy(std::shared_ptr<Medium> medium, int serialNumber);
+        MediumCopy(std::shared_ptr<Database> database,
+                   std::shared_ptr<Medium> medium, int serialNumber);
 
     public:
         /**
@@ -29,7 +30,16 @@ namespace pb2 {
          * @param serialNumber Either a number starting from 1 or 0 or less to
          * auto-generate a new serialNumber on insert.
          */
-        static std::shared_ptr<MediumCopy> construct(std::shared_ptr<Medium> medium, int serialNumber);
+        static std::shared_ptr<MediumCopy> construct(std::shared_ptr<Database> database,
+            std::shared_ptr<Medium> medium, int serialNumber);
+
+        virtual const std::string & getTableName() const override;
+        virtual const std::string & getType() const override;
+
+        virtual void load(SqlPreparedStatement & query,
+            const std::map<std::string, std::string> & alternativeColumnNames
+            = std::map<std::string, std::string>()) override;
+        virtual void persist() override;
 
         /**
          * If a LibraryUser has currently lent the copy, this will return a pointer

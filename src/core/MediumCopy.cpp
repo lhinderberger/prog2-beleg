@@ -8,7 +8,8 @@
 using namespace std;
 using namespace pb2;
 
-MediumCopy::MediumCopy(std::shared_ptr<Medium> medium, int serialNumber) {
+MediumCopy::MediumCopy(shared_ptr<Database> database, shared_ptr<Medium> medium,
+                       int serialNumber) : DatabaseObject(database) {
     priv = make_unique<MediumCopy_priv>();
 
     // Verify and copy identifying fields
@@ -20,9 +21,30 @@ MediumCopy::MediumCopy(std::shared_ptr<Medium> medium, int serialNumber) {
     priv->deaccessioned = false;
 }
 
-shared_ptr<MediumCopy> MediumCopy::construct(shared_ptr<Medium> medium, int serialNumber) {
-    return shared_ptr<MediumCopy>(new MediumCopy(medium, serialNumber));
+shared_ptr<MediumCopy> MediumCopy::construct(shared_ptr<Database> database,
+                                             shared_ptr<Medium> medium, int serialNumber) {
+    return shared_ptr<MediumCopy>(new MediumCopy(database, medium, serialNumber));
 }
+
+const string & MediumCopy::getTableName() const {
+    static string t("medium_copy");
+    return t;
+}
+
+const string & MediumCopy::getType() const {
+    static string t("mediumcopy");
+    return t;
+}
+
+void MediumCopy::load(SqlPreparedStatement & query,
+                      const map<string, string> & alternativeColumnNames) {
+    throw NotImplementedException();
+}
+
+void MediumCopy::persist() {
+    throw NotImplementedException();
+}
+
 
 shared_ptr<Lending> MediumCopy::getActiveLending() const {
     throw NotImplementedException();
