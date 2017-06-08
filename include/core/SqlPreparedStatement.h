@@ -2,6 +2,8 @@
 #define PROG2_BELEG_SQL_PREPARED_STATEMENT_H
 
 #include <memory>
+#include <map>
+#include <string>
 
 #include "SqlConnection.h"
 
@@ -72,6 +74,41 @@ namespace pb2 {
          * Retrieve a String value from the current result row.
          */
         std::string columnString(int columnIndex);
+
+        /**
+         * Returns a map of column indexes, identified by their column name (as returned
+         * by SQLite).
+         * This is built for the frequent use case of querying for columns by their name
+         * rather than by their position in the result set.
+         * For example, this is used by DatabaseObject for loading objects from the
+         * database.
+         */
+        const std::map<std::string, int> & columnIndexes();
+
+        /**
+         * Returns the number of columns in this query.
+         */
+        int getColumnCount();
+
+        /**
+         * Returns the full column name of the result column identified with the given
+         * index.
+         *
+         * The full column name consists of the table name, followed by a dot, followed
+         * by the original column name or - if an expression / subquery result - the
+         * column alias preceded by a dot.
+         *
+         * For example:
+         *
+         * SELECT id, value AS valueAlias, COUNT(*), COUNT(*) AS bla FROM test as testi
+         *
+         * Yields the following column Names:
+         * 0: test.id
+         * 1: test.value
+         * 2: .COUNT(*)
+         * 3: .bla
+         */
+        std::string getFullColumnName(int columnIndex);
 
         std::shared_ptr<SqlConnection> getConnection() const;
     };

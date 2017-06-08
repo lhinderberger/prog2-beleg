@@ -105,12 +105,61 @@ int SqlPreparedStatement::columnInt(int columnIndex) {
     return result;
 }
 
-std::string SqlPreparedStatement::columnString(int columnIndex) {
+string SqlPreparedStatement::columnString(int columnIndex) {
     auto column = (const char *)sqlite3_column_text(priv->statement, columnIndex);
     if (!column)
         throw priv->connection->buildException();
 
     return string(column);
+}
+
+const map<string, int> & SqlPreparedStatement::columnIndexes() {
+    /* Build map on first call (lazy loading) */
+    if (!priv->columnIndexes) {
+        /* Allocate map */
+        priv->columnIndexes = make_unique<map<string,int>>();
+
+        /* Iterate over columns, build map */
+        auto columnCount = getColumnCount();
+        for (int i=0; i < columnCount; i++)
+            priv->columnIndexes->insert({getFullColumnName(i), i});
+    }
+
+    /* Return reference to map */
+    return *(priv->columnIndexes);
+}
+
+int SqlPreparedStatement::getColumnCount() {
+    int columnCount = sqlite3_column_count(priv->statement);
+    if (columnCount < 0)
+        throw logic_error("Column count shouldn't drop below zero!");
+
+    return columnCount;
+}
+
+string SqlPreparedStatement::getFullColumnName(int columnIndex) {
+    auto db = priv->connection->priv->connection;
+
+    /* Try to retrieve column origin name (original table name + original column name) */
+    const char * tableName = sqlite3_column_table_name(priv->statement, columnIndex);
+    if (!tableName && sqlite3_errcode(db) != SQLITE_OK)
+        throw priv->connection->buildException();
+    const char * columnName = sqlite3_column_origin_name(priv->statement, columnIndex);
+    if (!columnName && sqlite3_errcode(db) != SQLITE_OK)
+        throw priv->connection->buildException();
+
+    /* If the column is an expression / subquery result it won't have an origin name. Use
+     * alias name instead.
+     */
+    if (!columnName) {
+        tableName = "";
+        columnName = sqlite3_column_name(priv->statement, columnIndex);
+        if (!columnName)
+            throw priv->connection->buildException();
+    }
+
+    /* Build full name and return */
+    return string(tableName) + '.' + columnName;
 }
 
 shared_ptr<SqlConnection> SqlPreparedStatement::getConnection() const {
