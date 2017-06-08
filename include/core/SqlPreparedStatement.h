@@ -58,22 +58,29 @@ namespace pb2 {
         void bindString(int paramIndex, const std::string & value);
 
         /**
-         * Retrieve a Blob value from the current result row.
+         * Retrieve a Blob value from the current result row, either by its index or by
+         * its full column name.
+         *
          * @param bytesOut Outgoing. The number of bytes in the result.
          * @return An array of bytes, which has to be instantly evaluated, as it will
          * be freed or overwritten by subsequent calls to this API.
          */
         const void * columnBlob(int columnIndex, int * bytesOut);
+        const void * columnBlob(const std::string & fullColumnName, int * bytesOut);
 
         /**
-         * Retrieve an Integer value from the current result row
+         * Retrieve an Integer value from the current result row, either by its index or by
+         * its full column name.
          */
         int columnInt(int columnIndex);
+        int columnInt(const std::string & fullColumnName);
 
         /**
-         * Retrieve a String value from the current result row.
+         * Retrieve a String value from the current result row, either by its index or by
+         * its full column name.
          */
         std::string columnString(int columnIndex);
+        std::string columnString(const std::string & fullColumnName);
 
         /**
          * Returns a map of column indexes, identified by their column name (as returned
@@ -89,6 +96,13 @@ namespace pb2 {
          * Returns the number of columns in this query.
          */
         int getColumnCount();
+
+        /**
+         * Try to retrieve the column index for a given full column name.
+         * Will throw ColumnNotFoundException if the given fullColumnName could not be
+         * found.
+         */
+        int getColumnIndex(const std::string & fullColumnName);
 
         /**
          * Returns the full column name of the result column identified with the given

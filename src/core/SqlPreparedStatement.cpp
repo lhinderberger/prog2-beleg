@@ -85,7 +85,7 @@ void SqlPreparedStatement::bindString(int paramIndex, const string & value) {
         throw priv->connection->buildException();
 }
 
-const void* SqlPreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
+const void * SqlPreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
     const void * data = sqlite3_column_blob(priv->statement, columnIndex);
     if (!data)
         throw priv->connection->buildException();
@@ -93,6 +93,10 @@ const void* SqlPreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
         *bytesOut = sqlite3_column_bytes(priv->statement, columnIndex);
 
     return data;
+}
+
+const void * SqlPreparedStatement::columnBlob(const string & fullColumnName, int * bytesOut) {
+    return columnBlob(getColumnIndex(fullColumnName), bytesOut);
 }
 
 int SqlPreparedStatement::columnInt(int columnIndex) {
@@ -105,12 +109,20 @@ int SqlPreparedStatement::columnInt(int columnIndex) {
     return result;
 }
 
+int SqlPreparedStatement::columnInt(const string & fullColumnName) {
+    return columnInt(getColumnIndex(fullColumnName));
+}
+
 string SqlPreparedStatement::columnString(int columnIndex) {
     auto column = (const char *)sqlite3_column_text(priv->statement, columnIndex);
     if (!column)
         throw priv->connection->buildException();
 
     return string(column);
+}
+
+string SqlPreparedStatement::columnString(const string & fullColumnName) {
+    return columnString(getColumnIndex(fullColumnName));
 }
 
 const map<string, int> & SqlPreparedStatement::columnIndexes() {
@@ -135,6 +147,14 @@ int SqlPreparedStatement::getColumnCount() {
         throw logic_error("Column count shouldn't drop below zero!");
 
     return columnCount;
+}
+
+int SqlPreparedStatement::getColumnIndex(const string & fullColumnName) {
+    auto indexes = columnIndexes();
+    auto it = indexes.find(fullColumnName);
+    if (it == indexes.end())
+        throw ColumnNotFoundException(fullColumnName);
+    return it->second;
 }
 
 string SqlPreparedStatement::getFullColumnName(int columnIndex) {

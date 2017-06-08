@@ -9,6 +9,12 @@ FileExistsException::FileExistsException(const string & filename) {
     this->filename = filename;
 }
 
+
+ColumnNotFoundException::ColumnNotFoundException(const string & fullColumnName) {
+    this->fullColumnName = fullColumnName;
+}
+
+
 SqliteException::SqliteException(int errorCode) {
     sqliteErrorCode = errorCode;
     sqliteErrorString = sqlite3_errstr(errorCode);

@@ -33,6 +33,17 @@ namespace pb2 {
         std::string filename;
     public:
         FileExistsException(const std::string & filename);
+
+        inline const std::string & getFilename() const { return filename; }
+    };
+
+    class ColumnNotFoundException : public CoreException {
+    private:
+        std::string fullColumnName;
+    public:
+        ColumnNotFoundException(const std::string & fullColumnName);
+
+        inline const std::string & getFullColumnName() const { return fullColumnName; }
     };
 
     class DatabaseVersionException : public CoreException {
