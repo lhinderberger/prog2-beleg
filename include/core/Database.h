@@ -57,6 +57,8 @@ namespace pb2 {
          * @return A positive format version
          */
         static int getFormatVersion(std::shared_ptr<SqlConnection> connection);
+
+        std::shared_ptr<SqlConnection> getConnection() const;
     };
 }
 

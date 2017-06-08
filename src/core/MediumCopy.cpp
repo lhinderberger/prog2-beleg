@@ -36,12 +36,12 @@ const string & MediumCopy::getType() const {
     return t;
 }
 
-void MediumCopy::load(SqlPreparedStatement & query,
+void MediumCopy::loadImpl(SqlPreparedStatement & query,
                       const map<string, string> & alternativeColumnNames) {
     throw NotImplementedException();
 }
 
-void MediumCopy::persist() {
+void MediumCopy::persistImpl() {
     throw NotImplementedException();
 }
 

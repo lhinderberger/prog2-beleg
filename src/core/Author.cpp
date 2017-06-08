@@ -5,12 +5,13 @@
 using namespace std;
 using namespace pb2;
 
-Author::Author(shared_ptr<Database> database) : DatabaseObject(database) {
+Author::Author(shared_ptr<Database> database, int id) : DatabaseObject(database) {
     priv = make_unique<Author_priv>();
+    priv->id = id;
 }
 
-shared_ptr<Author> Author::construct(shared_ptr<Database> database) {
-    return shared_ptr<Author>(new Author(database));
+shared_ptr<Author> Author::construct(shared_ptr<Database> database, int id) {
+    return shared_ptr<Author>(new Author(database, id));
 }
 
 const string & Author::getTableName() const {
@@ -24,12 +25,12 @@ const std::string & Author::getType() const {
 }
 
 
-void Author::load(SqlPreparedStatement & query,
+void Author::loadImpl(SqlPreparedStatement & query,
                   const map<string, string> & alternativeColumnNames) {
     throw NotImplementedException();
 }
 
-void Author::persist() {
+void Author::persistImpl() {
     throw NotImplementedException();
 }
 
@@ -38,9 +39,6 @@ string Author::getFirstName() const {
 }
 
 void Author::setFirstName(const string & firstName) {
-    //TODO: Validate
-    throw NotImplementedException();
-
     priv->firstName = firstName;
 }
 
@@ -49,8 +47,5 @@ string Author::getLastName() const {
 }
 
 void Author::setLastName(const string & lastName) {
-    //TODO: Validate
-    throw NotImplementedException();
-
     priv->lastName = lastName;
 }

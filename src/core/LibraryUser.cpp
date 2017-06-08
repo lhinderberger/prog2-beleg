@@ -27,12 +27,12 @@ const string & LibraryUser::getType() const {
 }
 
 
-void LibraryUser::load(SqlPreparedStatement & query,
+void LibraryUser::loadImpl(SqlPreparedStatement & query,
                    const map<string, string> & alternativeColumnNames) {
     throw NotImplementedException();
 }
 
-void LibraryUser::persist() {
+void LibraryUser::persistImpl() {
     throw NotImplementedException();
 }
 

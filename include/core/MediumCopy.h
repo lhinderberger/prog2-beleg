@@ -21,6 +21,12 @@ namespace pb2 {
         MediumCopy(std::shared_ptr<Database> database,
                    std::shared_ptr<Medium> medium, int serialNumber);
 
+    protected:
+        virtual void loadImpl(SqlPreparedStatement & query,
+            const std::map<std::string, std::string> & alternativeColumnNames
+            = std::map<std::string, std::string>()) override;
+        virtual void persistImpl() override;
+
     public:
         /**
          * Creates a new Medium Copy
@@ -35,11 +41,6 @@ namespace pb2 {
 
         virtual const std::string & getTableName() const override;
         virtual const std::string & getType() const override;
-
-        virtual void load(SqlPreparedStatement & query,
-            const std::map<std::string, std::string> & alternativeColumnNames
-            = std::map<std::string, std::string>()) override;
-        virtual void persist() override;
 
         /**
          * If a LibraryUser has currently lent the copy, this will return a pointer

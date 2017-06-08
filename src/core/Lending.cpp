@@ -48,12 +48,12 @@ const string & Lending::getType() const {
 }
 
 
-void Lending::load(SqlPreparedStatement & query,
+void Lending::loadImpl(SqlPreparedStatement & query,
                   const map<string, string> & alternativeColumnNames) {
     throw NotImplementedException();
 }
 
-void Lending::persist() {
+void Lending::persistImpl() {
     throw NotImplementedException();
 }
 

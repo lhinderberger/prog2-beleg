@@ -5,6 +5,7 @@
 
 namespace pb2 {
     struct Author_priv {
+        int id;
         std::string firstName, lastName;
     };
 }

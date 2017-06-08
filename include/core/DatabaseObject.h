@@ -4,23 +4,29 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "SqlPreparedStatement.h"
 
 namespace pb2 {
     class Database;
+    class DatabaseObject_priv;
 
     class DatabaseObject : public std::enable_shared_from_this<DatabaseObject> {
     private:
-        std::shared_ptr<Database> database;
+        std::unique_ptr<DatabaseObject_priv> priv;
 
     protected:
         DatabaseObject(std::shared_ptr<Database> database);
 
+        virtual void loadImpl(SqlPreparedStatement & query,
+                  const std::map<std::string, std::string> & alternativeColumnNames
+                  = std::map<std::string, std::string>()) = 0;
+
+        virtual void persistImpl() = 0;
+
     public:
         virtual ~DatabaseObject();
-
-        inline const std::shared_ptr<Database> getDatabase() const { return database; }
 
         /**
          * Returns the SQL table name of this DatabaseObject.
@@ -41,14 +47,49 @@ namespace pb2 {
          * @param query
          * @param alternativeColumnNames
          */
-        virtual void load(SqlPreparedStatement & query,
+        void load(SqlPreparedStatement & query,
             const std::map<std::string, std::string> & alternativeColumnNames
-            = std::map<std::string, std::string>()) = 0;
+            = std::map<std::string, std::string>());
 
         /**
          * Persists the DatabaseObject to the database.
          */
-        virtual void persist() = 0;
+        void persist();
+
+        /**
+         * Builds a SQL query string for inserting a set number of objects into the
+         * database.
+         *
+         * This will generate a query like
+         *
+         * INSERT INTO test(col_a, col_b) VALUES (?,?), (?,?);
+         *
+         * given the parameters columnNames{"col_a", "col_b"} and nObjects(2).
+         */
+        std::string buildInsertQuery(std::vector<std::string> columnNames, int nObjects) const;
+
+        /**
+         * Builds a SQL query string for updating a table.
+         *
+         * This will generate a query like
+         *
+         * UPDATE test SET col_a=?, col_b=? WHERE id=?;
+         *
+         * given the parameters columnNames{"col_a", "col_b"} and whereClause("WHERE id=?").
+         */
+        std::string buildUpdateQuery(std::vector<std::string> columnNames,
+                                     const std::string & whereClause) const;
+
+
+        // Getters
+        const std::shared_ptr<Database> getDatabase() const;
+        const std::shared_ptr<SqlConnection> getConnection() const;
+
+        /**
+         * Returns true if the object was loaded from database instead of constructed
+         * at runtime.
+         */
+        bool isLoaded() const;
     };
 }
 

@@ -25,6 +25,12 @@ namespace pb2 {
                 time_t timestampLent
         );
 
+    protected:
+        virtual void loadImpl(SqlPreparedStatement & query,
+            const std::map<std::string, std::string> & alternativeColumnNames
+            = std::map<std::string, std::string>()) override;
+        virtual void persistImpl() override;
+
     public:
         /**
          * Creates a new Lending.
@@ -44,11 +50,6 @@ namespace pb2 {
 
         virtual const std::string & getTableName() const override;
         virtual const std::string & getType() const override;
-
-        virtual void load(SqlPreparedStatement & query,
-            const std::map<std::string, std::string> & alternativeColumnNames
-            = std::map<std::string, std::string>()) override;
-        virtual void persist() override;
 
         // Getters for read-only values set in constructor.
         std::shared_ptr<MediumCopy> getMediumCopy();

@@ -61,3 +61,7 @@ int Database::getFormatVersion(shared_ptr<SqlConnection> connection) {
     query.step();
     return stoi(query.columnString(0));
 }
+
+shared_ptr<SqlConnection> Database::getConnection() const {
+    return priv->connection;
+}

@@ -17,6 +17,12 @@ namespace pb2 {
 
         LibraryUser(std::shared_ptr<Database> database, int id);
 
+    protected:
+        virtual void loadImpl(SqlPreparedStatement & query,
+            const std::map<std::string, std::string> & alternativeColumnNames
+            = std::map<std::string, std::string>()) override;
+        virtual void persistImpl() override;
+
     public:
         /**
          * Creates a new LibraryUser
@@ -29,11 +35,6 @@ namespace pb2 {
 
         virtual const std::string & getTableName() const override;
         virtual const std::string & getType() const override;
-
-        virtual void load(SqlPreparedStatement & query,
-            const std::map<std::string, std::string> & alternativeColumnNames
-            = std::map<std::string, std::string>()) override;
-        virtual void persist() override;
 
 
         int getId() const;
