@@ -60,14 +60,21 @@ void Medium::setFormat(const string & format) {
     priv->format = format;
 }
 
+shared_ptr<Author> Medium::getAuthor() const {
+    return priv->author;
+}
+
+void Medium::setAuthor(shared_ptr<Author> author) {
+    if (!author)
+        throw NullPointerException();
+    priv->author = author;
+}
+
 string Medium::getSubtitle() const {
     return priv->subtitle;
 }
 
 void Medium::setSubtitle(const string &subtitle) {
-    //TODO: Validate
-    throw NotImplementedException();
-
     priv->subtitle = subtitle;
 }
 
@@ -76,8 +83,5 @@ string Medium::getTitle() {
 }
 
 void Medium::setTitle(const string &title) {
-    //TODO: Validate
-    throw NotImplementedException();
-
     priv->title = title;
 }

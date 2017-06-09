@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "Author.h"
 #include "DatabaseObject.h"
 
 namespace pb2 {
@@ -61,6 +62,9 @@ namespace pb2 {
          */
         void setFormat(const std::string & format);
 
+
+        std::shared_ptr<Author> getAuthor() const;
+        void setAuthor(std::shared_ptr<Author> author);
 
         std::string getSubtitle() const;
         void setSubtitle(const std::string & subtitle);
