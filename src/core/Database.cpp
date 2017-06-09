@@ -3,8 +3,6 @@
 #include "core/exceptions.h"
 #include "core/SqlPreparedStatement.h"
 
-const char * initializingSQL = ""; //TODO: Add SQL, Move to own file?
-
 using namespace std;
 using namespace pb2;
 
@@ -58,7 +56,9 @@ int Database::getFormatVersion(shared_ptr<SqlConnection> connection) {
     SqlPreparedStatement query(connection, "SELECT value FROM meta WHERE name = 'version'");
 
     /* Retrieve and return version */
-    query.step();
+    if (!query.step())
+        throw DatabaseFormatException("Database does not contain a version field! "
+                                      "Maybe it is not a prog2-beleg database?");
     return stoi(query.columnString(0));
 }
 

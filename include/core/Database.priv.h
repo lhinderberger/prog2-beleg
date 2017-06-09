@@ -6,6 +6,8 @@
 
 #include "SqlConnection.h"
 
+extern const char * initializingSQL;
+
 namespace pb2 {
     struct Database_priv {
         std::shared_ptr<SqlConnection> connection = nullptr;
