@@ -46,6 +46,9 @@ SqlConnection::SqlConnection(const std::string &filename, bool create) {
         /* Enable extended result codes */
         sqlite3_extended_result_codes(priv->connection, 1);
 
+        /* Enable foreign keys */
+        executeSQL("PRAGMA foreign_keys = ON;");
+
         /* Begin transaction */
         executeSQL("BEGIN;"); // bring it on!
     }
@@ -69,12 +72,16 @@ SqliteException SqlConnection::buildException() {
     return SqliteException(priv->connection);
 }
 
+bool SqlConnection::isTransactionActive() const {
+    return sqlite3_get_autocommit(priv->connection) == 0;
+}
+
 void SqlConnection::commit() {
-    executeSQL("COMMIT;");
+    executeSQL("COMMIT; BEGIN;");
 }
 
 void SqlConnection::rollback() {
-    executeSQL("ROLLBACK;");
+    executeSQL("ROLLBACK; BEGIN;");
 }
 
 void SqlConnection::executeSQL(const string & query) {

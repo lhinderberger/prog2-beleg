@@ -30,6 +30,9 @@ namespace pb2 {
          * manually overridden by not using commit() and issuing transaction controlling
          * SQL via executeSQL().
          *
+         * Note: Foreign key constraints will be enforced by default, unlike the SQLite
+         * default settings.
+         *
          * @param filename The unambiguous filename of the database, i.e. which database
          * shall be opened or under which name it shall be created
          * @param create If this is false, the file specified by filename MUST exist and
@@ -39,6 +42,13 @@ namespace pb2 {
         static std::shared_ptr<SqlConnection> construct(const std::string & filename, bool create);
 
         ~SqlConnection();
+
+        /**
+         * Checks whether a transaction is running. Unless you manually mess around with
+         * transaction control statements using executeSQL() this should always return
+         * true.
+         */
+        bool isTransactionActive() const;
 
         /**
          * Commits the current transaction and begins a new one.

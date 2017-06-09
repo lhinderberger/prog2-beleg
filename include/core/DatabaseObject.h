@@ -52,6 +52,15 @@ namespace pb2 {
 
         /**
          * Persists the DatabaseObject to the database.
+         *
+         * Warning: This operation will throw logic_error if no transaction is running
+         * instead of silently accepting and committing the database object, potentially
+         * ruining referential integrity.
+         *
+         * Warning: This operation is not thread-safe. Be sure no other thread accesses
+         * the database connection while this operation is running!
+         *
+         * TODO: Make this thread-safe by acquiring a lock on the database connection.
          */
         void persist();
 

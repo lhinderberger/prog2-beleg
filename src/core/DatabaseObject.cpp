@@ -51,6 +51,11 @@ void DatabaseObject::load(SqlPreparedStatement & query,
 }
 
 void DatabaseObject::persist() {
+    /* Make sure we only persist when a transaction is active */
+    if (!priv->database->getConnection()->isTransactionActive())
+        throw logic_error("DatabaseObjects cannot be persisted without an active transaction!");
+
+    /* Call persist implementation */
     persistImpl();
 }
 
