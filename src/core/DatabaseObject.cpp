@@ -115,26 +115,6 @@ string DatabaseObject::buildUpdateQuery(vector<string> columnNames,
     return query + ' ' + whereClause;
 }
 
-string DatabaseObject::getFullColumnName(const string & columnName) const {
-    return string(getTableName()) + '.' + columnName;
-}
-
-string DatabaseObject::getFullColumnName(
-        const string & columnName,
-        const map<string, string> & alternativeNames
-) const {
-    /* Retrieve regular full column name first */
-    auto fullColumnName = getFullColumnName(columnName);
-
-    /* Search alternative names to see if there is an alternative for this name */
-    auto i = alternativeNames.find(fullColumnName);
-    if (i == alternativeNames.end())
-        return fullColumnName;
-
-    /* Return depending on search result */
-    return (i == alternativeNames.end()) ? fullColumnName : i->second;
-}
-
 const shared_ptr<SqlConnection> DatabaseObject::getConnection() const {
     return priv->database->getConnection();
 }

@@ -88,21 +88,6 @@ namespace pb2 {
         std::string buildUpdateQuery(std::vector<std::string> columnNames,
                                      const std::string & whereClause) const;
 
-        /**
-         * Tries to determine the full column name of a given partial column name and
-         * optional alternative names given.
-         *
-         * @param columnName A partial column name, without the table name prefixed.
-         * @param alternativeNames If the full column name is a key in alternativeNames,
-         * the value of the relative map entry will be returned instead of the full column
-         * name.
-         */
-        std::string getFullColumnName(const std::string & columnName) const;
-        std::string getFullColumnName(
-                const std::string & columnName,
-                const std::map<std::string, std::string> & alternativeNames
-        ) const;
-
 
         // Getters
         const std::shared_ptr<Database> getDatabase() const;
