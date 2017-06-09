@@ -38,7 +38,7 @@ std::shared_ptr<Lending> Lending::construct(shared_ptr<Database> database,
 }
 
 const string & Lending::getTableName() const {
-    static string t("lending");
+    static string t("lendings");
     return t;
 }
 

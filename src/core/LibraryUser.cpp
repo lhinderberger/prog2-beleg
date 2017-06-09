@@ -17,7 +17,7 @@ shared_ptr<LibraryUser> LibraryUser::construct(shared_ptr<Database> database, in
 }
 
 const string & LibraryUser::getTableName() const {
-    static string t("library_user");
+    static string t("library_users");
     return t;
 }
 

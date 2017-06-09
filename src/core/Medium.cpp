@@ -18,7 +18,7 @@ Medium::Medium(shared_ptr<Database> database, const string & ean)
 Medium::~Medium() {}
 
 const string & Medium::getTableName() const {
-    static string t("medium");
+    static string t("media");
     return t;
 }
 

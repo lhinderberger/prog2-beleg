@@ -27,7 +27,7 @@ shared_ptr<MediumCopy> MediumCopy::construct(shared_ptr<Database> database,
 }
 
 const string & MediumCopy::getTableName() const {
-    static string t("medium_copy");
+    static string t("medium_copies");
     return t;
 }
 

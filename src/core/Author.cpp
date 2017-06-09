@@ -15,7 +15,7 @@ shared_ptr<Author> Author::construct(shared_ptr<Database> database, int id) {
 }
 
 const string & Author::getTableName() const {
-    static string t("author");
+    static string t("authors");
     return t;
 }
 
