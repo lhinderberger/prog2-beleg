@@ -1,4 +1,5 @@
 #include <memory>
+#include <string>
 
 #include <gtest/gtest.h>
 #include "core/Author.h"
@@ -6,6 +7,7 @@
 #include "core/SqlConnection.h"
 #include "core/SqlPreparedStatement.h"
 
+using namespace std;
 using namespace pb2;
 
 /*
@@ -52,8 +54,8 @@ TEST(SQLAbstractionTest, PersistAuthorTest) {
     connection->commit();
 
     /* Query for author and ensure they're equal */
-    SqlPreparedStatement query(connection, "SELECT * FROM author WHERE id = ?");
-    query.bindInt(0, 123);
+    SqlPreparedStatement query(connection, string("SELECT * FROM ") + author->getTableName() + " WHERE id = ?");
+    query.bindInt(1, 123);
     query.step();
 
     auto author2 = Author::construct(database, 0); // TODO: This is a very ugly interface...

@@ -8,6 +8,9 @@ namespace pb2 {
     class Exception : public std::exception {};
     class CoreException : public Exception {};
 
+    //TODO: Find a better hierarchy for exceptions
+    //TODO: Either inline all exceptions or none
+
     class NotImplementedException : public CoreException {
     public:
         NotImplementedException() {}
@@ -44,6 +47,16 @@ namespace pb2 {
         ColumnNotFoundException(const std::string & fullColumnName);
 
         inline const std::string & getFullColumnName() const { return fullColumnName; }
+    };
+
+    class DatabaseFormatException : public CoreException {
+    private:
+        std::string description;
+
+    public:
+        DatabaseFormatException(const std::string & description) { this->description = description; }
+
+        inline virtual const char * what() const noexcept override { return description.c_str(); }
     };
 
     class DatabaseVersionException : public CoreException {

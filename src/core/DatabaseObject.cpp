@@ -45,8 +45,26 @@ void DatabaseObject::load(SqlPreparedStatement & query,
     for (const auto & alternative : alternativeColumnNames)
         columnIndexes[alternative.first] = query.getColumnIndex(alternative.second);
 
+    /* Strip full column names of table name */
+    auto cleanColumnIndexes = map<string,int>();
+    for (const auto & indexPair : columnIndexes) {
+        const auto & columnName = indexPair.first;
+
+        /* Find separating dot */
+        auto dotIndex = columnName.find('.');
+        if (dotIndex == columnName.npos)
+            continue;
+
+        /* Drop columns from other tables */
+        if (getTableName() != columnName.substr(0, dotIndex))
+            continue;
+
+        /* Add index to clean map */
+        cleanColumnIndexes[columnName.substr(dotIndex + 1)] = indexPair.second;
+    }
+
     /* Call load implementation */
-    loadImpl(query, columnIndexes);
+    loadImpl(query, cleanColumnIndexes);
     priv->loaded = true;
 }
 
