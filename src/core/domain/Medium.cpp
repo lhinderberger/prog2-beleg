@@ -1,4 +1,5 @@
 #include "core/exceptions.h"
+#include "core/query-builder.h"
 #include "core/domain/Medium.h"
 #include "core/domain/Medium.priv.h"
 
@@ -64,7 +65,7 @@ Medium::Medium(shared_ptr<Database> database, const string & ean)
 
 Medium::Medium(shared_ptr<Database> database, const vector<int> & eanDigits)
         : DatabaseObject(database){
-    priv = make_unique<Medium_priv>();
+    priv = make_unique<Medium_priv>(database);
 
     /* Validate and set EAN */
     validateEAN(eanDigits);
@@ -74,14 +75,42 @@ Medium::Medium(shared_ptr<Database> database, const vector<int> & eanDigits)
 Medium::Medium(shared_ptr<Database> database, SqlitePreparedStatement & query,
                const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
-    throw NotImplementedException();
+    priv = make_unique<Medium_priv>(database);
+
+    priv->ean = query.columnString(columnIndexes.at("ean"));
+    priv->format = query.columnString(columnIndexes.at("format"));
+    priv->title = query.columnString(columnIndexes.at("title"));
+    priv->subtitle = query.columnString(columnIndexes.at("subtitle"));
+    priv->author.set(query.columnInt(columnIndexes.at("author_id")));
 }
 
 Medium::~Medium() = default;
 
 
 void Medium::persistImpl() {
-    throw NotImplementedException();
+    /* Prepare statement */
+    SqlitePreparedStatement statement(getConnection(), isLoaded() ?
+        buildUpdateQuery<Medium>({"format", "title", "subtitle", "author_id"}, "WHERE id=?") :
+        buildInsertQuery<Medium>({"format", "title", "subtitle", "author_id", "ean"}, 1)
+    );
+
+    /* Bind parameters */
+    statement.bindString(1, priv->format);
+    statement.bindString(2, priv->title);
+    statement.bindString(3, priv->subtitle);
+    //Param #4: See below
+    statement.bindString(5, priv->ean);
+
+    /* Bind author primary key */
+    int primaryKey = 0;
+    if (priv->author.isPrimaryKeySet())
+        primaryKey = priv->author.getPrimaryKey();
+    else if(priv->author.isLoaded())
+        primaryKey = priv->author->getId();
+    statement.bindInt(4, primaryKey);
+
+    /* Execute */
+    statement.step();
 }
 
 
@@ -94,8 +123,16 @@ const set<string>& Medium::allowedFormats() {
 }
 
 vector<shared_ptr<MediumCopy>> Medium::queryCopies() const {
-    //TODO: Query database, return MediumCopies
-    throw NotImplementedException();
+    /* Build query to get all copies of this medium */
+    SqlitePreparedStatement query(getConnection(),
+          string("SELECT * FROM ") + MediumCopy::tableName + " WHERE medium_ean = ?");
+    query.bindString(1, priv->ean);
+
+    /* Try to retrieve at least one object and pass on control to factory on success */
+    if (query.step())
+        return DatabaseObjectFactory<MediumCopy>(getDatabase()).loadMany(query, -1);
+    else
+        return vector<shared_ptr<MediumCopy>>();
 }
 
 string Medium::getEAN() const {
@@ -107,20 +144,19 @@ string Medium::getFormat() const {
 }
 
 void Medium::setFormat(const string & format) {
-    //TODO: Validate
-    throw NotImplementedException();
-
+    if (allowedFormats().find(format) == allowedFormats().end())
+        throw ValidationException(string("Invalid Medium format: ") + format);
     priv->format = format;
 }
 
 shared_ptr<Author> Medium::getAuthor() const {
-    return priv->author;
+    return priv->author.get();
 }
 
 void Medium::setAuthor(shared_ptr<Author> author) {
     if (!author)
         throw NullPointerException();
-    priv->author = author;
+    priv->author.set(author);
 }
 
 string Medium::getSubtitle() const {

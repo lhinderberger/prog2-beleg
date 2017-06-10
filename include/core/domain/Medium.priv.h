@@ -6,11 +6,15 @@
 #include <vector>
 
 #include "Author.h"
+#include "core/ManyToOneLazyLoader.h"
 
 namespace pb2 {
-    struct Medium_priv {
+    class Medium_priv {
+    public:
+        Medium_priv(std::shared_ptr<Database> database) : author(database, "author_id") {}
+
         std::string ean, format, subtitle, title;
-        std::shared_ptr<Author> author = nullptr;
+        ManyToOneLazyLoader<Author,int> author;
     };
 
     struct Book_priv {};
