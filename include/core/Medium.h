@@ -24,6 +24,7 @@ namespace pb2 {
          * unused local EAN number in the GS1 020-029 range on insertion.
          */
         Medium(std::shared_ptr<Database> database, const std::string & ean);
+        Medium(std::shared_ptr<Database> database, const std::vector<int> & eanDigits);
 
         virtual void loadImpl(SqlPreparedStatement & query,
             const std::map<std::string, int> & columnIndexes) override;
