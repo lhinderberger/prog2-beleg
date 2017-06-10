@@ -9,7 +9,7 @@
 #include <string>
 #include <map>
 
-#define PB2_DECLARE_LOAD_CONSTRUCTOR(T) T(std::shared_ptr<Database> database, SqlPreparedStatement & query, const std::map<std::string, int> & columnIndexes)
+#define PB2_DECLARE_LOAD_CONSTRUCTOR(T) T(std::shared_ptr<Database> database, SqlitePreparedStatement & query, const std::map<std::string, int> & columnIndexes)
 
 namespace pb2 {
 /**
@@ -29,7 +29,7 @@ namespace pb2 {
          * DatabaseObject type.
          */
         virtual std::shared_ptr<DatabaseObject> constructLoadImpl(
-                SqlPreparedStatement & query,
+                SqlitePreparedStatement & query,
                 const std::map<std::string, int> & columnIndexes
         ) = 0;
 
@@ -38,12 +38,12 @@ namespace pb2 {
 
         /* Called internally */
         std::map<std::string, int> buildColumnIndexes(
-                SqlPreparedStatement & query,
+                SqlitePreparedStatement & query,
                 const std::map<std::string, std::string> & alternativeColumnNames
         );
 
         std::shared_ptr<DatabaseObject> constructLoad(
-                SqlPreparedStatement & query,
+                SqlitePreparedStatement & query,
                 const std::map<std::string, int> & columnIndexes
         );
 
@@ -53,8 +53,8 @@ namespace pb2 {
 
         /**
          * Loads one instance of the object from the current row retrieved by the given
-         * SqlPreparedStatement.
-         * Columns will be queried by their full column name (see SqlPreparedStatement
+         * SqlitePreparedStatement.
+         * Columns will be queried by their full column name (see SqlitePreparedStatement
          * documentation), unless overridden by alternativeColumnNames.
          *
          * @param alternativeColumnNames Maps full column names of object columns to
@@ -63,7 +63,7 @@ namespace pb2 {
          * pair ("test.name", ".combined_name").
          */
         std::shared_ptr<DatabaseObject> baseLoad(
-                SqlPreparedStatement & query,
+                SqlitePreparedStatement & query,
                 const std::map<std::string, std::string> & alternativeColumnNames
                 = std::map<std::string, std::string>()
         );
@@ -80,7 +80,7 @@ namespace pb2 {
          * a number of rows to be read.
          */
         std::vector<std::shared_ptr<DatabaseObject>> baseLoadMany(
-                SqlPreparedStatement & query, int n,
+                SqlitePreparedStatement & query, int n,
                 const std::map<std::string, std::string> & alternativeColumnNames
                 = std::map<std::string, std::string>()
         );
@@ -104,7 +104,7 @@ namespace pb2 {
          * Call load constructor of concrete DatabaseObject
          */
         virtual std::shared_ptr<DatabaseObject> constructLoadImpl(
-                SqlPreparedStatement & query,
+                SqlitePreparedStatement & query,
                 const std::map<std::string, int> & columnIndexes
         ) override {
             return std::shared_ptr<ConcreteDatabaseObject>(
@@ -133,7 +133,7 @@ namespace pb2 {
          * See the documentation for AbstractDatabaseObjectFactory::baseLoad
          */
         std::shared_ptr<ConcreteDatabaseObject> load(
-                SqlPreparedStatement & query,
+                SqlitePreparedStatement & query,
                 const std::map<std::string, std::string> & alternativeColumnNames
                 = std::map<std::string, std::string>()
         ) {
@@ -144,7 +144,7 @@ namespace pb2 {
          * See the documentation for AbstractDatabaseObjectFactory::baseLoadMany
          */
         std::vector<std::shared_ptr<ConcreteDatabaseObject>> loadMany(
-                SqlPreparedStatement & query, int n,
+                SqlitePreparedStatement & query, int n,
                 const std::map<std::string, std::string> & alternativeColumnNames
                 = std::map<std::string, std::string>()
         ) {

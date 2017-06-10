@@ -4,7 +4,7 @@
 #include <sqlite3.h>
 
 namespace pb2 {
-    struct SqlConnection_priv {
+    struct SqliteConnection_priv {
         sqlite3 * connection = nullptr;
     };
 }

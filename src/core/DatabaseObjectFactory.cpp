@@ -12,14 +12,14 @@ AbstractDatabaseObjectFactory::AbstractDatabaseObjectFactory(
 AbstractDatabaseObjectFactory::~AbstractDatabaseObjectFactory() {}
 
 shared_ptr<DatabaseObject> AbstractDatabaseObjectFactory::baseLoad(
-        SqlPreparedStatement & query,
+        SqlitePreparedStatement & query,
         const map<string, string> & alternativeColumnNames
 ) {
     return constructLoad(query, buildColumnIndexes(query, alternativeColumnNames));
 }
 
 vector<std::shared_ptr<DatabaseObject>> AbstractDatabaseObjectFactory::baseLoadMany(
-        SqlPreparedStatement & query, int n,
+        SqlitePreparedStatement & query, int n,
         const map<string, string> & alternativeColumnNames
 ) {
     /* Prepare column indexes and result memory */
@@ -46,7 +46,7 @@ vector<std::shared_ptr<DatabaseObject>> AbstractDatabaseObjectFactory::baseLoadM
 }
 
 map<string, int> AbstractDatabaseObjectFactory::buildColumnIndexes(
-        SqlPreparedStatement & query,
+        SqlitePreparedStatement & query,
         const map<string, string> & alternativeColumnNames
 ) {
     /* Build column indexes map, incorporate alternatives */
@@ -76,7 +76,7 @@ map<string, int> AbstractDatabaseObjectFactory::buildColumnIndexes(
 }
 
 shared_ptr<DatabaseObject> AbstractDatabaseObjectFactory::constructLoad(
-        SqlPreparedStatement & query, const map<string, int> & columnIndexes
+        SqlitePreparedStatement & query, const map<string, int> & columnIndexes
 ) {
     /* Call load implementation */
     auto result = constructLoadImpl(query, columnIndexes);

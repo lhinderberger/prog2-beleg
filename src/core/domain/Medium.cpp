@@ -71,7 +71,7 @@ Medium::Medium(shared_ptr<Database> database, const vector<int> & eanDigits)
     priv->ean = buildEANString(eanDigits);
 }
 
-Medium::Medium(shared_ptr<Database> database, SqlPreparedStatement & query,
+Medium::Medium(shared_ptr<Database> database, SqlitePreparedStatement & query,
                const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
     throw NotImplementedException();

@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-#include "SqlConnection.h"
+#include "core/sqlite/SqliteConnection.h"
 
 namespace pb2 {
     class Database_priv;
@@ -16,7 +16,7 @@ namespace pb2 {
     private:
         std::unique_ptr<Database_priv> priv;
 
-        Database(std::shared_ptr<SqlConnection> connection);
+        Database(std::shared_ptr<SqliteConnection> connection);
 
     public:
         ~Database();
@@ -27,7 +27,7 @@ namespace pb2 {
          * Note: If connection points to an already initialized database, this will fail
          * with AlreadyInitializedException.
          */
-        static std::shared_ptr<Database> initialize(std::shared_ptr<SqlConnection> connection);
+        static std::shared_ptr<Database> initialize(std::shared_ptr<SqliteConnection> connection);
 
         /**
          * Migrate a database to the current format version, then open database
@@ -36,7 +36,7 @@ namespace pb2 {
          * migrated database.
          * @param filename
          */
-        static std::shared_ptr<Database> migrate(std::shared_ptr<SqlConnection> connection);
+        static std::shared_ptr<Database> migrate(std::shared_ptr<SqliteConnection> connection);
 
         /**
          * Opens an existing database
@@ -44,7 +44,7 @@ namespace pb2 {
          * Note: This can fail due to an outdated Database version, indicated by
          * FormatVersionException.
          */
-        static std::shared_ptr<Database> open(std::shared_ptr<SqlConnection> connection);
+        static std::shared_ptr<Database> open(std::shared_ptr<SqliteConnection> connection);
 
         /**
          * Returns the most recent database format version the currently loaded library
@@ -58,9 +58,9 @@ namespace pb2 {
          * filename.
          * @return A positive format version
          */
-        static int getFormatVersion(std::shared_ptr<SqlConnection> connection);
+        static int getFormatVersion(std::shared_ptr<SqliteConnection> connection);
 
-        std::shared_ptr<SqlConnection> getConnection() const;
+        std::shared_ptr<SqliteConnection> getConnection() const;
     };
 }
 

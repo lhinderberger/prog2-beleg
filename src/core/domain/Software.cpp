@@ -10,7 +10,7 @@ Software::Software(shared_ptr<Database> database, const string & ean)
 
 }
 
-Software::Software(shared_ptr<Database> database, SqlPreparedStatement & query,
+Software::Software(shared_ptr<Database> database, SqlitePreparedStatement & query,
            const map<string, int> & columnIndexes
 ) : Medium(database, query, columnIndexes){
 

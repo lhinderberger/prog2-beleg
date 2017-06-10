@@ -6,7 +6,7 @@
 
 #include "exceptions.h"
 #include "DatabaseObject.h"
-#include "SqlPreparedStatement.h"
+#include "core/sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
     template<class ConcreteDatabaseObject, typename PrimaryKeyType>
@@ -26,7 +26,7 @@ namespace pb2 {
             /* Prepare statement */
             auto query = std::string("SELECT * FROM ") + tableName + " WHERE "
                          + primaryKeyName + " = ?";
-            auto statement = SqlPreparedStatement(database->getConnection(), query);
+            auto statement = SqlitePreparedStatement(database->getConnection(), query);
 
             /* Create new object from statement result */
             statement.step();

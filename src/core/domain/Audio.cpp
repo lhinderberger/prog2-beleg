@@ -10,7 +10,7 @@ Audio::Audio(shared_ptr<Database> database, const string & ean)
 
 }
 
-Audio::Audio(shared_ptr<Database> database, SqlPreparedStatement & query,
+Audio::Audio(shared_ptr<Database> database, SqlitePreparedStatement & query,
              const map<string, int> & columnIndexes
 ) : Medium(database, query, columnIndexes){
 

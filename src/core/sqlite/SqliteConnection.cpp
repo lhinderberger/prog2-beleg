@@ -1,5 +1,5 @@
-#include "core/SqlConnection.h"
-#include "core/SqlConnection.priv.h"
+#include "core/sqlite/SqliteConnection.h"
+#include "core/sqlite/SqliteConnection.priv.h"
 #include "core/exceptions.h"
 
 #include <fstream>
@@ -23,8 +23,8 @@ void closeConnection(sqlite3 * db) {
     }
 }
 
-SqlConnection::SqlConnection(const std::string &filename, bool create) {
-    priv = make_unique<SqlConnection_priv>();
+SqliteConnection::SqliteConnection(const std::string &filename, bool create) {
+    priv = make_unique<SqliteConnection_priv>();
 
     /* Check file exists constraints */
     bool exists = (filename != inMemoryDbFilename) && fileExists(filename);
@@ -58,33 +58,33 @@ SqlConnection::SqlConnection(const std::string &filename, bool create) {
     }
 }
 
-SqlConnection::~SqlConnection() {
+SqliteConnection::~SqliteConnection() {
     /* Try to close connection, throw on error */
     closeConnection(priv->connection);
 }
 
-shared_ptr<SqlConnection> SqlConnection::construct(const string & filename, bool create) {
-    return shared_ptr<SqlConnection>(new SqlConnection(filename, create));
+shared_ptr<SqliteConnection> SqliteConnection::construct(const string & filename, bool create) {
+    return shared_ptr<SqliteConnection>(new SqliteConnection(filename, create));
 }
 
 
-SqliteException SqlConnection::buildException() {
+SqliteException SqliteConnection::buildException() {
     return SqliteException(priv->connection);
 }
 
-bool SqlConnection::isTransactionActive() const {
+bool SqliteConnection::isTransactionActive() const {
     return sqlite3_get_autocommit(priv->connection) == 0;
 }
 
-void SqlConnection::commit() {
+void SqliteConnection::commit() {
     executeSQL("COMMIT; BEGIN;");
 }
 
-void SqlConnection::rollback() {
+void SqliteConnection::rollback() {
     executeSQL("ROLLBACK; BEGIN;");
 }
 
-void SqlConnection::executeSQL(const string & query) {
+void SqliteConnection::executeSQL(const string & query) {
     if (sqlite3_exec(priv->connection, query.c_str(), nullptr, nullptr, nullptr))
         throw buildException();
 }

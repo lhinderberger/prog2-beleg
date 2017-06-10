@@ -22,7 +22,7 @@ const string valid_isbn = "3-12-732320-4";
  * Tests EAN validation on Media object construction
  */
 TEST(MediumTest, EANValidationTest) {
-    auto connection = SqlConnection::construct(":memory:", true); //TODO: Consider fixture
+    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Consider fixture
     auto database = Database::initialize(connection);
     auto bookFactory = BookFactory(database);
     auto softwareFactory = SoftwareFactory(database);
@@ -46,7 +46,7 @@ TEST(MediumTest, EANValidationTest) {
  * Tests general input validation for Media objects
  */
 TEST(MediumTest, GeneralValidationTest) {
-    auto connection = SqlConnection::construct(":memory:", true); //TODO: Consider fixture
+    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Consider fixture
     auto database = Database::initialize(connection);
     auto bookFactory = BookFactory(database);
 

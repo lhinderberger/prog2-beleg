@@ -48,7 +48,7 @@ Book::Book(shared_ptr<Database> database, const string &isbn)
 
 }
 
-Book::Book(shared_ptr<Database> database, SqlPreparedStatement & query,
+Book::Book(shared_ptr<Database> database, SqlitePreparedStatement & query,
              const map<string, int> & columnIndexes
 ) : Medium(database, query, columnIndexes){
 

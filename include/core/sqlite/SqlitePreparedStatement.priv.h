@@ -6,12 +6,12 @@
 #include <string>
 #include <sqlite3.h>
 
-#include "SqlConnection.h"
+#include "SqliteConnection.h"
 
 namespace pb2 {
-    struct SqlPreparedStatement_priv {
+    struct SqlitePreparedStatement_priv {
         sqlite3_stmt * statement;
-        std::shared_ptr<SqlConnection> connection = nullptr;
+        std::shared_ptr<SqliteConnection> connection = nullptr;
         std::unique_ptr<std::map<std::string, int>> columnIndexes = nullptr;
     };
 }

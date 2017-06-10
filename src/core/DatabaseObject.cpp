@@ -26,7 +26,7 @@ void DatabaseObject::persist() {
     persistImpl();
 }
 
-const shared_ptr<SqlConnection> DatabaseObject::getConnection() const {
+const shared_ptr<SqliteConnection> DatabaseObject::getConnection() const {
     return priv->database->getConnection();
 }
 

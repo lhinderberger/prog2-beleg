@@ -14,7 +14,7 @@ Author::Author(shared_ptr<Database> database, int id) : DatabaseObject(database)
 }
 
 Author::Author(
-        shared_ptr<Database> database, SqlPreparedStatement & query,
+        shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
     priv = make_unique<Author_priv>();
@@ -31,7 +31,7 @@ Author::~Author() = default;
 
 void Author::persistImpl() {
     /* Prepare statement */
-    SqlPreparedStatement statement(getConnection(), isLoaded() ?
+    SqlitePreparedStatement statement(getConnection(), isLoaded() ?
         buildUpdateQuery<Author>({"first_name", "last_name"}, "WHERE id=?") :
         buildInsertQuery<Author>({"first_name", "last_name", "id"}, 1)
     );

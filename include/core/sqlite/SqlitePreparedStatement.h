@@ -5,18 +5,18 @@
 #include <map>
 #include <string>
 
-#include "SqlConnection.h"
+#include "SqliteConnection.h"
 
 namespace pb2 {
-    class SqlPreparedStatement_priv;
+    class SqlitePreparedStatement_priv;
 
-    class SqlPreparedStatement {
+    class SqlitePreparedStatement {
     private:
-        std::unique_ptr<SqlPreparedStatement_priv> priv;
+        std::unique_ptr<SqlitePreparedStatement_priv> priv;
 
     public:
-        SqlPreparedStatement(std::shared_ptr<SqlConnection> connection, const std::string & sql);
-        ~SqlPreparedStatement();
+        SqlitePreparedStatement(std::shared_ptr<SqliteConnection> connection, const std::string & sql);
+        ~SqlitePreparedStatement();
 
         /**
          * Execute the prepared statement / retrieve another row of data.
@@ -124,7 +124,7 @@ namespace pb2 {
          */
         std::string getFullColumnName(int columnIndex);
 
-        std::shared_ptr<SqlConnection> getConnection() const;
+        std::shared_ptr<SqliteConnection> getConnection() const;
     };
 }
 

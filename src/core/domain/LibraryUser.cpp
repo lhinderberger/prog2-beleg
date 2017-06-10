@@ -15,7 +15,7 @@ LibraryUser::LibraryUser(shared_ptr<Database> database, int id)
 }
 
 LibraryUser::LibraryUser(
-        shared_ptr<Database> database, SqlPreparedStatement & query,
+        shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
     throw NotImplementedException();

@@ -1,6 +1,6 @@
-#include "core/SqlPreparedStatement.h"
-#include "core/SqlPreparedStatement.priv.h"
-#include "core/SqlConnection.priv.h"
+#include "core/sqlite/SqlitePreparedStatement.h"
+#include "core/sqlite/SqlitePreparedStatement.priv.h"
+#include "core/sqlite/SqliteConnection.priv.h"
 #include "core/exceptions.h"
 
 #include <climits>
@@ -8,13 +8,13 @@
 using namespace std;
 using namespace pb2;
 
-SqlPreparedStatement::SqlPreparedStatement(
-        shared_ptr<SqlConnection> connection, const string & sql
+SqlitePreparedStatement::SqlitePreparedStatement(
+        shared_ptr<SqliteConnection> connection, const string & sql
 ) {
     if (!connection)
         throw NullPointerException();
 
-    priv = make_unique<SqlPreparedStatement_priv>();
+    priv = make_unique<SqlitePreparedStatement_priv>();
     priv->connection = connection;
 
     /* Get statement size */
@@ -33,7 +33,7 @@ SqlPreparedStatement::SqlPreparedStatement(
         throw connection->buildException();
 }
 
-SqlPreparedStatement::~SqlPreparedStatement() {
+SqlitePreparedStatement::~SqlitePreparedStatement() {
     if (priv->statement) {
         int res = sqlite3_finalize(priv->statement);
         if (res != SQLITE_OK) {
@@ -46,7 +46,7 @@ SqlPreparedStatement::~SqlPreparedStatement() {
     }
 }
 
-bool SqlPreparedStatement::step() {
+bool SqlitePreparedStatement::step() {
     int res = sqlite3_step(priv->statement);
     if (res == SQLITE_OK || res == SQLITE_ROW) // Row obtained, statement still valid
         return true;
@@ -56,27 +56,27 @@ bool SqlPreparedStatement::step() {
         throw priv->connection->buildException();
 }
 
-void SqlPreparedStatement::reset() {
+void SqlitePreparedStatement::reset() {
     if (sqlite3_reset(priv->statement) != SQLITE_OK)
         throw priv->connection->buildException();
 }
 
-void SqlPreparedStatement::bindBlob(int paramIndex, void * value, int valueBytes) {
+void SqlitePreparedStatement::bindBlob(int paramIndex, void * value, int valueBytes) {
     if (sqlite3_bind_blob(priv->statement, paramIndex, value, valueBytes, NULL) != SQLITE_OK)
         throw priv->connection->buildException();
 }
 
-void SqlPreparedStatement::bindInt(int paramIndex, int value) {
+void SqlitePreparedStatement::bindInt(int paramIndex, int value) {
     if (sqlite3_bind_int(priv->statement, paramIndex, value) != SQLITE_OK)
         throw priv->connection->buildException();
 }
 
-void SqlPreparedStatement::bindNull(int paramIndex) {
+void SqlitePreparedStatement::bindNull(int paramIndex) {
     if (sqlite3_bind_null(priv->statement, paramIndex) != SQLITE_OK)
         throw priv->connection->buildException();
 }
 
-void SqlPreparedStatement::bindString(int paramIndex, const string & value) {
+void SqlitePreparedStatement::bindString(int paramIndex, const string & value) {
     auto valSize = value.size();
     if (valSize > INT_MAX)
         throw StringTooLongException();
@@ -85,7 +85,7 @@ void SqlPreparedStatement::bindString(int paramIndex, const string & value) {
         throw priv->connection->buildException();
 }
 
-const void * SqlPreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
+const void * SqlitePreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
     const void * data = sqlite3_column_blob(priv->statement, columnIndex);
     if (!data)
         throw priv->connection->buildException();
@@ -95,11 +95,11 @@ const void * SqlPreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
     return data;
 }
 
-const void * SqlPreparedStatement::columnBlob(const string & fullColumnName, int * bytesOut) {
+const void * SqlitePreparedStatement::columnBlob(const string & fullColumnName, int * bytesOut) {
     return columnBlob(getColumnIndex(fullColumnName), bytesOut);
 }
 
-int SqlPreparedStatement::columnInt(int columnIndex) {
+int SqlitePreparedStatement::columnInt(int columnIndex) {
     int result = sqlite3_column_int(priv->statement, columnIndex);
 
     int errcode = sqlite3_errcode(priv->connection->priv->connection);
@@ -109,11 +109,11 @@ int SqlPreparedStatement::columnInt(int columnIndex) {
     return result;
 }
 
-int SqlPreparedStatement::columnInt(const string & fullColumnName) {
+int SqlitePreparedStatement::columnInt(const string & fullColumnName) {
     return columnInt(getColumnIndex(fullColumnName));
 }
 
-string SqlPreparedStatement::columnString(int columnIndex) {
+string SqlitePreparedStatement::columnString(int columnIndex) {
     auto column = (const char *)sqlite3_column_text(priv->statement, columnIndex);
     if (!column)
         throw priv->connection->buildException();
@@ -121,11 +121,11 @@ string SqlPreparedStatement::columnString(int columnIndex) {
     return string(column);
 }
 
-string SqlPreparedStatement::columnString(const string & fullColumnName) {
+string SqlitePreparedStatement::columnString(const string & fullColumnName) {
     return columnString(getColumnIndex(fullColumnName));
 }
 
-const map<string, int> & SqlPreparedStatement::columnIndexes() {
+const map<string, int> & SqlitePreparedStatement::columnIndexes() {
     /* Build map on first call (lazy loading) */
     if (!priv->columnIndexes) {
         /* Allocate map */
@@ -141,7 +141,7 @@ const map<string, int> & SqlPreparedStatement::columnIndexes() {
     return *(priv->columnIndexes);
 }
 
-int SqlPreparedStatement::getColumnCount() {
+int SqlitePreparedStatement::getColumnCount() {
     int columnCount = sqlite3_column_count(priv->statement);
     if (columnCount < 0)
         throw logic_error("Column count shouldn't drop below zero!");
@@ -149,7 +149,7 @@ int SqlPreparedStatement::getColumnCount() {
     return columnCount;
 }
 
-int SqlPreparedStatement::getColumnIndex(const string & fullColumnName) {
+int SqlitePreparedStatement::getColumnIndex(const string & fullColumnName) {
     auto indexes = columnIndexes();
     auto it = indexes.find(fullColumnName);
     if (it == indexes.end())
@@ -157,7 +157,7 @@ int SqlPreparedStatement::getColumnIndex(const string & fullColumnName) {
     return it->second;
 }
 
-string SqlPreparedStatement::getFullColumnName(int columnIndex) {
+string SqlitePreparedStatement::getFullColumnName(int columnIndex) {
     auto db = priv->connection->priv->connection;
 
     /* Try to retrieve column origin name (original table name + original column name) */
@@ -182,6 +182,6 @@ string SqlPreparedStatement::getFullColumnName(int columnIndex) {
     return string(tableName) + '.' + columnName;
 }
 
-shared_ptr<SqlConnection> SqlPreparedStatement::getConnection() const {
+shared_ptr<SqliteConnection> SqlitePreparedStatement::getConnection() const {
     return priv->connection;
 }

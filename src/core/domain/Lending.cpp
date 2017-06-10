@@ -33,7 +33,7 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
 }
 
 Lending::Lending(
-        shared_ptr<Database> database, SqlPreparedStatement & query,
+        shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
     throw NotImplementedException();

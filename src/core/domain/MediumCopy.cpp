@@ -25,7 +25,7 @@ MediumCopy::MediumCopy(shared_ptr<Database> database, shared_ptr<Medium> medium,
 }
 
 MediumCopy::MediumCopy(
-        shared_ptr<Database> database, SqlPreparedStatement & query,
+        shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
     throw NotImplementedException();

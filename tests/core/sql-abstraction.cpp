@@ -5,8 +5,8 @@
 #include "core/domain/Author.h"
 #include "core/Database.h"
 #include "core/DatabaseObjectFactory.h"
-#include "core/SqlConnection.h"
-#include "core/SqlPreparedStatement.h"
+#include "core/sqlite/SqliteConnection.h"
+#include "core/sqlite/SqlitePreparedStatement.h"
 
 using namespace std;
 using namespace pb2;
@@ -17,9 +17,9 @@ using AuthorFactory = pb2::DatabaseObjectFactory<Author>;
  * Learning test to find out which error codes SQLite emits on common SQL failures.
  */
 TEST(SQLAbstractionTest, SQLFailureCodesTest) {
-    auto connection = SqlConnection::construct(":memory:", true);
+    auto connection = SqliteConnection::construct(":memory:", true);
     try {
-        SqlPreparedStatement query(connection, "SELECT * FROM tblDoesntexist");
+        SqlitePreparedStatement query(connection, "SELECT * FROM tblDoesntexist");
     }
     catch (SqliteException & e) {
         EXPECT_EQ(SQLITE_ERROR, e.getSqliteErrorCode());
@@ -30,10 +30,10 @@ TEST(SQLAbstractionTest, SQLFailureCodesTest) {
  * Find out if full column names are derived correctly
  */
 TEST(SQLAbstractionTest, FullColumnNamesTest) {
-    auto connection = SqlConnection::construct(":memory:", true); //TODO: Move to fixture
+    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Move to fixture
     connection->executeSQL("CREATE TABLE test(id INT PRIMARY KEY, value TEXT); INSERT INTO test VALUES(1,'bla'),(2,'blubb');");
 
-    SqlPreparedStatement query(connection, "SELECT id, value AS valueAlias, COUNT(*), COUNT(*) AS bla FROM test as testi");
+    SqlitePreparedStatement query(connection, "SELECT id, value AS valueAlias, COUNT(*), COUNT(*) AS bla FROM test as testi");
 
     EXPECT_EQ(4, query.getColumnCount());
     EXPECT_EQ("test.id", query.getFullColumnName(0));
@@ -46,7 +46,7 @@ TEST(SQLAbstractionTest, FullColumnNamesTest) {
  * Basic test to find out if SQL persist / load works as intended.
  */
 TEST(SQLAbstractionTest, PersistAuthorTest) {
-    auto connection = SqlConnection::construct(":memory:", true); //TODO: Move to fixture
+    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Move to fixture
     auto database = Database::initialize(connection);
     auto authorFactory = AuthorFactory(database);
 
@@ -58,7 +58,7 @@ TEST(SQLAbstractionTest, PersistAuthorTest) {
     connection->commit();
 
     /* Query for author and ensure they're equal */
-    SqlPreparedStatement query(connection, string("SELECT * FROM ") + Author::tableName + " WHERE id = ?");
+    SqlitePreparedStatement query(connection, string("SELECT * FROM ") + Author::tableName + " WHERE id = ?");
     query.bindInt(1, 123);
     query.step();
 

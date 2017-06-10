@@ -1,12 +1,12 @@
 #include "core/Database.h"
 #include "core/Database.priv.h"
 #include "core/exceptions.h"
-#include "core/SqlPreparedStatement.h"
+#include "core/sqlite/SqlitePreparedStatement.h"
 
 using namespace std;
 using namespace pb2;
 
-Database::Database(shared_ptr<SqlConnection> connection) {
+Database::Database(shared_ptr<SqliteConnection> connection) {
     if (!connection)
         throw NullPointerException();
 
@@ -17,7 +17,7 @@ Database::Database(shared_ptr<SqlConnection> connection) {
 Database::~Database() = default;
 
 
-shared_ptr<Database> Database::initialize(shared_ptr<SqlConnection> connection) {
+shared_ptr<Database> Database::initialize(shared_ptr<SqliteConnection> connection) {
     /* Run initializing SQL */
     connection->executeSQL(initializingSQL);
 
@@ -25,7 +25,7 @@ shared_ptr<Database> Database::initialize(shared_ptr<SqlConnection> connection) 
     return open(connection);
 }
 
-shared_ptr<Database> Database::migrate(shared_ptr<SqlConnection> connection) {
+shared_ptr<Database> Database::migrate(shared_ptr<SqliteConnection> connection) {
     /* Version check and migration */
     int version = getFormatVersion(connection);
     if (version < getCurrentFormatVersion()) {
@@ -40,7 +40,7 @@ shared_ptr<Database> Database::migrate(shared_ptr<SqlConnection> connection) {
     return open(connection);
 }
 
-shared_ptr<Database> Database::open(shared_ptr<SqlConnection> connection) {
+shared_ptr<Database> Database::open(shared_ptr<SqliteConnection> connection) {
     /* Version check */
     int version = getFormatVersion(connection);
     if (version != getCurrentFormatVersion())
@@ -54,9 +54,9 @@ int Database::getCurrentFormatVersion() {
     return 1;
 }
 
-int Database::getFormatVersion(shared_ptr<SqlConnection> connection) {
+int Database::getFormatVersion(shared_ptr<SqliteConnection> connection) {
     /* Create query to retrieve version field */
-    SqlPreparedStatement query(connection, "SELECT value FROM meta WHERE name = 'version'");
+    SqlitePreparedStatement query(connection, "SELECT value FROM meta WHERE name = 'version'");
 
     /* Retrieve and return version */
     if (!query.step())
@@ -65,6 +65,6 @@ int Database::getFormatVersion(shared_ptr<SqlConnection> connection) {
     return stoi(query.columnString(0));
 }
 
-shared_ptr<SqlConnection> Database::getConnection() const {
+shared_ptr<SqliteConnection> Database::getConnection() const {
     return priv->connection;
 }

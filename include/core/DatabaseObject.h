@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "SqlPreparedStatement.h"
+#include "core/sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
     class Database;
@@ -57,7 +57,7 @@ namespace pb2 {
 
         // Getters
         const std::shared_ptr<Database> getDatabase() const;
-        const std::shared_ptr<SqlConnection> getConnection() const;
+        const std::shared_ptr<SqliteConnection> getConnection() const;
 
         /**
          * Returns true if the object was loaded from database instead of constructed

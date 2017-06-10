@@ -4,22 +4,22 @@
 #include <memory>
 #include <string>
 
-#include "exceptions.h"
+#include "core/exceptions.h"
 
 namespace pb2 {
-    class SqlConnection_priv;
-    class SqlPreparedStatement;
+    class SqliteConnection_priv;
+    class SqlitePreparedStatement;
 
     /**
-     * SqlConnection is a thin wrapper around SQLite for easier usage with C++
+     * SqliteConnection is a thin wrapper around SQLite for easier usage with C++
      * Parts of its concepts are being directly adapted from prog1-beleg.
      */
-    class SqlConnection : public std::enable_shared_from_this<SqlConnection> {
-        friend class SqlPreparedStatement;
+    class SqliteConnection : public std::enable_shared_from_this<SqliteConnection> {
+        friend class SqlitePreparedStatement;
 
     private:
-        std::unique_ptr<SqlConnection_priv> priv;
-        SqlConnection(const std::string & filename, bool create);
+        std::unique_ptr<SqliteConnection_priv> priv;
+        SqliteConnection(const std::string & filename, bool create);
 
     public:
         /**
@@ -39,9 +39,9 @@ namespace pb2 {
          * be a valid database file. Otherwise the target file MUST not exist and a new
          * database will be created.
          */
-        static std::shared_ptr<SqlConnection> construct(const std::string & filename, bool create);
+        static std::shared_ptr<SqliteConnection> construct(const std::string & filename, bool create);
 
-        ~SqlConnection();
+        ~SqliteConnection();
 
         /**
          * Checks whether a transaction is running. Unless you manually mess around with
@@ -80,6 +80,6 @@ namespace pb2 {
     };
 }
 
-#include "SqlPreparedStatement.h"
+#include "SqlitePreparedStatement.h"
 
 #endif
