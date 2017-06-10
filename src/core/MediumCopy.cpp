@@ -8,6 +8,9 @@
 using namespace std;
 using namespace pb2;
 
+const string MediumCopy::tableName = "medium_copies";
+
+
 MediumCopy::MediumCopy(shared_ptr<Database> database, shared_ptr<Medium> medium,
                        int serialNumber) : DatabaseObject(database) {
     priv = make_unique<MediumCopy_priv>();
@@ -21,24 +24,15 @@ MediumCopy::MediumCopy(shared_ptr<Database> database, shared_ptr<Medium> medium,
     priv->deaccessioned = false;
 }
 
-shared_ptr<MediumCopy> MediumCopy::construct(shared_ptr<Database> database,
-                                             shared_ptr<Medium> medium, int serialNumber) {
-    return shared_ptr<MediumCopy>(new MediumCopy(database, medium, serialNumber));
-}
-
-const string & MediumCopy::getTableName() const {
-    static string t("medium_copies");
-    return t;
-}
-
-const string & MediumCopy::getType() const {
-    static string t("mediumcopy");
-    return t;
-}
-
-void MediumCopy::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
+MediumCopy::MediumCopy(
+        shared_ptr<Database> database, SqlPreparedStatement & query,
+        const map<string, int> & columnIndexes
+) : DatabaseObject(database) {
     throw NotImplementedException();
 }
+
+MediumCopy::~MediumCopy() = default;
+
 
 void MediumCopy::persistImpl() {
     throw NotImplementedException();

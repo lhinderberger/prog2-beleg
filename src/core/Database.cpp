@@ -14,6 +14,9 @@ Database::Database(shared_ptr<SqlConnection> connection) {
     priv->connection = connection;
 }
 
+Database::~Database() = default;
+
+
 shared_ptr<Database> Database::initialize(shared_ptr<SqlConnection> connection) {
     /* Run initializing SQL */
     connection->executeSQL(initializingSQL);

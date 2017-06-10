@@ -4,11 +4,14 @@
 #include <gtest/gtest.h>
 #include "core/Author.h"
 #include "core/Database.h"
+#include "core/DatabaseObjectFactory.h"
 #include "core/SqlConnection.h"
 #include "core/SqlPreparedStatement.h"
 
 using namespace std;
 using namespace pb2;
+
+using AuthorFactory = pb2::DatabaseObjectFactory<Author>;
 
 /*
  * Learning test to find out which error codes SQLite emits on common SQL failures.
@@ -45,23 +48,30 @@ TEST(SQLAbstractionTest, FullColumnNamesTest) {
 TEST(SQLAbstractionTest, PersistAuthorTest) {
     auto connection = SqlConnection::construct(":memory:", true); //TODO: Move to fixture
     auto database = Database::initialize(connection);
+    auto authorFactory = AuthorFactory(database);
 
     /* Create and persist new author */
-    auto author = Author::construct(database, 123);
+    auto author = authorFactory.construct(123);
     author->setFirstName("Lucas");
     author->setLastName("Hinderberger");
     author->persist();
     connection->commit();
 
     /* Query for author and ensure they're equal */
-    SqlPreparedStatement query(connection, string("SELECT * FROM ") + author->getTableName() + " WHERE id = ?");
+    SqlPreparedStatement query(connection, string("SELECT * FROM ") + Author::tableName + " WHERE id = ?");
     query.bindInt(1, 123);
     query.step();
 
-    auto author2 = Author::construct(database, 0); // TODO: This is a very ugly interface...
-    author2->load(query);
+    auto author2 = authorFactory.load(query);
 
     EXPECT_EQ(123, author2->getId());
     EXPECT_EQ("Lucas", author2->getFirstName());
     EXPECT_EQ("Hinderberger", author2->getLastName());
+}
+
+/**
+ * Basic test to ensure that rollback works as intended
+ */
+TEST(SQLAbstractionTest, RollbackTest) {
+    //TODO
 }

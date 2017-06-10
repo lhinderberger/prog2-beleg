@@ -5,6 +5,7 @@
 #include <memory>
 
 #include "DatabaseObject.h"
+#include "DatabaseObjectFactory.h"
 #include "LibraryUser.h"
 #include "MediumCopy.h"
 
@@ -16,21 +17,11 @@ namespace pb2 {
      * the user has lent and for how long.
      */
     class Lending : public DatabaseObject {
+        friend class DatabaseObjectFactory<Lending>;
+
     private:
         std::unique_ptr<Lending_priv> priv;
-        Lending(
-                std::shared_ptr<Database> database,
-                std::shared_ptr<MediumCopy> mediumCopy,
-                std::shared_ptr<LibraryUser> libraryUser,
-                time_t timestampLent
-        );
 
-    protected:
-        virtual void loadImpl(SqlPreparedStatement & query,
-            const std::map<std::string, int> & columnIndexes) override;
-        virtual void persistImpl() override;
-
-    public:
         /**
          * Creates a new Lending.
          *
@@ -40,15 +31,22 @@ namespace pb2 {
          * for each mediumCopy. Pass in -1 to take the current time.
          * @return
          */
-        static std::shared_ptr<Lending> construct(
+        Lending(
                 std::shared_ptr<Database> database,
                 std::shared_ptr<MediumCopy> mediumCopy,
                 std::shared_ptr<LibraryUser> libraryUser,
-                time_t timestampLent = -1
+                time_t timestampLent
         );
 
-        virtual const std::string & getTableName() const override;
-        virtual const std::string & getType() const override;
+        PB2_DECLARE_LOAD_CONSTRUCTOR(Lending);
+
+    protected:
+        virtual void persistImpl() override;
+
+    public:
+        static const std::string tableName;
+
+        virtual ~Lending();
 
         // Getters for read-only values set in constructor.
         std::shared_ptr<MediumCopy> getMediumCopy();

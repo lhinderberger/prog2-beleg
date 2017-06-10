@@ -10,7 +10,7 @@
 namespace pb2 {
     struct Medium_priv {
         std::string ean, format, subtitle, title;
-        std::shared_ptr<Author> author;
+        std::shared_ptr<Author> author = nullptr;
     };
 
     struct Book_priv {};

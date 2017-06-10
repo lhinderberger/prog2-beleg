@@ -48,9 +48,14 @@ Book::Book(shared_ptr<Database> database, const string &isbn)
 
 }
 
-shared_ptr<Book> Book::construct(shared_ptr<Database> database, const string &isbn) {
-    return shared_ptr<Book>(new Book(database, isbn));
+Book::Book(shared_ptr<Database> database, SqlPreparedStatement & query,
+             const map<string, int> & columnIndexes
+) : Medium(database, query, columnIndexes){
+
 }
+
+Book::~Book() = default;
+
 
 const string & Book::getType() const {
     static string t("book");

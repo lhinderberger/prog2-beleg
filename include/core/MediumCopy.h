@@ -3,6 +3,7 @@
 
 #include <memory>
 #include "Medium.h"
+#include "DatabaseObjectFactory.h"
 
 namespace pb2 {
     class Lending;
@@ -16,17 +17,11 @@ namespace pb2 {
      * Copies can be lent to Users.
      */
     class MediumCopy : public DatabaseObject {
+        friend class DatabaseObjectFactory<MediumCopy>;
+
     private:
         std::unique_ptr<MediumCopy_priv> priv;
-        MediumCopy(std::shared_ptr<Database> database,
-                   std::shared_ptr<Medium> medium, int serialNumber);
 
-    protected:
-        virtual void loadImpl(SqlPreparedStatement & query,
-            const std::map<std::string, int> & columnIndexes) override;
-        virtual void persistImpl() override;
-
-    public:
         /**
          * Creates a new Medium Copy
          *
@@ -35,11 +30,19 @@ namespace pb2 {
          * @param serialNumber Either a number starting from 1 or 0 or less to
          * auto-generate a new serialNumber on insert.
          */
-        static std::shared_ptr<MediumCopy> construct(std::shared_ptr<Database> database,
-            std::shared_ptr<Medium> medium, int serialNumber);
+        MediumCopy(
+                std::shared_ptr<Database> database, std::shared_ptr<Medium> medium,
+                int serialNumber
+        );
+        PB2_DECLARE_LOAD_CONSTRUCTOR(MediumCopy);
 
-        virtual const std::string & getTableName() const override;
-        virtual const std::string & getType() const override;
+    protected:
+        virtual void persistImpl() override;
+
+    public:
+        static const std::string tableName;
+
+        virtual ~MediumCopy();
 
         /**
          * If a LibraryUser has currently lent the copy, this will return a pointer

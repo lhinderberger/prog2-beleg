@@ -2,22 +2,26 @@
 #define PROG2_BELEG_VIDEO_H
 
 #include "Medium.h"
+#include "DatabaseObjectFactory.h"
 
 namespace pb2 {
     class Video_priv;
 
     class Video : public Medium {
+        friend class DatabaseObjectFactory<Video>;
+
     private:
         std::unique_ptr<Video_priv> priv;
-        Video(std::shared_ptr<Database> database, const std::string & ean);
 
-    public:
         /**
          * Creates a new Video Medium
          * @param ean @see Medium constructor
          */
-        static std::shared_ptr<Video> construct(std::shared_ptr<Database> database,
-                                                const std::string & ean);
+        Video(std::shared_ptr<Database> database, const std::string & ean);
+        PB2_DECLARE_LOAD_CONSTRUCTOR(Video);
+
+    public:
+        virtual ~Video();
 
         virtual const std::string & getType() const override;
     };

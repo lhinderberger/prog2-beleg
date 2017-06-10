@@ -10,9 +10,14 @@ Software::Software(shared_ptr<Database> database, const string & ean)
 
 }
 
-shared_ptr<Software> Software::construct(shared_ptr<Database> database, const string &ean) {
-    return shared_ptr<Software>(new Software(database, ean));
+Software::Software(shared_ptr<Database> database, SqlPreparedStatement & query,
+           const map<string, int> & columnIndexes
+) : Medium(database, query, columnIndexes){
+
 }
+
+Software::~Software() = default;
+
 
 const string & Software::getType() const {
     static string t("software");

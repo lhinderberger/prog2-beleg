@@ -19,6 +19,8 @@ namespace pb2 {
         Database(std::shared_ptr<SqlConnection> connection);
 
     public:
+        ~Database();
+
         /**
          * Initializes a database
          *

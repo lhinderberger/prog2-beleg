@@ -55,6 +55,9 @@ vector<int> pb2::extractEANDigits(const string & eanString) {
     return result;
 }
 
+
+const string Medium::tableName = "media";
+
 Medium::Medium(shared_ptr<Database> database, const string & ean)
         : Medium(database, extractEANDigits(ean)){
 }
@@ -68,17 +71,14 @@ Medium::Medium(shared_ptr<Database> database, const vector<int> & eanDigits)
     priv->ean = buildEANString(eanDigits);
 }
 
-Medium::~Medium() {}
-
-const string & Medium::getTableName() const {
-    static string t("media");
-    return t;
-}
-
-
-void Medium::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
+Medium::Medium(shared_ptr<Database> database, SqlPreparedStatement & query,
+               const map<string, int> & columnIndexes
+) : DatabaseObject(database) {
     throw NotImplementedException();
 }
+
+Medium::~Medium() = default;
+
 
 void Medium::persistImpl() {
     throw NotImplementedException();

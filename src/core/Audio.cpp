@@ -10,10 +10,13 @@ Audio::Audio(shared_ptr<Database> database, const string & ean)
 
 }
 
-shared_ptr<Audio> Audio::construct(shared_ptr<Database> database, const string &ean) {
-    // make_shared does not see the private constructor, so we need this instead
-    return shared_ptr<Audio>(new Audio(database, ean));
+Audio::Audio(shared_ptr<Database> database, SqlPreparedStatement & query,
+             const map<string, int> & columnIndexes
+) : Medium(database, query, columnIndexes){
+
 }
+
+Audio::~Audio() = default;
 
 const string & Audio::getType() const {
     static string t("audio");

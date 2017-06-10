@@ -5,25 +5,27 @@
 #include <string>
 
 #include "core/DatabaseObject.h"
+#include "core/DatabaseObjectFactory.h"
 
 namespace pb2 {
     class Author_priv;
 
     class Author : public DatabaseObject {
+        friend class DatabaseObjectFactory<Author>;
+
     private:
         std::unique_ptr<Author_priv> priv;
-    protected:
-        Author(std::shared_ptr<Database> database, int id);
 
-        virtual void loadImpl(SqlPreparedStatement & query,
-            const std::map<std::string, int> & columnIndexes) override;
+        Author(std::shared_ptr<Database> database, int id);
+        PB2_DECLARE_LOAD_CONSTRUCTOR(Author);
+
+    protected:
         virtual void persistImpl() override;
 
     public:
-        static std::shared_ptr<Author> construct(std::shared_ptr<Database> database, int id);
+        virtual ~Author();
 
-        virtual const std::string & getTableName() const override;
-        virtual const std::string & getType() const override;
+        static const std::string tableName;
 
         int getId() const;
         

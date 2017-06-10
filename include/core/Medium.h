@@ -25,16 +25,20 @@ namespace pb2 {
          */
         Medium(std::shared_ptr<Database> database, const std::string & ean);
         Medium(std::shared_ptr<Database> database, const std::vector<int> & eanDigits);
+        PB2_DECLARE_LOAD_CONSTRUCTOR(Medium);
 
-        virtual void loadImpl(SqlPreparedStatement & query,
-            const std::map<std::string, int> & columnIndexes) override;
         virtual void persistImpl() override;
 
     public:
+        static const std::string tableName;
         static const std::vector<std::string> & allowedFormats();
 
         virtual ~Medium();
-        virtual const std::string & getTableName() const override;
+
+        /**
+         * Lower-case class name of the concrete medium object
+         */
+        virtual const std::string & getType() const = 0;
 
         /**
          * Lazy-loads all copies of the Medium that currently are available in the library.

@@ -7,6 +7,8 @@
 using namespace std;
 using namespace pb2;
 
+const string Lending::tableName = "lendings";
+
 Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
                  shared_ptr<LibraryUser> libraryUser, time_t timestampLent)
         : DatabaseObject(database){
@@ -30,27 +32,15 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
     priv->runtime = 14;
 }
 
-std::shared_ptr<Lending> Lending::construct(shared_ptr<Database> database,
-                                            shared_ptr<MediumCopy> mediumCopy,
-                                            shared_ptr<LibraryUser> libraryUser,
-                                            time_t timestampLent) {
-    return shared_ptr<Lending>(new Lending(database, mediumCopy, libraryUser, timestampLent));
-}
-
-const string & Lending::getTableName() const {
-    static string t("lendings");
-    return t;
-}
-
-const string & Lending::getType() const {
-    static string t("lending");
-    return t;
-}
-
-
-void Lending::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
+Lending::Lending(
+        shared_ptr<Database> database, SqlPreparedStatement & query,
+        const map<string, int> & columnIndexes
+) : DatabaseObject(database) {
     throw NotImplementedException();
 }
+
+Lending::~Lending() = default;
+
 
 void Lending::persistImpl() {
     throw NotImplementedException();

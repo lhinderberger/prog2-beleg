@@ -5,6 +5,7 @@
 #include <string>
 
 #include "DatabaseObject.h"
+#include "DatabaseObjectFactory.h"
 #include "PostalAddress.h"
 #include "TelephoneNumber.h"
 
@@ -12,28 +13,27 @@ namespace pb2 {
     class LibraryUser_priv;
 
     class LibraryUser : public DatabaseObject {
+        friend class DatabaseObjectFactory<LibraryUser>;
+
     private:
         std::unique_ptr<LibraryUser_priv> priv;
 
-        LibraryUser(std::shared_ptr<Database> database, int id);
-
-    protected:
-        virtual void loadImpl(SqlPreparedStatement & query,
-            const std::map<std::string, int> & columnIndexes) override;
-        virtual void persistImpl() override;
-
-    public:
         /**
          * Creates a new LibraryUser
          *
          * @param id Pass in 0 or less to auto-generate an ID on insert.
          * Otherwise pass in a valid ID.
          */
-        static std::shared_ptr<LibraryUser> construct(std::shared_ptr<Database> database,
-                                                      int id);
+        LibraryUser(std::shared_ptr<Database> database, int id);
+        PB2_DECLARE_LOAD_CONSTRUCTOR(LibraryUser);
 
-        virtual const std::string & getTableName() const override;
-        virtual const std::string & getType() const override;
+    protected:
+        virtual void persistImpl() override;
+
+    public:
+        static const std::string tableName;
+
+        virtual ~LibraryUser();
 
 
         int getId() const;

@@ -10,9 +10,14 @@ Video::Video(shared_ptr<Database> database, const string & ean)
 
 }
 
-shared_ptr<Video> Video::construct(shared_ptr<Database> database, const string &ean) {
-    return shared_ptr<Video>(new Video(database, ean));
+Video::Video(shared_ptr<Database> database, SqlPreparedStatement & query,
+                   const map<string, int> & columnIndexes
+) : Medium(database, query, columnIndexes){
+
 }
+
+Video::~Video() = default;
+
 
 const string & Video::getType() const {
     static string t("video");

@@ -1,42 +1,39 @@
 #include "core/Author.h"
 #include "core/Author.priv.h"
 #include "core/exceptions.h"
+#include "core/query-builder.h"
 
 using namespace std;
 using namespace pb2;
+
+const string Author::tableName = "authors";
 
 Author::Author(shared_ptr<Database> database, int id) : DatabaseObject(database) {
     priv = make_unique<Author_priv>();
     priv->id = id;
 }
 
-shared_ptr<Author> Author::construct(shared_ptr<Database> database, int id) {
-    return shared_ptr<Author>(new Author(database, id));
-}
+Author::Author(
+        shared_ptr<Database> database, SqlPreparedStatement & query,
+        const map<string, int> & columnIndexes
+) : DatabaseObject(database) {
+    priv = make_unique<Author_priv>();
 
-const string & Author::getTableName() const {
-    static string t("authors");
-    return t;
-}
-
-const std::string & Author::getType() const {
-    static string t("author");
-    return t;
-}
-
-
-void Author::loadImpl(SqlPreparedStatement & query, const map<string, int> & columnIndexes) {
-    //TODO: Use template or macro
+    //TODO: Is there a way to overload this constructor?
+    //TODO: Use template or macro?
     priv->id = query.columnInt(columnIndexes.at("id"));
     priv->firstName = query.columnString(columnIndexes.at("first_name"));
     priv->lastName = query.columnString(columnIndexes.at("last_name"));
 }
 
+Author::~Author() = default;
+
+
 void Author::persistImpl() {
     /* Prepare statement */
     SqlPreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery({"first_name", "last_name"}, "WHERE id=?") :
-        buildInsertQuery({"first_name", "last_name", "id"}, 1)
+        buildUpdateQuery<Author>({"first_name", "last_name"}, "WHERE id=?") :
+        buildInsertQuery<Author>({"first_name", "last_name", "id"}, 1)
     );
 
     /* Bind parameters */
