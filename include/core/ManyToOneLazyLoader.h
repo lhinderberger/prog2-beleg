@@ -6,7 +6,8 @@
 
 #include "exceptions.h"
 #include "DatabaseObject.h"
-#include "core/sqlite/SqlitePreparedStatement.h"
+#include "DatabaseObjectFactory.h"
+#include "sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
     template<class ConcreteDatabaseObject, typename PrimaryKeyType>
@@ -17,32 +18,30 @@ namespace pb2 {
         std::shared_ptr<Database> database = nullptr;
         std::shared_ptr<ConcreteDatabaseObject> ptr = nullptr;
         std::unique_ptr<PrimaryKeyType> primaryKey = nullptr;
-        std::string tableName, primaryKeyName;
+        std::string primaryKeyName; // TODO: Can this be a static property of ConcreteDatabaseObject?
 
         void load() {
             if (!primaryKey)
                 throw std::logic_error("Cannot load without primary key!");
 
             /* Prepare statement */
-            auto query = std::string("SELECT * FROM ") + tableName + " WHERE "
+            auto sql = std::string("SELECT * FROM ") + ConcreteDatabaseObject::tableName + " WHERE "
                          + primaryKeyName + " = ?";
-            auto statement = SqlitePreparedStatement(database->getConnection(), query);
+            SqlitePreparedStatement query(database->getConnection(), sql);
 
             /* Create new object from statement result */
-            statement.step();
-            ptr = ConcreteDatabaseObject::construct(statement);
+            query.step();
+            ptr = DatabaseObjectFactory<ConcreteDatabaseObject>(database).load(query);
             primaryKey = nullptr;
         }
 
     public:
         ManyToOneLazyLoader(const std::shared_ptr<Database> & database,
-                            const std::string & tableName,
                             const std::string & primaryKeyName) {
             if (!database)
                 throw NullPointerException();
 
             this->database = database;
-            this->tableName = tableName;
             this->primaryKeyName = primaryKeyName;
         }
 
@@ -67,6 +66,14 @@ namespace pb2 {
             return ptr;
         }
 
+        std::shared_ptr<ConcreteDatabaseObject> operator->() {
+            return get();
+        }
+
+        const std::shared_ptr<ConcreteDatabaseObject> operator->() const {
+            return operator->();
+        }
+
         void set(const std::shared_ptr<ConcreteDatabaseObject> & object) {
             primaryKey = nullptr;
             ptr = object;
@@ -74,7 +81,7 @@ namespace pb2 {
 
         void set(const PrimaryKeyType & primaryKey) {
             ptr = nullptr;
-            this->primaryKey = primaryKey;
+            this->primaryKey = std::make_unique<PrimaryKeyType>(primaryKey);
         }
 
         inline std::shared_ptr<Database> getDatabase() const { return database; }
