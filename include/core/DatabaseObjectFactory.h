@@ -4,7 +4,6 @@
 #include "DatabaseObject.h"
 #include "Database.h"
 
-#include <algorithm>
 #include <memory>
 #include <string>
 #include <map>
@@ -148,11 +147,15 @@ namespace pb2 {
                 const std::map<std::string, std::string> & alternativeColumnNames
                 = std::map<std::string, std::string>()
         ) {
-            // Do static pointer cast on each element of the result of the
-            // AbstractDatabaseObjectFactory implementation
+            /* Retrieve and count result of pointers to DatabaseObject */
             auto baseResult = baseLoadMany(query, n, alternativeColumnNames);
-            auto result = std::vector<std::shared_ptr<ConcreteDatabaseObject>>();
-            std::transform(baseResult.cbegin(), baseResult.cend(), result.begin(), std::static_pointer_cast<ConcreteDatabaseObject>);
+            size_t nResults = baseResult.size();
+
+            /* Static pointer cast each element to ConcreteDatabaseObject */
+            auto result = std::vector<std::shared_ptr<ConcreteDatabaseObject>>(baseResult.size());
+            for (size_t i = 0; i < nResults; i++)
+                result[i] = std::static_pointer_cast<ConcreteDatabaseObject>(baseResult.at(i));
+
             return result;
         }
     };
