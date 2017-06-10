@@ -15,12 +15,12 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Collect files
-file(GLOB CORE_INCLUDE_FILES "include/core/*")
-file(GLOB CORE_SRC_FILES "src/core/*")
-file(GLOB CORE_TEST_FILES "tests/core/*")
-file(GLOB WEBSERVICE_INCLUDE_FILES "include/webservice/*")
-file(GLOB WEBSERVICE_SRC_FILES "src/webservice/*")
-file(GLOB WEBSERVICE_TEST_FILES "tests/webservice/*")
+file(GLOB_RECURSE CORE_INCLUDE_FILES "include/core/*")
+file(GLOB_RECURSE CORE_SRC_FILES "src/core/*")
+file(GLOB_RECURSE CORE_TEST_FILES "tests/core/*")
+file(GLOB_RECURSE WEBSERVICE_INCLUDE_FILES "include/webservice/*")
+file(GLOB_RECURSE WEBSERVICE_SRC_FILES "src/webservice/*")
+file(GLOB_RECURSE WEBSERVICE_TEST_FILES "tests/webservice/*")
 
 # Define core / webservice targets
 add_library(core ${CORE_INCLUDE_FILES} ${CORE_SRC_FILES})
