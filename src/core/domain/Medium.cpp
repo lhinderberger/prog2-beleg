@@ -85,8 +85,8 @@ void Medium::persistImpl() {
 }
 
 
-const vector<string>& Medium::allowedFormats() {
-    static vector<string> formats {
+const set<string>& Medium::allowedFormats() {
+    static set<string> formats {
         "book", "vinyl", "cassette", "floppy", "vhs", "cd", "dvd", "memory-card",
         "usb-stick", "download", "online-access", "other"
     };

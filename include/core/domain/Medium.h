@@ -2,6 +2,7 @@
 #define PROG2_BELEG_MEDIUM_H
 
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -31,7 +32,7 @@ namespace pb2 {
 
     public:
         static const std::string tableName;
-        static const std::vector<std::string> & allowedFormats();
+        static const std::set<std::string> & allowedFormats();
 
         virtual ~Medium();
 
