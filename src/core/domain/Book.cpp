@@ -1,7 +1,7 @@
-#include "core/Book.h"
+#include "core/domain/Book.h"
 #include "core/exceptions.h"
 
-#include "core/Medium.priv.h" // Book_priv is defined there as long as it's empty.
+#include "core/domain/Medium.priv.h" // Book_priv is defined there as long as it's empty.
 
 using namespace std;
 using namespace pb2;

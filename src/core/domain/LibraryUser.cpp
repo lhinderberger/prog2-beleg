@@ -1,6 +1,6 @@
 #include "core/exceptions.h"
-#include "core/LibraryUser.h"
-#include "core/LibraryUser.priv.h"
+#include "core/domain/LibraryUser.h"
+#include "core/domain/LibraryUser.priv.h"
 
 using namespace std;
 using namespace pb2;

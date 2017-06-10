@@ -1,5 +1,5 @@
-#include "core/Lending.h"
-#include "core/Lending.priv.h"
+#include "core/domain/Lending.h"
+#include "core/domain/Lending.priv.h"
 #include "core/exceptions.h"
 
 #include <cassert>

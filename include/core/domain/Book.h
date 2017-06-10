@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 #include "Medium.h"
-#include "DatabaseObjectFactory.h"
+#include "core/DatabaseObjectFactory.h"
 
 namespace pb2 {
     class Book_priv;

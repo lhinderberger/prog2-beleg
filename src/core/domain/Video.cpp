@@ -1,6 +1,6 @@
-#include "core/Video.h"
+#include "core/domain/Video.h"
 
-#include "core/Medium.priv.h" // Video_priv is defined there as long as it's empty.
+#include "core/domain/Medium.priv.h" // Video_priv is defined there as long as it's empty.
 
 using namespace std;
 using namespace pb2;

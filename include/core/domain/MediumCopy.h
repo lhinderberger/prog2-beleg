@@ -3,7 +3,7 @@
 
 #include <memory>
 #include "Medium.h"
-#include "DatabaseObjectFactory.h"
+#include "core/DatabaseObjectFactory.h"
 
 namespace pb2 {
     class Lending;

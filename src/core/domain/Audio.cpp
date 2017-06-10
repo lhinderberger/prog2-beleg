@@ -1,6 +1,6 @@
-#include "core/Audio.h"
+#include "core/domain/Audio.h"
 
-#include "core/Medium.priv.h" // Audio_priv is defined there as long as it's empty.
+#include "core/domain/Medium.priv.h" // Audio_priv is defined there as long as it's empty.
 
 using namespace std;
 using namespace pb2;

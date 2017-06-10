@@ -2,7 +2,7 @@
 #define PROG2_BELEG_SOFTWARE_H
 
 #include "Medium.h"
-#include "DatabaseObjectFactory.h"
+#include "core/DatabaseObjectFactory.h"
 
 namespace pb2 {
     class Software_priv;

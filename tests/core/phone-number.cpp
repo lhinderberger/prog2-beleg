@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 
-#include "core/TelephoneNumber.h"
+#include "core/domain/TelephoneNumber.h"
 
 /**
  * Does TelephoneNumber correctly serialize and deserialize FQTNs?

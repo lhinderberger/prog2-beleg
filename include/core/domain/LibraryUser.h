@@ -4,8 +4,8 @@
 #include <memory>
 #include <string>
 
-#include "DatabaseObject.h"
-#include "DatabaseObjectFactory.h"
+#include "core/DatabaseObject.h"
+#include "core/DatabaseObjectFactory.h"
 #include "PostalAddress.h"
 #include "TelephoneNumber.h"
 

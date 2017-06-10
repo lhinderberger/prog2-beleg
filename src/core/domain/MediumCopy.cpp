@@ -1,6 +1,6 @@
-#include "core/MediumCopy.h"
-#include "core/Medium.priv.h"
-#include "core/MediumCopy.priv.h"
+#include "core/domain/MediumCopy.h"
+#include "core/domain/Medium.priv.h"
+#include "core/domain/MediumCopy.priv.h"
 #include "core/exceptions.h"
 
 #include <cassert>

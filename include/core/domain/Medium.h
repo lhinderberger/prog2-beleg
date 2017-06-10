@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "Author.h"
-#include "DatabaseObject.h"
+#include "core/DatabaseObject.h"
 
 namespace pb2 {
     class Medium_priv;

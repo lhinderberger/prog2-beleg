@@ -1,5 +1,5 @@
-#include "core/Author.h"
-#include "core/Author.priv.h"
+#include "core/domain/Author.h"
+#include "core/domain/Author.priv.h"
 #include "core/exceptions.h"
 #include "core/query-builder.h"
 

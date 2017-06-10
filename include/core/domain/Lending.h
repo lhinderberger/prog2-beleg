@@ -4,8 +4,8 @@
 #include <ctime>
 #include <memory>
 
-#include "DatabaseObject.h"
-#include "DatabaseObjectFactory.h"
+#include "core/DatabaseObject.h"
+#include "core/DatabaseObjectFactory.h"
 #include "LibraryUser.h"
 #include "MediumCopy.h"
 

@@ -2,8 +2,8 @@
 #include <string>
 
 #include <gtest/gtest.h>
-#include "core/Software.h"
-#include "core/Book.h"
+#include "core/domain/Software.h"
+#include "core/domain/Book.h"
 #include "core/exceptions.h"
 #include "core/DatabaseObjectFactory.h"
 

@@ -2,7 +2,7 @@
 #include <string>
 
 #include <gtest/gtest.h>
-#include "core/Author.h"
+#include "core/domain/Author.h"
 #include "core/Database.h"
 #include "core/DatabaseObjectFactory.h"
 #include "core/SqlConnection.h"

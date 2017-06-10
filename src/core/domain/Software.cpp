@@ -1,6 +1,6 @@
-#include "core/Software.h"
+#include "core/domain/Software.h"
 
-#include "core/Medium.priv.h" // Software_priv is defined there as long as it's empty.
+#include "core/domain/Medium.priv.h" // Software_priv is defined there as long as it's empty.
 
 using namespace std;
 using namespace pb2;

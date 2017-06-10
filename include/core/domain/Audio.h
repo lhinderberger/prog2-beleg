@@ -2,7 +2,7 @@
 #define PROG2_BELEG_AUDIO_H
 
 #include "Medium.h"
-#include "DatabaseObjectFactory.h"
+#include "core/DatabaseObjectFactory.h"
 
 namespace pb2 {
     class Audio_priv;

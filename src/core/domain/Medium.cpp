@@ -1,6 +1,6 @@
 #include "core/exceptions.h"
-#include "core/Medium.h"
-#include "core/Medium.priv.h"
+#include "core/domain/Medium.h"
+#include "core/domain/Medium.priv.h"
 
 #include <cctype>
 

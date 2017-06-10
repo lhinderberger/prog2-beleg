@@ -1,4 +1,4 @@
-#include "core/TelephoneNumber.h"
+#include "core/domain/TelephoneNumber.h"
 #include "core/exceptions.h"
 
 using namespace std;
