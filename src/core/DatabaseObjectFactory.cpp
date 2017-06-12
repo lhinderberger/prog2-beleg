@@ -11,43 +11,11 @@ AbstractDatabaseObjectFactory::AbstractDatabaseObjectFactory(
 
 AbstractDatabaseObjectFactory::~AbstractDatabaseObjectFactory() {}
 
-shared_ptr<DatabaseObject> AbstractDatabaseObjectFactory::baseLoad(
-        SqlitePreparedStatement & query,
-        const map<string, string> & alternativeColumnNames
-) {
-    return constructLoad(query, buildColumnIndexes(query, alternativeColumnNames));
-}
-
-vector<std::shared_ptr<DatabaseObject>> AbstractDatabaseObjectFactory::baseLoadMany(
-        SqlitePreparedStatement & query, int n,
-        const map<string, string> & alternativeColumnNames
-) {
-    /* Prepare column indexes and result memory */
-    auto cleanColumnIndexes = buildColumnIndexes(query, alternativeColumnNames);
-    auto result = vector<shared_ptr<DatabaseObject>>();
-
-    /* Query multiple objects */
-    if (n < 0) {
-        // Query until there are no more rows left
-        do {
-            result.push_back(constructLoad(query, cleanColumnIndexes));
-        } while(query.step());
-    } else {
-        // Query until there are either no more rows left or n rows have been read
-        for (int i = 0; i < n; i++) {
-            result.push_back(constructLoad(query, cleanColumnIndexes));
-            if (!query.step())
-                break;
-        }
-    }
-
-    /* Finalize */
-    return result;
-}
 
 map<string, int> AbstractDatabaseObjectFactory::buildColumnIndexes(
         SqlitePreparedStatement & query,
-        const map<string, string> & alternativeColumnNames
+        const map<string, string> & alternativeColumnNames,
+        const std::string & tableName
 ) {
     /* Build column indexes map, incorporate alternatives */
     map<string,int> columnIndexes = query.columnIndexes();
@@ -65,7 +33,7 @@ map<string, int> AbstractDatabaseObjectFactory::buildColumnIndexes(
             continue;
 
         /* Drop columns from other tables */
-        if (getTableName() != columnName.substr(0, dotIndex))
+        if (tableName != columnName.substr(0, dotIndex))
             continue;
 
         /* Add index to clean map */
@@ -75,14 +43,6 @@ map<string, int> AbstractDatabaseObjectFactory::buildColumnIndexes(
     return cleanColumnIndexes;
 }
 
-shared_ptr<DatabaseObject> AbstractDatabaseObjectFactory::constructLoad(
-        SqlitePreparedStatement & query, const map<string, int> & columnIndexes
-) {
-    /* Call load implementation */
-    auto result = constructLoadImpl(query, columnIndexes);
-
-    /* Set loaded flag on freshly loaded object */
-    result->priv->loaded = true;
-
-    return result;
+void AbstractDatabaseObjectFactory::setLoaded(shared_ptr<DatabaseObject> dbObject, bool loaded) {
+    dbObject->setLoaded(loaded);
 }
