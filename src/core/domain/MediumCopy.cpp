@@ -2,6 +2,7 @@
 #include "core/domain/Medium.priv.h"
 #include "core/domain/MediumCopy.priv.h"
 #include "core/exceptions.h"
+#include "core/query-builder.h"
 
 #include <cassert>
 
@@ -13,11 +14,11 @@ const string MediumCopy::tableName = "medium_copies";
 
 MediumCopy::MediumCopy(shared_ptr<Database> database, shared_ptr<Medium> medium,
                        int serialNumber) : DatabaseObject(database) {
-    priv = make_unique<MediumCopy_priv>();
+    priv = make_unique<MediumCopy_priv>(database);
 
     // Verify and copy identifying fields
     assert(medium);
-    priv->medium = medium;
+    priv->medium.set(medium);
     priv->serialNumber = serialNumber;
 
     // Initialize remaining fields
@@ -28,14 +29,32 @@ MediumCopy::MediumCopy(
         shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
-    throw NotImplementedException();
+    priv = make_unique<MediumCopy_priv>(database);
+
+    priv->deaccessioned = query.columnInt(columnIndexes.at("deaccessioned")) != 0;
+    priv->location = query.columnString(columnIndexes.at("location"));
+    priv->serialNumber = query.columnInt(columnIndexes.at("serial_number"));
+    priv->medium.set(query.columnString(columnIndexes.at("medium_ean")));
 }
 
 MediumCopy::~MediumCopy() = default;
 
 
 void MediumCopy::persistImpl() {
-    throw NotImplementedException();
+    /* Prepare statement */
+    SqlitePreparedStatement statement(getConnection(), isLoaded() ?
+        buildUpdateQuery<MediumCopy>({"deaccessioned", "location"}, "WHERE medium_ean=? AND serial_number=?") :
+        buildInsertQuery<MediumCopy>({"deaccessioned", "location", "medium_ean", "serial_number"}, 1)
+    );
+
+    /* Bind parameters */
+    statement.bindInt(1, priv->deaccessioned);
+    statement.bindString(2, priv->location);
+    statement.bindString(3, priv->medium->getEAN());
+    statement.bindInt(4, priv->serialNumber);
+
+    /* Execute */
+    statement.step();
 }
 
 
@@ -56,14 +75,11 @@ string MediumCopy::getLocation() const {
 }
 
 void MediumCopy::setLocation(const string &location) {
-    //TODO: Validate
-    throw NotImplementedException();
-
     priv->location = location;
 }
 
 shared_ptr<Medium> MediumCopy::getMedium() const {
-    return priv->medium;
+    return priv->medium.get();
 }
 
 int MediumCopy::getSerialNumber() const {

@@ -5,10 +5,15 @@
 #include <string>
 
 #include "Medium.h"
+#include "core/Database.h"
+#include "core/ManyToOneLazyLoader.h"
 
 namespace pb2 {
-    struct MediumCopy_priv {
-        std::shared_ptr<Medium> medium;
+    class MediumCopy_priv {
+    public:
+        MediumCopy_priv(std::shared_ptr<Database> database) : medium(database, "ean") {}
+
+        ManyToOneLazyLoader<Medium,std::string> medium;
         bool deaccessioned;
         std::string location;
         int serialNumber;
