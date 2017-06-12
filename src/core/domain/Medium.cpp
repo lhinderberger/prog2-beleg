@@ -9,7 +9,7 @@ using namespace pb2;
 using namespace std;
 
 //Helper functions
-string pb2::buildEANString(const std::vector<int> & eanDigits) {
+string pb2::buildEANString(const vector<int> & eanDigits) {
     if (eanDigits.size() != 13)
         throw logic_error("EAN has not exactly 13 digits!");
 
@@ -90,7 +90,7 @@ Medium::~Medium() = default;
 void Medium::persistImpl() {
     /* Prepare statement */
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<Medium>({"format", "title", "subtitle", "author_id"}, "WHERE id=?") :
+        buildUpdateQuery<Medium>({"format", "title", "subtitle", "author_id"}, "WHERE ean=?") :
         buildInsertQuery<Medium>({"format", "title", "subtitle", "author_id", "ean"}, 1)
     );
 
