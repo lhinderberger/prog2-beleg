@@ -26,6 +26,10 @@ void DatabaseObject::persist() {
     persistImpl();
 }
 
+void DatabaseObject::setLoaded(bool loaded) {
+    priv->loaded = loaded;
+}
+
 const shared_ptr<SqliteConnection> DatabaseObject::getConnection() const {
     return priv->database->getConnection();
 }

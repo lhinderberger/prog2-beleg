@@ -32,6 +32,8 @@ namespace pb2 {
     private:
         std::unique_ptr<DatabaseObject_priv> priv;
 
+        void setLoaded(bool loaded);
+
     protected:
         DatabaseObject(std::shared_ptr<Database> database);
 
