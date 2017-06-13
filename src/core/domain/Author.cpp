@@ -37,9 +37,9 @@ void Author::persistImpl() {
     );
 
     /* Bind parameters */
-    statement.bindString(1, priv->firstName);
-    statement.bindString(2, priv->lastName);
-    statement.bindInt(3, priv->id);
+    statement.bind(1, priv->firstName);
+    statement.bind(2, priv->lastName);
+    statement.bind(3, priv->id);
 
     /* Execute */
     statement.step();

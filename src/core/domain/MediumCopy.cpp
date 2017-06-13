@@ -9,7 +9,7 @@
 using namespace std;
 using namespace pb2;
 
-const string MediumCopy::tableName = "medium_copies";
+const string MediumCopy::tableName = "media_copies";
 
 
 MediumCopy::MediumCopy(shared_ptr<Database> database, shared_ptr<Medium> medium,
@@ -48,10 +48,10 @@ void MediumCopy::persistImpl() {
     );
 
     /* Bind parameters */
-    statement.bindInt(1, priv->deaccessioned);
-    statement.bindString(2, priv->location);
-    statement.bindString(3, priv->medium->getEAN());
-    statement.bindInt(4, priv->serialNumber);
+    statement.bind(1, priv->deaccessioned);
+    statement.bind(2, priv->location);
+    statement.bind(3, priv->medium->getEAN());
+    statement.bind(4, priv->serialNumber);
 
     /* Execute */
     statement.step();

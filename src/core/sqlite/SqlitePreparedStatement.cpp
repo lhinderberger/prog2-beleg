@@ -61,22 +61,22 @@ void SqlitePreparedStatement::reset() {
         throw priv->connection->buildException();
 }
 
-void SqlitePreparedStatement::bindBlob(int paramIndex, void * value, int valueBytes) {
+void SqlitePreparedStatement::bind(int paramIndex, void * value, int valueBytes) {
     if (sqlite3_bind_blob(priv->statement, paramIndex, value, valueBytes, NULL) != SQLITE_OK)
         throw priv->connection->buildException();
 }
 
-void SqlitePreparedStatement::bindInt(int paramIndex, int value) {
+void SqlitePreparedStatement::bind(int paramIndex, int value) {
     if (sqlite3_bind_int(priv->statement, paramIndex, value) != SQLITE_OK)
         throw priv->connection->buildException();
 }
 
-void SqlitePreparedStatement::bindNull(int paramIndex) {
+void SqlitePreparedStatement::bind(int paramIndex) {
     if (sqlite3_bind_null(priv->statement, paramIndex) != SQLITE_OK)
         throw priv->connection->buildException();
 }
 
-void SqlitePreparedStatement::bindString(int paramIndex, const string & value) {
+void SqlitePreparedStatement::bind(int paramIndex, const string & value) {
     auto valSize = value.size();
     if (valSize > INT_MAX)
         throw StringTooLongException();

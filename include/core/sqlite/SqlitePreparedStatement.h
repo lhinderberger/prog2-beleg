@@ -37,17 +37,17 @@ namespace pb2 {
          * The value passed in will be copied, so the value pointer only has to stay
          * valid during the execution of this method.
          */
-        void bindBlob(int paramIndex, void * value, int valueBytes);
+        void bind(int paramIndex, void * value, int valueBytes);
 
         /**
          * Binds an integer value to a parameter.
          */
-        void bindInt(int paramIndex, int value);
+        void bind(int paramIndex, int value);
 
         /**
          * Binds a Null value to a parameter.
          */
-        void bindNull(int paramIndex);
+        void bind(int paramIndex);
 
         /**
          * Binds a String value to a parameter.
@@ -55,7 +55,7 @@ namespace pb2 {
          * @param paramIndex
          * @param value
          */
-        void bindString(int paramIndex, const std::string & value);
+        void bind(int paramIndex, const std::string & value);
 
         /**
          * Retrieve a Blob value from the current result row, either by its index or by

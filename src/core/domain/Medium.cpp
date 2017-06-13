@@ -95,11 +95,11 @@ void Medium::persistImpl() {
     );
 
     /* Bind parameters */
-    statement.bindString(1, priv->format);
-    statement.bindString(2, priv->title);
-    statement.bindString(3, priv->subtitle);
+    statement.bind(1, priv->format);
+    statement.bind(2, priv->title);
+    statement.bind(3, priv->subtitle);
     //Param #4: See below
-    statement.bindString(5, priv->ean);
+    statement.bind(5, priv->ean);
 
     /* Bind author primary key */
     int primaryKey = 0;
@@ -107,7 +107,7 @@ void Medium::persistImpl() {
         primaryKey = priv->author.getPrimaryKey();
     else if(priv->author.isLoaded())
         primaryKey = priv->author->getId();
-    statement.bindInt(4, primaryKey);
+    statement.bind(4, primaryKey);
 
     /* Execute */
     statement.step();
@@ -126,7 +126,7 @@ vector<shared_ptr<MediumCopy>> Medium::queryCopies() const {
     /* Build query to get all copies of this medium */
     SqlitePreparedStatement query(getConnection(),
           string("SELECT * FROM ") + MediumCopy::tableName + " WHERE medium_ean = ?");
-    query.bindString(1, priv->ean);
+    query.bind(1, priv->ean);
 
     /* Try to retrieve at least one object and pass on control to factory on success */
     if (query.step())
