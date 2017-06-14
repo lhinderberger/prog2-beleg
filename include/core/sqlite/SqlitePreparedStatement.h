@@ -58,8 +58,16 @@ namespace pb2 {
         void bind(int paramIndex, const std::string & value);
 
         /**
+         * Returns true, if the column specified by columnIndex / fullColumnName in the
+         * current result row has a NULL value.
+         */
+        bool columnIsNull(int columnIndex);
+        bool columnIsNull(const std::string & fullColumnName);
+
+        /**
          * Retrieve a Blob value from the current result row, either by its index or by
          * its full column name.
+         * Caution: Throws DatabaseIntegrityException on NULL values.
          *
          * @param bytesOut Outgoing. The number of bytes in the result.
          * @return An array of bytes, which has to be instantly evaluated, as it will
@@ -71,6 +79,7 @@ namespace pb2 {
         /**
          * Retrieve an Integer value from the current result row, either by its index or by
          * its full column name.
+         * Caution: Throws DatabaseIntegrityException on NULL values.
          */
         int columnInt(int columnIndex);
         int columnInt(const std::string & fullColumnName);
@@ -78,6 +87,7 @@ namespace pb2 {
         /**
          * Retrieve a String value from the current result row, either by its index or by
          * its full column name.
+         * Caution: Throws DatabaseIntegrityException on NULL values.
          */
         std::string columnString(int columnIndex);
         std::string columnString(const std::string & fullColumnName);

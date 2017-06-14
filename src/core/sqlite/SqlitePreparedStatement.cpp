@@ -87,8 +87,12 @@ void SqlitePreparedStatement::bind(int paramIndex, const string & value) {
 
 const void * SqlitePreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
     const void * data = sqlite3_column_blob(priv->statement, columnIndex);
-    if (!data)
+
+    int errcode = sqlite3_errcode(priv->connection->priv->connection);
+    if (!data && errcode != SQLITE_OK && errcode != SQLITE_ROW)
         throw priv->connection->buildException();
+    else if (!data && columnIsNull(columnIndex))
+        throw DatabaseIntegrityException("Column is NULL!");
     if (bytesOut)
         *bytesOut = sqlite3_column_bytes(priv->statement, columnIndex);
 
@@ -99,12 +103,22 @@ const void * SqlitePreparedStatement::columnBlob(const string & fullColumnName, 
     return columnBlob(getColumnIndex(fullColumnName), bytesOut);
 }
 
+bool SqlitePreparedStatement::columnIsNull(int columnIndex) {
+    return sqlite3_column_type(priv->statement, columnIndex) == SQLITE_NULL;
+}
+
+bool SqlitePreparedStatement::columnIsNull(const std::string & fullColumnName) {
+    return columnIsNull(getColumnIndex(fullColumnName));
+}
+
 int SqlitePreparedStatement::columnInt(int columnIndex) {
     int result = sqlite3_column_int(priv->statement, columnIndex);
 
     int errcode = sqlite3_errcode(priv->connection->priv->connection);
     if (!result && errcode != SQLITE_OK && errcode != SQLITE_ROW)
         throw priv->connection->buildException();
+    else if (!result && columnIsNull(columnIndex))
+        throw DatabaseIntegrityException("Column is NULL!");
 
     return result;
 }
@@ -115,8 +129,12 @@ int SqlitePreparedStatement::columnInt(const string & fullColumnName) {
 
 string SqlitePreparedStatement::columnString(int columnIndex) {
     auto column = (const char *)sqlite3_column_text(priv->statement, columnIndex);
-    if (!column)
+    
+    int errcode = sqlite3_errcode(priv->connection->priv->connection);
+    if (!column && errcode != SQLITE_OK && errcode != SQLITE_ROW)
         throw priv->connection->buildException();
+    else if (!column && columnIsNull(columnIndex))
+        throw DatabaseIntegrityException("Column is NULL!");
 
     return string(column);
 }
