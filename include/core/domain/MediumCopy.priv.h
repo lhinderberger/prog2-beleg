@@ -6,6 +6,7 @@
 
 #include "Medium.h"
 #include "core/Database.h"
+#include "core/DatabaseObjectFactory.h"
 #include "core/ManyToOneLazyLoader.h"
 
 namespace pb2 {
@@ -13,7 +14,7 @@ namespace pb2 {
     public:
         MediumCopy_priv(std::shared_ptr<Database> database) : medium(database, "ean") {}
 
-        ManyToOneLazyLoader<Medium,std::string> medium;
+        ManyToOneLazyLoader<Medium,std::string,PolymorphicDatabaseObjectFactory<Medium>> medium;
         bool deaccessioned;
         std::string location;
         int serialNumber;
