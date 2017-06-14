@@ -59,7 +59,7 @@ TEST(SQLAbstractionTest, PersistAuthorTest) {
 
     /* Query for author and ensure they're equal */
     SqlitePreparedStatement query(connection, string("SELECT * FROM ") + Author::tableName + " WHERE id = ?");
-    query.bindInt(1, 123);
+    query.bind(1, 123);
     query.step();
 
     auto author2 = authorFactory.load(query);

@@ -9,8 +9,9 @@ const char * initializingSQL = R"---(
     );
     CREATE TABLE media(
         ean TEXT PRIMARY KEY,
-        type TEXT,
-        format TEXT, title TEXT, subtitle TEXT, author_id INTEGER,
+        author_id INTEGER,
+        type TEXT NOT NULL,
+        format TEXT, title TEXT, subtitle TEXT,
         FOREIGN KEY(author_id) REFERENCES authors(id)
     );
     CREATE TABLE media_copies(

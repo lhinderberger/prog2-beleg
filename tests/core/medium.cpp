@@ -102,8 +102,8 @@ TEST(MediumTest, CopyPersistLoadTest) {
     connection->commit();
 
     /* Query for medium */
-    SqlitePreparedStatement query(connection, "SELECT * FROM medium WHERE ean = ?");
-    query.bindString(1, medium->getEAN());
+    SqlitePreparedStatement query(connection, "SELECT * FROM " + Medium::tableName + " WHERE ean = ?");
+    query.bind(1, medium->getEAN());
     query.step();
 
     auto medium2 = softwareFactory.load(query);
@@ -111,7 +111,8 @@ TEST(MediumTest, CopyPersistLoadTest) {
     EXPECT_EQ(medium->getEAN(), medium2->getEAN());
     EXPECT_EQ(medium->getAuthor()->getId(), medium2->getAuthor()->getId());
     EXPECT_EQ(medium->getFormat(), medium2->getFormat());
-    EXPECT_EQ(medium->getTitle(), medium2->getSubtitle());
+    EXPECT_EQ(medium->getTitle(), medium2->getTitle());
+    EXPECT_EQ(medium->getSubtitle(), medium2->getSubtitle());
 
     auto copies = medium2->queryCopies();
     EXPECT_EQ(2, copies.size());

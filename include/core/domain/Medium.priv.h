@@ -11,7 +11,7 @@
 namespace pb2 {
     class Medium_priv {
     public:
-        Medium_priv(std::shared_ptr<Database> database) : author(database, "author_id") {}
+        Medium_priv(std::shared_ptr<Database> database) : author(database, "id") {}
 
         std::string ean, format, subtitle, title;
         ManyToOneLazyLoader<Author,int> author;

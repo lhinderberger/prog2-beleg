@@ -115,8 +115,8 @@ unique_ptr<AbstractDatabaseObjectFactory> Medium::polymorphicFactory(
 void Medium::persistImpl() {
     /* Prepare statement */
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<Medium>({"format", "title", "subtitle", "author_id"}, "WHERE ean=?") :
-        buildInsertQuery<Medium>({"format", "title", "subtitle", "author_id", "ean"}, 1)
+        buildUpdateQuery<Medium>({"format", "title", "subtitle", "author_id", "type"}, "WHERE ean=?") :
+        buildInsertQuery<Medium>({"format", "title", "subtitle", "author_id", "type", "ean"}, 1)
     );
 
     /* Bind parameters */
@@ -124,7 +124,8 @@ void Medium::persistImpl() {
     statement.bind(2, priv->title);
     statement.bind(3, priv->subtitle);
     //Param #4: See below
-    statement.bind(5, priv->ean);
+    statement.bind(5, getType());
+    statement.bind(6, priv->ean);
 
     /* Bind author primary key */
     int primaryKey = 0;
