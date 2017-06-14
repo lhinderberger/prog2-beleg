@@ -37,6 +37,16 @@ namespace pb2 {
         inline virtual const char * what() const noexcept override { return description.c_str(); }
     };
 
+    class DatabaseIntegrityException : public CoreException {
+    private:
+        std::string description;
+
+    public:
+        DatabaseIntegrityException(const std::string & description) { this->description = description; }
+
+        inline virtual const char * what() const noexcept override { return description.c_str(); }
+    };
+
     class FileExistsException : public CoreException {
     private:
         std::string filename;
