@@ -10,7 +10,7 @@
 #include "sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
-    template<class ConcreteDatabaseObject, typename PrimaryKeyType>
+    template<class ConcreteDatabaseObject, typename PrimaryKeyType, class FactoryClass = DatabaseObjectFactory<ConcreteDatabaseObject>>
     class ManyToOneLazyLoader {
         static_assert(std::is_base_of<DatabaseObject, ConcreteDatabaseObject>::value,
                       "ManyToOneLazyLoader can only handle subclasses of DatabaseObject!");
@@ -30,8 +30,10 @@ namespace pb2 {
             SqlitePreparedStatement query(database->getConnection(), sql);
 
             /* Create new object from statement result */
-            query.step();
-            ptr = DatabaseObjectFactory<ConcreteDatabaseObject>(database).load(query);
+            query.bind(1, *primaryKey);
+            if (!query.step())
+                throw DatabaseIntegrityException("Query " + sql + " returned no result!"); //TODO: Include primary key with error message somehow
+            ptr = FactoryClass(database).load(query);
             primaryKey = nullptr;
         }
 
