@@ -3,7 +3,13 @@
 #include "core/domain/Medium.h"
 #include "core/domain/Medium.priv.h"
 
+#include "core/domain/Audio.h"
+#include "core/domain/Book.h"
+#include "core/domain/Software.h"
+#include "core/domain/Video.h"
+
 #include <cctype>
+#include <iostream>
 
 using namespace pb2;
 using namespace std;
@@ -86,6 +92,25 @@ Medium::Medium(shared_ptr<Database> database, SqlitePreparedStatement & query,
 
 Medium::~Medium() = default;
 
+
+unique_ptr<AbstractDatabaseObjectFactory> Medium::polymorphicFactory(
+        shared_ptr<Database> database, const string & type) {
+    unique_ptr<AbstractDatabaseObjectFactory> factory = nullptr;
+    if (type == "audio")
+        factory.reset(new DatabaseObjectFactory<Audio>(database));
+    else if (type == "book")
+        factory.reset(new DatabaseObjectFactory<Book>(database));
+    else if (type == "software")
+        factory.reset(new DatabaseObjectFactory<Software>(database));
+    else if (type == "video")
+        factory.reset(new DatabaseObjectFactory<Video>(database));
+    else {
+        cerr << "Warning: invalid polymorphic type requested: " << type << endl;
+        return nullptr;
+    }
+
+    return std::move(factory);
+}
 
 void Medium::persistImpl() {
     /* Prepare statement */

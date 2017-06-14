@@ -34,6 +34,10 @@ namespace pb2 {
         static const std::string tableName;
         static const std::set<std::string> & allowedFormats();
 
+        static std::unique_ptr<AbstractDatabaseObjectFactory> polymorphicFactory(
+            std::shared_ptr<Database> database, const std::string & type
+        );
+
         virtual ~Medium();
 
         /**
