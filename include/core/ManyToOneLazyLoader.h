@@ -22,7 +22,7 @@ namespace pb2 {
 
         void load() {
             if (!primaryKey)
-                throw std::logic_error("Cannot load without primary key!");
+                return; // If there's no primary key, there's nothing we can do.
 
             /* Prepare statement */
             auto sql = std::string("SELECT * FROM ") + ConcreteDatabaseObject::tableName + " WHERE "
