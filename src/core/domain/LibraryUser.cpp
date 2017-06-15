@@ -38,9 +38,6 @@ string LibraryUser::getFirstName() const {
 }
 
 void LibraryUser::setFirstName(const string & firstName) {
-    //TODO: Validate
-    throw NotImplementedException();
-
     priv->firstName = firstName;
 }
 
@@ -49,9 +46,6 @@ string LibraryUser::getLastName() const {
 }
 
 void LibraryUser::setLastName(const string & lastName) {
-    //TODO: Validate
-    throw NotImplementedException();
-
     priv->lastName = lastName;
 }
 
@@ -60,17 +54,13 @@ TelephoneNumber LibraryUser::getTelephone() const {
 }
 
 void LibraryUser::setTelephone(const TelephoneNumber & telephone) {
-    //TODO: Validate?
-    throw NotImplementedException();
-
     priv->telephone = telephone;
 }
 
 shared_ptr<PostalAddress> LibraryUser::getPostalAddress() const {
-    //TODO: Lazy loading?
-    return priv->postalAddress;
+    return priv->postalAddress.get();
 }
 
 void LibraryUser::setPostalAddress(shared_ptr<PostalAddress> postalAddress) {
-    priv->postalAddress = postalAddress;
+    priv->postalAddress.set(postalAddress);
 }

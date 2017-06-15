@@ -3,6 +3,7 @@
 
 #include "TelephoneNumber.h"
 #include "PostalAddress.h"
+#include "core/ManyToOneLazyLoader.h"
 
 #include <memory>
 #include <string>
@@ -12,7 +13,7 @@ namespace pb2 {
         int id;
         std::string firstName, lastName;
         TelephoneNumber telephone;
-        std::shared_ptr<PostalAddress> postalAddress;
+        ManyToOneLazyLoader<PostalAddress, int> postalAddress;
     };
 }
 
