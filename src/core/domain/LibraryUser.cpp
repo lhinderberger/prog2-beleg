@@ -2,6 +2,8 @@
 #include "core/domain/LibraryUser.h"
 #include "core/domain/LibraryUser.priv.h"
 
+#include "core/query-builder.h"
+
 using namespace std;
 using namespace pb2;
 
@@ -18,14 +20,42 @@ LibraryUser::LibraryUser(
         shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
-    throw NotImplementedException();
+    priv = make_unique<LibraryUser_priv>(database);
+
+    priv->id = query.columnInt(columnIndexes.at("id"));
+    priv->firstName = query.columnString(columnIndexes.at("first_name"));
+    priv->lastName = query.columnString(columnIndexes.at("last_name"));
+    priv->telephone.fromFQTN(query.columnString(columnIndexes.at("telephone")));
+    priv->postalAddress.set(query.columnInt(columnIndexes.at("postal_address_id")));
 }
 
 LibraryUser::~LibraryUser() = default;
 
 
 void LibraryUser::persistImpl() {
-    throw NotImplementedException();
+    /* Prepare statement */
+    SqlitePreparedStatement statement(getConnection(), isLoaded() ?
+        buildUpdateQuery<LibraryUser>({"first_name", "last_name", "telephone", "postal_address_id"}, "WHERE id=?") :
+        buildInsertQuery<LibraryUser>({"first_name", "last_name", "telephone", "postal_address_id", "id"}, 1)
+    );
+
+    /* Bind parameters */
+    statement.bind(1, priv->firstName);
+    statement.bind(2, priv->lastName);
+    statement.bind(3, priv->telephone.toFQTN());
+    //Param #4: See below
+    statement.bind(5, priv->id);
+
+    /* Bind postal address primary key */
+    int primaryKey = 0;
+    if (priv->postalAddress.isPrimaryKeySet())
+        primaryKey = priv->postalAddress.getPrimaryKey();
+    else if(priv->postalAddress.isLoaded())
+        primaryKey = priv->postalAddress->getId();
+    statement.bind(4, primaryKey);
+
+    /* Execute */
+    statement.step();
 }
 
 
