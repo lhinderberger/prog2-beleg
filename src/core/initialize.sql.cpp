@@ -22,5 +22,14 @@ const char * initializingSQL = R"---(
         PRIMARY KEY(medium_ean, serial_number),
         FOREIGN KEY(medium_ean) REFERENCES media(ean)
     );
+    CREATE TABLE postal_addresses(
+        id INT PRIMARY KEY,
+        street TEXT NOT NULL,
+        house_number TEXT NOT NULL,
+        addition TEXT NOT NULL,
+        zip TEXT NOT NULL,
+        city TEXT NOT NULL,
+        CONSTRAINT address_unique UNIQUE (street, house_number, addition, zip, city)
+    );
     INSERT INTO meta(name, value) VALUES('version', '1');
 )---";
