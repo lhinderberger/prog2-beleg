@@ -9,7 +9,7 @@ const string LibraryUser::tableName = "library_users";
 
 LibraryUser::LibraryUser(shared_ptr<Database> database, int id)
         : DatabaseObject(database) {
-    priv = make_unique<LibraryUser_priv>();
+    priv = make_unique<LibraryUser_priv>(database);
 
     priv->id = id;
 }

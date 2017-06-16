@@ -10,6 +10,8 @@
 
 namespace pb2 {
     struct LibraryUser_priv {
+        LibraryUser_priv(std::shared_ptr<Database> database) : postalAddress(database, "id") {}
+
         int id;
         std::string firstName, lastName;
         TelephoneNumber telephone;
