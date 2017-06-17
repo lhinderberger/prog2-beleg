@@ -17,18 +17,19 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
     priv->timestampReturned = 0;
 
     /* Copy relationship pointers */
-    assert(mediumCopy);
+    if (!mediumCopy)
+        throw NullPointerException();
     priv->mediumCopy = mediumCopy;
-    assert(libraryUser);
+    if (!libraryUser)
+        throw NullPointerException();
     priv->libraryUser = libraryUser;
 
     /* Set starting timestamp */
-    //TODO: Validate!
-    throw NotImplementedException();
     priv->timestampLent = timestampLent;
 
     /* Initialize runtime with default value */
     //TODO: Where to configure??
+    throw NotImplementedException();
     priv->runtime = 14;
 }
 
@@ -60,10 +61,12 @@ time_t Lending::getTimestampLent() const {
 
 void Lending::extend(int days) {
     throw NotImplementedException();
+    //TODO: Extension API seems not ready yet...
 }
 
 int Lending::getDaysLeft() const {
-    throw NotImplementedException();
+    time_t now = time(NULL);
+    return (int)((priv->timestampLent + priv->runtime - now) / 60 / 60 / 24); //TODO: Change if extension API changes
 }
 
 unsigned int Lending::getRuntime() const {
@@ -71,7 +74,9 @@ unsigned int Lending::getRuntime() const {
 }
 
 time_t Lending::getTimestampReturned() const {
-    throw NotImplementedException();
+    if (!priv->timestampReturned)
+        throw LendingNotReturnedException();
+    return priv->timestampReturned;
 }
 
 unsigned int Lending::getTimesExtended() const {

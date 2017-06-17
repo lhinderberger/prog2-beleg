@@ -17,6 +17,11 @@ namespace pb2 {
         NotImplementedException() {}
     };
 
+    class LendingNotReturnedException : public CoreException {
+    public:
+        LendingNotReturnedException() {}
+    };
+
     class NullPointerException : public CoreException {
     public:
         NullPointerException() {}
