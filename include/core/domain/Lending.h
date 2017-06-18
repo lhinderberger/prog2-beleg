@@ -61,15 +61,21 @@ namespace pb2 {
         void extend();
 
         /**
+         * Calls extend with the given number of days and a time reference of now.
+         * @param days
+         */
+        void extend(int days);
+
+        /**
          * Extends the Lending's runtime by a given number of days starting from the
          * current date.
          * Also increments the timesExtended counter.
-         * @param days Days from today to set the due date to.
+         * @param days Days from the reference time to set the due date to.
          *
          * Caution: If the current due date is higher than the new due date achieved
          * through this function, this function aborts with NotExtensibleException.
          */
-        void extend(int days);
+        void extend(time_t reference, int days);
 
         /**
          * Calculate how many days are left for the user to return the Medium. This can
@@ -79,6 +85,14 @@ namespace pb2 {
          * timestampLent and timestampReturned will be returned.
          */
         int getDaysLeft() const;
+
+        /**
+         * Calculate how many days are left for the user to return the Medium, presuming
+         * reference is the current timestamp.
+         * If timestampReturned is lesser than reference, the difference in
+         * days between timestampLent and timestampReturned will be returned.
+         */
+        int getDaysLeft(time_t reference) const;
 
         /**
          * Returns a date structure (std::tm) that contains the day when the Lending is due

@@ -63,12 +63,15 @@ void Lending::extend() {
 }
 
 void Lending::extend(int days) {
+    extend(time(NULL), days);
+}
+
+void Lending::extend(time_t reference, int days) {
     if (days <= 0)
         throw logic_error("Extend Days cannot be zero or negative!");
 
     /* Calculate new due date */
-    time_t tsNow = time(nullptr);
-    std::tm newDueDate = *localtime(&tsNow);
+    std::tm newDueDate = *localtime(&reference);
     newDueDate.tm_mday += days;
     newDueDate.tm_hour = newDueDate.tm_min = newDueDate.tm_sec = 0;
 
@@ -84,7 +87,12 @@ void Lending::extend(int days) {
 }
 
 int Lending::getDaysLeft() const {
-    time_t reference = isReturned() ? priv->timestampReturned : time(NULL);
+    return getDaysLeft(time(NULL));
+}
+
+int Lending::getDaysLeft(time_t reference) const {
+    if (isReturned() && priv->timestampReturned < reference)
+        reference = priv->timestampReturned;
     return (int)((mktime(&priv->dueDate) - reference) / 60 / 60 / 24); //TODO: Write test!
 }
 
