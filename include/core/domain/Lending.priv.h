@@ -12,7 +12,8 @@ namespace pb2 {
         std::shared_ptr<MediumCopy> mediumCopy;
         std::shared_ptr<LibraryUser> libraryUser;
         time_t timestampLent, timestampReturned;
-        unsigned int runtime, timesExtended;
+        std::tm dueDate;
+        unsigned int timesExtended;
     };
 }
 

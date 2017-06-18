@@ -22,6 +22,11 @@ namespace pb2 {
         LendingNotReturnedException() {}
     };
 
+    class NotExtensibleException : public CoreException {
+    public:
+        NotExtensibleException() {}
+    };
+
     class NullPointerException : public CoreException {
     public:
         NullPointerException() {}

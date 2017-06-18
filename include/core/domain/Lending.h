@@ -29,7 +29,8 @@ namespace pb2 {
          * @param libraryUser The user to lend the medium. Must be eligible for new lending.
          * @param timestampLent The beginning time point of the Lending. Must be unique
          * for each mediumCopy. Pass in -1 to take the current time.
-         * @return
+         *
+         * The due date will be calculated from the meta/configuration value 'default_lending_runtime'
          */
         Lending(
                 std::shared_ptr<Database> database,
@@ -54,10 +55,21 @@ namespace pb2 {
         time_t getTimestampLent() const;
 
         /**
-         * Extends the Lending's runtime by a given number of days.
-         * @param days
+         * Calls extend(int) with the default number of days specified in meta value
+         * 'default_extend_days'.
          */
-        void extend(int days = -1);
+        void extend();
+
+        /**
+         * Extends the Lending's runtime by a given number of days starting from the
+         * current date.
+         * Also increments the timesExtended counter.
+         * @param days Days from today to set the due date to.
+         *
+         * Caution: If the current due date is higher than the new due date achieved
+         * through this function, this function aborts with NotExtensibleException.
+         */
+        void extend(int days);
 
         /**
          * Calculate how many days are left for the user to return the Medium. This can
@@ -69,10 +81,10 @@ namespace pb2 {
         int getDaysLeft() const;
 
         /**
-         * Returns for how many days the medium is lent to the LibraryUser, starting with
-         * the day of timestampLent.
+         * Returns a date structure (std::tm) that contains the day when the Lending is due
+         * for return.
          */
-        unsigned int getRuntime() const;
+        std::tm getDueDate() const;
 
         /**
          * If the user has already returned the medium, this will return the timestamp

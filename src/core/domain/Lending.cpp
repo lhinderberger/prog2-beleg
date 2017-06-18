@@ -2,7 +2,7 @@
 #include "core/domain/Lending.priv.h"
 #include "core/exceptions.h"
 
-#include <cassert>
+#include <cstdlib>
 
 using namespace std;
 using namespace pb2;
@@ -27,10 +27,9 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
     /* Set starting timestamp */
     priv->timestampLent = timestampLent;
 
-    /* Initialize runtime with default value */
-    //TODO: Where to configure??
-    throw NotImplementedException();
-    priv->runtime = 14;
+    /* Initialize due date with default value */
+    priv->dueDate = *localtime(&priv->timestampLent);
+    priv->dueDate.tm_mday += atoi(getDatabase()->getMeta("default_lending_runtime").c_str());
 }
 
 Lending::Lending(
@@ -59,18 +58,38 @@ time_t Lending::getTimestampLent() const {
     return priv->timestampLent;
 }
 
+void Lending::extend() {
+    extend(atoi(getDatabase()->getMeta("default_extend_days").c_str()));
+}
+
 void Lending::extend(int days) {
-    throw NotImplementedException();
-    //TODO: Extension API seems not ready yet...
+    if (days <= 0)
+        throw logic_error("Extend Days cannot be zero or negative!");
+
+    /* Calculate new due date */
+    time_t tsNow = time(nullptr);
+    std::tm newDueDate = *localtime(&tsNow);
+    newDueDate.tm_mday += days;
+    newDueDate.tm_hour = newDueDate.tm_min = newDueDate.tm_sec = 0;
+
+    /* Compare due dates */
+    time_t tsNew = mktime(&newDueDate);
+    time_t tsOld = mktime(&priv->dueDate);
+    if (tsNew <= tsOld)
+        throw NotExtensibleException();
+
+    /* Set new due date; increment counter */
+    priv->dueDate = newDueDate;
+    priv->timesExtended++;
 }
 
 int Lending::getDaysLeft() const {
-    time_t now = time(NULL);
-    return (int)((priv->timestampLent + priv->runtime - now) / 60 / 60 / 24); //TODO: Change if extension API changes
+    time_t reference = isReturned() ? priv->timestampReturned : time(NULL);
+    return (int)((mktime(&priv->dueDate) - reference) / 60 / 60 / 24); //TODO: Write test!
 }
 
-unsigned int Lending::getRuntime() const {
-    return priv->runtime;
+std::tm Lending::getDueDate() const {
+    return priv->dueDate;
 }
 
 time_t Lending::getTimestampReturned() const {
