@@ -10,8 +10,14 @@ Database::Database(shared_ptr<SqliteConnection> connection) {
     if (!connection)
         throw NullPointerException();
 
+    /* Initialize */
     priv = make_unique<Database_priv>();
     priv->connection = connection;
+
+    /* Load meta values */
+    SqlitePreparedStatement query(connection, "SELECT name, value FROM meta");
+    while (query.step())
+        priv->meta[query.columnString(0)] = query.columnString(1);
 }
 
 Database::~Database() = default;
@@ -68,4 +74,36 @@ int Database::getFormatVersion(shared_ptr<SqliteConnection> connection) {
 
 shared_ptr<SqliteConnection> Database::getConnection() const {
     return priv->connection;
+}
+
+const map<string,string>& Database::getMeta() const {
+    return priv->meta;
+}
+
+string Database::getMeta(const string & name) const {
+    return priv->meta.at(name);
+}
+
+void Database::setMeta(const string & name, const string & value) {
+    priv->connection->rollback();
+
+    auto existingIt = priv->meta.find(name);
+    bool insert = existingIt == priv->meta.end();
+
+    /* Insert into database */
+    SqlitePreparedStatement statement(
+        priv->connection,
+        insert ? "INSERT INTO meta(value, name) VALUES(?,?)" : "UPDATE meta SET value=? WHERE name=?"
+    );
+    statement.bind(1, value);
+    statement.bind(2, name);
+    statement.step();
+
+    priv->connection->commit();
+
+    /* Insert into cache */
+    if (insert)
+        priv->meta.insert({name, value});
+    else
+        existingIt->second = value;
 }
