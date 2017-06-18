@@ -20,6 +20,7 @@ Database::~Database() = default;
 shared_ptr<Database> Database::initialize(shared_ptr<SqliteConnection> connection) {
     /* Run initializing SQL */
     connection->executeSQL(initializingSQL);
+    connection->commit();
 
     /* Open and return Database object */
     return open(connection);
