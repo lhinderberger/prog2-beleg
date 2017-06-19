@@ -9,6 +9,8 @@
 #include "core/exceptions.h"
 #include "core/DatabaseObjectFactory.h"
 
+#include "common.h"
+
 using namespace std;
 using namespace pb2;
 
@@ -25,9 +27,7 @@ const string valid_isbn = "3-12-732320-4";
 /*
  * Tests EAN validation on Media object construction
  */
-TEST(MediumTest, EANValidationTest) {
-    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Consider fixture
-    auto database = Database::initialize(connection);
+TEST_F(DatabaseFixture, MediumEANValidationTest) {
     auto bookFactory = BookFactory(database);
     auto softwareFactory = SoftwareFactory(database);
 
@@ -49,9 +49,7 @@ TEST(MediumTest, EANValidationTest) {
 /*
  * Tests general input validation for Media objects
  */
-TEST(MediumTest, GeneralValidationTest) {
-    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Consider fixture
-    auto database = Database::initialize(connection);
+TEST_F(DatabaseFixture, MediumGeneralValidationTest) {
     auto bookFactory = BookFactory(database);
 
     auto medium = bookFactory.construct(valid_isbn);
@@ -69,9 +67,7 @@ TEST(MediumTest, GeneralValidationTest) {
 /*
  * Tests whether MediumCopy entities are correctly persisted and restored.
  */
-TEST(MediumTest, CopyPersistLoadTest) {
-    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Consider fixture
-    auto database = Database::initialize(connection);
+TEST_F(DatabaseFixture, MediumCopyPersistLoadTest) {
     auto authorFactory = AuthorFactory(database);
     auto mediumCopyFactory = MediumCopyFactory(database);
     auto softwareFactory = SoftwareFactory(database);

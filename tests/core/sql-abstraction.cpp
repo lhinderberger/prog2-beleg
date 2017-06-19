@@ -8,6 +8,8 @@
 #include "core/sqlite/SqliteConnection.h"
 #include "core/sqlite/SqlitePreparedStatement.h"
 
+#include "common.h"
+
 using namespace std;
 using namespace pb2;
 
@@ -16,8 +18,7 @@ using AuthorFactory = pb2::DatabaseObjectFactory<Author>;
 /*
  * Learning test to find out which error codes SQLite emits on common SQL failures.
  */
-TEST(SQLAbstractionTest, SQLFailureCodesTest) {
-    auto connection = SqliteConnection::construct(":memory:", true);
+TEST_F(ConnectionFixture, SQLFailureCodesTest) {
     try {
         SqlitePreparedStatement query(connection, "SELECT * FROM tblDoesntexist");
     }
@@ -29,8 +30,7 @@ TEST(SQLAbstractionTest, SQLFailureCodesTest) {
 /**
  * Find out if full column names are derived correctly
  */
-TEST(SQLAbstractionTest, FullColumnNamesTest) {
-    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Move to fixture
+TEST_F(ConnectionFixture, FullColumnNamesTest) {
     connection->executeSQL("CREATE TABLE test(id INT PRIMARY KEY, value TEXT); INSERT INTO test VALUES(1,'bla'),(2,'blubb');");
 
     SqlitePreparedStatement query(connection, "SELECT id, value AS valueAlias, COUNT(*), COUNT(*) AS bla FROM test as testi");
@@ -45,9 +45,7 @@ TEST(SQLAbstractionTest, FullColumnNamesTest) {
 /**
  * Basic test to find out if SQL persist / load works as intended.
  */
-TEST(SQLAbstractionTest, PersistAuthorTest) {
-    auto connection = SqliteConnection::construct(":memory:", true); //TODO: Move to fixture
-    auto database = Database::initialize(connection);
+TEST_F(DatabaseFixture, PersistAuthorTest) {
     auto authorFactory = AuthorFactory(database);
 
     /* Create and persist new author */
@@ -72,6 +70,6 @@ TEST(SQLAbstractionTest, PersistAuthorTest) {
 /**
  * Basic test to ensure that rollback works as intended
  */
-TEST(SQLAbstractionTest, RollbackTest) {
+TEST_F(DatabaseFixture, RollbackTest) {
     //TODO
 }
