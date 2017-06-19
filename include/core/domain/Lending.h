@@ -28,7 +28,7 @@ namespace pb2 {
          * @param mediumCopy The medium to be lent to the user.
          * @param libraryUser The user to lend the medium. Must be eligible for new lending.
          * @param timestampLent The beginning time point of the Lending. Must be unique
-         * for each mediumCopy. Pass in -1 to take the current time.
+         * for each mediumCopy.
          *
          * The due date will be calculated from the meta/configuration value 'default_lending_runtime'
          */
@@ -37,6 +37,15 @@ namespace pb2 {
                 std::shared_ptr<MediumCopy> mediumCopy,
                 std::shared_ptr<LibraryUser> libraryUser,
                 time_t timestampLent
+        );
+
+        /**
+         * Calls the constructor with the current timestamp.
+         */
+        Lending(
+                std::shared_ptr<Database> database,
+                std::shared_ptr<MediumCopy> mediumCopy,
+                std::shared_ptr<LibraryUser> libraryUser
         );
 
         PB2_DECLARE_LOAD_CONSTRUCTOR(Lending);

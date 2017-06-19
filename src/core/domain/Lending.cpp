@@ -32,6 +32,10 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
     priv->dueDate.tm_mday += atoi(getDatabase()->getMeta("default_lending_runtime").c_str());
 }
 
+Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
+                 shared_ptr<LibraryUser> libraryUser)
+        : Lending(database, mediumCopy, libraryUser, time(NULL)) {}
+
 Lending::Lending(
         shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
