@@ -25,7 +25,7 @@ LibraryUser::LibraryUser(
     priv->id = query.columnInt(columnIndexes.at("id"));
     priv->firstName = query.columnString(columnIndexes.at("first_name"));
     priv->lastName = query.columnString(columnIndexes.at("last_name"));
-    priv->telephone.fromFQTN(query.columnString(columnIndexes.at("telephone")));
+    priv->telephone = query.columnString(columnIndexes.at("telephone"));
     priv->postalAddress.set(query.columnInt(columnIndexes.at("postal_address_id")));
 }
 
@@ -42,7 +42,7 @@ void LibraryUser::persistImpl() {
     /* Bind parameters */
     statement.bind(1, priv->firstName);
     statement.bind(2, priv->lastName);
-    statement.bind(3, priv->telephone.toFQTN());
+    statement.bind(3, priv->telephone);
     //Param #4: See below
     statement.bind(5, priv->id);
 
@@ -79,11 +79,11 @@ void LibraryUser::setLastName(const string & lastName) {
     priv->lastName = lastName;
 }
 
-TelephoneNumber LibraryUser::getTelephone() const {
+string LibraryUser::getTelephone() const {
     return priv->telephone;
 }
 
-void LibraryUser::setTelephone(const TelephoneNumber & telephone) {
+void LibraryUser::setTelephone(const string & telephone) {
     priv->telephone = telephone;
 }
 

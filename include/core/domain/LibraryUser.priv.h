@@ -1,7 +1,6 @@
 #ifndef PROG2_BELEG_LIBRARY_USER_PRIV_H
 #define PROG2_BELEG_LIBRARY_USER_PRIV_H
 
-#include "TelephoneNumber.h"
 #include "PostalAddress.h"
 #include "core/ManyToOneLazyLoader.h"
 
@@ -13,8 +12,7 @@ namespace pb2 {
         LibraryUser_priv(std::shared_ptr<Database> database) : postalAddress(database, "id") {}
 
         int id;
-        std::string firstName, lastName;
-        TelephoneNumber telephone;
+        std::string firstName, lastName, telephone;
         ManyToOneLazyLoader<PostalAddress, int> postalAddress;
     };
 }

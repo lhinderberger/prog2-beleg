@@ -7,7 +7,6 @@
 #include "core/DatabaseObject.h"
 #include "core/DatabaseObjectFactory.h"
 #include "PostalAddress.h"
-#include "TelephoneNumber.h"
 
 namespace pb2 {
     class LibraryUser_priv;
@@ -44,8 +43,8 @@ namespace pb2 {
         std::string getLastName() const;
         void setLastName(const std::string & lastName);
 
-        TelephoneNumber getTelephone() const;
-        void setTelephone(const TelephoneNumber & telephone);
+        std::string getTelephone() const;
+        void setTelephone(const std::string & telephone);
 
 
         /** Lazy-loads the postal address of the LibraryUser */
