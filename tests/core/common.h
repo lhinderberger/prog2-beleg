@@ -33,5 +33,6 @@ const std::string invalid_ean = "1 234567 89012-3";
 const std::string valid_ean = "5 449000 09624-1";
 const std::string invalid_isbn = "1-23-456789-0";
 const std::string valid_isbn = "3-12-732320-4";
+const time_t someTimestamp = 1479859200; // Choose a fixed timestamp to keep test result reproducible
 
 #endif
