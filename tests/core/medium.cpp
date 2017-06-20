@@ -19,11 +19,6 @@ using BookFactory = DatabaseObjectFactory<Book>;
 using SoftwareFactory = DatabaseObjectFactory<Software>;
 using MediumCopyFactory = DatabaseObjectFactory<MediumCopy>;
 
-const string invalid_ean = "1 234567 89012-3";
-const string valid_ean = "5 449000 09624-1";
-const string invalid_isbn = "1-23-456789-0";
-const string valid_isbn = "3-12-732320-4";
-
 /*
  * Tests EAN validation on Media object construction
  */
