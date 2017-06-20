@@ -17,8 +17,7 @@ namespace pb2 {
 
         /**
          * Creates a new Book Medium
-         * @param isbn Either supply an EAN-13 or the keyword "generate" here (as
-         * specified in the constructor of Medium) or enter any valid ISBN-10 for it to
+         * @param isbn Either supply an EAN-13 or enter any valid ISBN-10 for it to
          * be transferred into the corresponding EAN-13.
          */
         Book(std::shared_ptr<Database> database, const std::string & isbn);

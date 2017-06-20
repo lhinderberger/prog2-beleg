@@ -21,8 +21,8 @@ namespace pb2 {
         /**
          * Creates a new Medium
          *
-         * @param ean A valid EAN number or the string "generate" to generate a new,
-         * unused local EAN number in the GS1 020-029 range on insertion.
+         * @param ean A valid EAN number. If the medium does not have an EAN number, you
+         * can use a custom, unused local EAN number in the GS1 020-029 range.
          */
         Medium(std::shared_ptr<Database> database, const std::string & ean);
         Medium(std::shared_ptr<Database> database, const std::vector<int> & eanDigits);
