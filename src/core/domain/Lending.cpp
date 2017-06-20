@@ -28,7 +28,9 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
     priv->timestampLent = timestampLent;
 
     /* Initialize due date with default value */
-    priv->dueDate = *localtime(&priv->timestampLent);
+    priv->dueDate = *gmtime(&priv->timestampLent);
+    priv->dueDate.tm_hour = 23;
+    priv->dueDate.tm_min = priv->dueDate.tm_sec = 59;
     priv->dueDate.tm_mday += atoi(getDatabase()->getMeta("default_lending_runtime").c_str());
 }
 
@@ -75,9 +77,10 @@ void Lending::extend(time_t reference, int days) {
         throw logic_error("Extend Days cannot be zero or negative!");
 
     /* Calculate new due date */
-    std::tm newDueDate = *localtime(&reference);
+    std::tm newDueDate = *gmtime(&reference);
     newDueDate.tm_mday += days;
-    newDueDate.tm_hour = newDueDate.tm_min = newDueDate.tm_sec = 0;
+    newDueDate.tm_hour = 23;
+    newDueDate.tm_min = newDueDate.tm_sec = 59;
 
     /* Compare due dates */
     time_t tsNew = mktime(&newDueDate);
@@ -97,7 +100,7 @@ int Lending::getDaysLeft() const {
 int Lending::getDaysLeft(time_t reference) const {
     if (isReturned() && priv->timestampReturned < reference)
         reference = priv->timestampReturned;
-    return (int)((mktime(&priv->dueDate) - reference) / 60 / 60 / 24); //TODO: Write test!
+    return (int)((mktime(&priv->dueDate) + priv->dueDate.tm_gmtoff - reference) / 60 / 60 / 24); //TODO: Write test!
 }
 
 std::tm Lending::getDueDate() const {

@@ -77,7 +77,7 @@ namespace pb2 {
 
         /**
          * Extends the Lending's runtime by a given number of days starting from the
-         * current date.
+         * reference date.
          * Also increments the timesExtended counter.
          * @param days Days from the reference time to set the due date to.
          *
@@ -128,16 +128,25 @@ namespace pb2 {
         inline bool isOverdue() const { return getDaysLeft() < 0 && !isReturned(); }
 
         /**
+         * Convenience function for (getDaysLeft() < 0 && !isReturned())
+         */
+        inline bool isOverdue(time_t reference) const { return getDaysLeft(reference) < 0 && !isReturned(); }
+
+        /**
          * Has the user returned the medium yet?
          */
         bool isReturned() const;
 
         /**
          * To finalize the Lending by the User returning it, call this function.
-         * @param timestampReturned Pass in -1 to use the current timestamp. Otherwise
-         * pass any timestamp greater than timestampLent.
+         * @param timestampReturned Pass any timestamp greater than timestampLent.
          */
-        void returnL(time_t timestampReturned = -1);
+        void returnL(time_t timestampReturned);
+
+        /**
+         * Calls returnL with the current timestamp
+         */
+        void returnL();
     };
 }
 
