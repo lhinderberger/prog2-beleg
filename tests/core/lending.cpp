@@ -38,7 +38,7 @@ TEST_F(LendingFixture, LendingDateAndStateTest) {
     lending->returnL(extensionPoint + 90000);
     EXPECT_EQ(lending->isReturned(), true);
     EXPECT_EQ(lending->getTimesExtended(), 1);
-    EXPECT_EQ(lending->getDaysLeft(extensionPoint + 9999999), defaultRuntime + defaultExtension - 2);
+    EXPECT_EQ(lending->getDaysLeft(extensionPoint + 9999999), defaultExtension - 1);
 }
 
 /*
