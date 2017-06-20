@@ -88,3 +88,7 @@ void SqliteConnection::executeSQL(const string & query) {
     if (sqlite3_exec(priv->connection, query.c_str(), nullptr, nullptr, nullptr))
         throw buildException();
 }
+
+sqlite3_int64 SqliteConnection::lastInsertRowId() {
+    return sqlite3_last_insert_rowid(priv->connection);
+}

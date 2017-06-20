@@ -77,6 +77,11 @@ namespace pb2 {
          * @return
          */
         SqliteException buildException();
+
+        /**
+         * Returns the row ID of the last insert (i.e. for auto-generation of primary keys).
+         */
+        sqlite3_int64 lastInsertRowId();
     };
 }
 
