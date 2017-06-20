@@ -59,7 +59,7 @@ TEST_F(LendingFixture, LendingLoadPersistTest) {
     EXPECT_EQ(lending->getMediumCopy()->getMedium()->getEAN(), lending2->getMediumCopy()->getMedium()->getEAN());
     EXPECT_EQ(lending->getMediumCopy()->getSerialNumber(), lending2->getMediumCopy()->getSerialNumber());
     EXPECT_EQ(lending->getTimestampLent(), lending2->getTimestampLent());
-    EXPECT_EQ(lending->getTimestampReturned(), lending2->getTimestampReturned());
+    EXPECT_EQ(lending->isReturned(), lending2->isReturned());
 
     std::tm l1dueTm = lending->getDueDate();
     std::tm l2dueTm = lending2->getDueDate();

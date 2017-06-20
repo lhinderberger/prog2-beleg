@@ -4,11 +4,25 @@
 #include "core/query-builder.h"
 
 #include <cstdlib>
+#include <cstring>
 
 using namespace std;
 using namespace pb2;
 
 const string Lending::tableName = "lendings";
+
+void parseDate(std::tm & tm, const string & isoDateString) {
+    memset(&tm, 0, sizeof(std::tm));
+    tm.tm_hour = 23;
+    tm.tm_min = tm.tm_sec = 59;
+    tm.tm_wday = tm.tm_yday = 0;
+    if (sscanf(isoDateString.c_str(), "%d-%d-%d", &tm.tm_year, &tm.tm_mon, &tm.tm_mday) != 3)
+        throw DatabaseIntegrityException("Invalid due date format in Database!");
+    tm.tm_year -= 1900;
+    tm.tm_mon -= 1;
+    if (mktime(&tm) == -1)
+        throw logic_error("mktime failed - what a surprise...");
+}
 
 Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
                  shared_ptr<LibraryUser> libraryUser, time_t timestampLent)
@@ -46,26 +60,19 @@ Lending::Lending(
         shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
+    priv = make_unique<Lending_priv>(database);
+
     priv->mediumCopySerialNumber = query.columnInt(columnIndexes.at("medium_copy_serial_number"));
     priv->mediumEan = query.columnString(columnIndexes.at("medium_ean"));
     priv->libraryUser.set(query.columnInt(columnIndexes.at("library_user_id")));
     priv->timestampLent = query.columnInt(columnIndexes.at("timestamp_lent"));
+    parseDate(priv->dueDate, query.columnString(columnIndexes.at("due_date")));
     priv->timestampReturned = query.columnInt(columnIndexes.at("timestamp_returned"));
     int te = query.columnInt(columnIndexes.at("times_extended"));
     if (te < 0)
         throw DatabaseIntegrityException("Times extended is negative");
     else
         priv->timesExtended = (unsigned int)te;
-
-    /* Parse due date */
-    if (sscanf(
-            query.columnString(columnIndexes.at("due_date")).c_str(),
-            "%d-%d-%d",
-            &priv->dueDate.tm_year,
-            &priv->dueDate.tm_mon,
-            &priv->dueDate.tm_mday
-    ) != 3)
-        throw DatabaseIntegrityException("Invalid due date format in Database!");
 }
 
 Lending::~Lending() = default;
@@ -74,27 +81,35 @@ Lending::~Lending() = default;
 void Lending::persistImpl() {
     /* Prepare statement */
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<Lending>({"timestamp_returned", "times_extended"}, "WHERE medium_ean=? AND medium_copy_serial_number=? AND library_user_id = ? AND timestamp_lent = ?") :
-        buildInsertQuery<Lending>({"timestamp_returned", "times_extended", "medium_ean", "medium_copy_serial_number", "library_user_id", "timestamp_lent"}, 1)
+        buildUpdateQuery<Lending>({"timestamp_returned", "times_extended", "due_date"}, "WHERE medium_ean=? AND medium_copy_serial_number=? AND library_user_id = ? AND timestamp_lent = ?") :
+        buildInsertQuery<Lending>({"timestamp_returned", "times_extended", "due_date", "medium_ean", "medium_copy_serial_number", "library_user_id", "timestamp_lent"}, 1)
     );
 
     /* Bind parameters */
     statement.bind(1, (int)priv->timestampReturned);
     statement.bind(2, (int)priv->timesExtended);
-    statement.bind(3, priv->mediumEan);
-    statement.bind(4, priv->mediumCopySerialNumber);
-    // 5: see below
-    statement.bind(6, (int)priv->timestampLent);
+    // 3: see below
+    statement.bind(4, priv->mediumEan);
+    statement.bind(5, priv->mediumCopySerialNumber);
+    // 6: see below
+    statement.bind(7, (int)priv->timestampLent);
+
+    /* Get due date */
+    char due[12];
+    due[11] = 0;
+    mktime(&priv->dueDate);
+    strftime(due, 11, "%F", &priv->dueDate);
+    statement.bind(3, due);
 
     /* Get library user primary key */
     int primaryKey = 0;
-    if (priv->libraryUser.getPrimaryKey())
+    if (priv->libraryUser.isPrimaryKeySet())
         primaryKey = priv->libraryUser.getPrimaryKey();
-    else if (priv->libraryUser.get())
+    else if (priv->libraryUser.isLoaded())
         primaryKey = priv->libraryUser.get()->getId();
     if (primaryKey == 0)
         throw logic_error("Primary key for library user cannot be 0");
-    statement.bind(5, primaryKey);
+    statement.bind(6, primaryKey);
 
     /* Execute */
     statement.step();

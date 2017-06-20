@@ -39,6 +39,19 @@ const char * initializingSQL = R"---(
         postal_address_id INTEGER NOT NULL,
         FOREIGN KEY(postal_address_id) REFERENCES postal_addresses(id)
     );
+    CREATE TABLE lendings(
+        medium_ean TEXT NOT NULL,
+        medium_copy_serial_number INTEGER NOT NULL,
+        library_user_id INTEGER NOT NULL,
+        timestamp_lent INTEGER NOT NULL,
+        timestamp_returned INTEGER NOT NULL,
+        times_extended UNSIGNED INTEGER NOT NULL,
+        due_date TEXT NOT NULL,
+        FOREIGN KEY(medium_ean, medium_copy_serial_number) REFERENCES media_copies(medium_ean, serial_number),
+        FOREIGN KEY(library_user_id) REFERENCES library_users(id),
+        PRIMARY KEY (medium_ean, medium_copy_serial_number, library_user_id, timestamp_lent),
+        CONSTRAINT returned_unique UNIQUE (medium_ean, medium_copy_serial_number, timestamp_returned)
+    );
     INSERT INTO meta(name, value) VALUES('version', '1');
     INSERT INTO meta(name, value) VALUES('default_lending_runtime', '28');
     INSERT INTO meta(name, value) VALUES('default_extend_days', '14');
