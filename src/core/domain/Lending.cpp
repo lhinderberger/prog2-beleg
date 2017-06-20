@@ -122,5 +122,11 @@ bool Lending::isReturned() const {
 }
 
 void Lending::returnL(time_t timestampReturned) {
-    throw NotImplementedException();
+    if (isReturned())
+        throw logic_error("Already returned!");
+    priv->timestampReturned = timestampReturned;
+}
+
+void Lending::returnL() {
+    returnL(time(NULL));
 }
