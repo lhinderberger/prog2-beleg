@@ -42,8 +42,28 @@ TEST_F(LendingFixture, LendingDateAndStateTest) {
 }
 
 /*
- * Tests general input validation for Lending objects
+ * Tests load / persist for Lending objects
  */
-TEST_F(DatabaseFixture, LendingGeneralValidationTest) {
-    //TODO
+TEST_F(LendingFixture, LendingLoadPersistTest) {
+    /* Persist lending */
+    lending->persist();
+
+    /* Load lending from database */
+    SqlitePreparedStatement query(connection, string("SELECT * FROM ") + Lending::tableName);
+    query.step();
+    auto lending2 = DatabaseObjectFactory<Lending>(database).load(query);
+
+    /* Verify */
+    EXPECT_EQ(lending->getTimesExtended(), lending2->getTimesExtended());
+    EXPECT_EQ(lending->getLibraryUser()->getId(), lending2->getLibraryUser()->getId());
+    EXPECT_EQ(lending->getMediumCopy()->getMedium()->getEAN(), lending2->getMediumCopy()->getMedium()->getEAN());
+    EXPECT_EQ(lending->getMediumCopy()->getSerialNumber(), lending2->getMediumCopy()->getSerialNumber());
+    EXPECT_EQ(lending->getTimestampLent(), lending2->getTimestampLent());
+    EXPECT_EQ(lending->getTimestampReturned(), lending2->getTimestampReturned());
+
+    std::tm l1dueTm = lending->getDueDate();
+    std::tm l2dueTm = lending2->getDueDate();
+    time_t l1due = mktime(&l1dueTm);
+    time_t l2due = mktime(&l2dueTm);
+    EXPECT_EQ(l1due, l2due);
 }
