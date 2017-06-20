@@ -41,6 +41,15 @@ MediumCopy::~MediumCopy() = default;
 
 
 void MediumCopy::persistImpl() {
+    /* Determine serial number, if required */
+    int serialNumber = priv->serialNumber;
+    if (serialNumber <= 0) {
+        SqlitePreparedStatement snQuery(
+                getConnection(), string("SELECT MAX(serial_number) FROM ") + tableName
+        );
+        serialNumber = snQuery.step() && !snQuery.columnIsNull(0) ? snQuery.columnInt(0) + 1 : 1;
+    }
+
     /* Prepare statement */
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
         buildUpdateQuery<MediumCopy>({"deaccessioned", "location"}, "WHERE medium_ean=? AND serial_number=?") :
@@ -51,10 +60,11 @@ void MediumCopy::persistImpl() {
     statement.bind(1, priv->deaccessioned);
     statement.bind(2, priv->location);
     statement.bind(3, priv->medium->getEAN());
-    statement.bind(4, priv->serialNumber);
+    statement.bind(4, serialNumber);
 
     /* Execute */
     statement.step();
+    priv->serialNumber = serialNumber;
 }
 
 

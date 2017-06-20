@@ -81,11 +81,11 @@ TEST_F(DatabaseFixture, MediumCopyPersistLoadTest) {
     medium->setSubtitle("Oder: Wie ich aus Versehen eine ORM-Lösung gebastelt habe");
     medium->persist();
 
-    auto copy1 = mediumCopyFactory.construct(medium, 1);
+    auto copy1 = mediumCopyFactory.construct(medium, -1);
     copy1->setLocation("Regal 1 Fach 2");
     copy1->persist();
 
-    auto copy2 = mediumCopyFactory.construct(medium, 2);
+    auto copy2 = mediumCopyFactory.construct(medium, -1);
     copy2->setLocation("Regal 2 Fach 3");
     copy2->setDeaccessioned(true);
     copy2->persist();

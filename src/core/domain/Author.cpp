@@ -31,18 +31,30 @@ Author::~Author() = default;
 
 void Author::persistImpl() {
     /* Prepare statement */
-    SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<Author>({"first_name", "last_name"}, "WHERE id=?") :
-        buildInsertQuery<Author>({"first_name", "last_name", "id"}, 1)
-    );
+    string query = "";
+    if (isLoaded())
+        query = buildUpdateQuery<Author>({"first_name", "last_name"}, "WHERE id=?");
+    else {
+        /* Auto-generate ID? */
+        if (priv->id <= 0)
+            query = buildInsertQuery<Author>({"first_name", "last_name"}, 1);
+        else
+            query = buildInsertQuery<Author>({"first_name", "last_name", "id"}, 1);
+    }
+    SqlitePreparedStatement statement(getConnection(), query);
 
     /* Bind parameters */
     statement.bind(1, priv->firstName);
     statement.bind(2, priv->lastName);
-    statement.bind(3, priv->id);
+    if (priv->id > 0)
+        statement.bind(3, priv->id);
 
     /* Execute */
     statement.step();
+
+    /* Retrieve ID */
+    if (priv->id <= 0)
+        priv->id = (int)getConnection()->lastInsertRowId();
 }
 
 int Author::getId() const {

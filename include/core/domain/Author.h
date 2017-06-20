@@ -16,6 +16,10 @@ namespace pb2 {
     private:
         std::unique_ptr<Author_priv> priv;
 
+        /**
+         * Creates a new Author. If the ID passed in is 0 or less, an ID will be auto-
+         * generated.
+         */
         Author(std::shared_ptr<Database> database, int id);
         PB2_DECLARE_LOAD_CONSTRUCTOR(Author);
 
