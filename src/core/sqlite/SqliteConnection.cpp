@@ -3,6 +3,7 @@
 #include "core/exceptions.h"
 
 #include <fstream>
+#include <iostream>
 
 using namespace std;
 using namespace pb2;
@@ -15,11 +16,10 @@ bool fileExists(const string & filename) {
 }
 
 void closeConnection(sqlite3 * db) {
-    //TODO: Throw from destructor seems like a bad idea...
     if (db) {
         int res = sqlite3_close(db);
         if (res != SQLITE_OK)
-            throw SqliteException(res);
+            cerr << "Warning: Error while closing Sqlite connection!" << endl;
     }
 }
 

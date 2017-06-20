@@ -4,6 +4,7 @@
 #include "core/exceptions.h"
 
 #include <climits>
+#include <iostream>
 
 using namespace std;
 using namespace pb2;
@@ -36,13 +37,8 @@ SqlitePreparedStatement::SqlitePreparedStatement(
 SqlitePreparedStatement::~SqlitePreparedStatement() {
     if (priv->statement) {
         int res = sqlite3_finalize(priv->statement);
-        if (res != SQLITE_OK) {
-            //TODO: Is it a good idea to throw from destructor?
-            if (priv->connection)
-                throw priv->connection->buildException();
-            else
-                throw SqliteException(res);
-        }
+        if (res != SQLITE_OK)
+            cerr << "Warning: Could not finalize prepared statement!" << endl;
     }
 }
 
