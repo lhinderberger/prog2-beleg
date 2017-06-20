@@ -87,7 +87,10 @@ Medium::Medium(shared_ptr<Database> database, SqlitePreparedStatement & query,
     priv->format = query.columnString(columnIndexes.at("format"));
     priv->title = query.columnString(columnIndexes.at("title"));
     priv->subtitle = query.columnString(columnIndexes.at("subtitle"));
-    priv->author.set(query.columnInt(columnIndexes.at("author_id")));
+
+    int authorPkIndex = columnIndexes.at("author_id");
+    if (!query.columnIsNull(authorPkIndex))
+        priv->author.set(query.columnInt(authorPkIndex));
 }
 
 Medium::~Medium() = default;
@@ -133,7 +136,10 @@ void Medium::persistImpl() {
         primaryKey = priv->author.getPrimaryKey();
     else if(priv->author.isLoaded())
         primaryKey = priv->author->getId();
-    statement.bind(4, primaryKey);
+    if (primaryKey == 0)
+        statement.bind(4);
+    else
+        statement.bind(4, primaryKey);
 
     /* Execute */
     statement.step();
