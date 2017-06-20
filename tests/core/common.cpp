@@ -16,6 +16,7 @@ LendingFixture::LendingFixture() {
     auto bookFactory = DatabaseObjectFactory<Book>(database);
     auto mediumCopyFactory = DatabaseObjectFactory<MediumCopy>(database);
     auto libraryUserFactory = DatabaseObjectFactory<LibraryUser>(database);
+    auto postalAddressFactory = DatabaseObjectFactory<PostalAddress>(database);
 
     /* Create a medium incl. copy */
     auto medium = bookFactory.construct(valid_ean);
@@ -29,6 +30,15 @@ LendingFixture::LendingFixture() {
     auto user = libraryUserFactory.construct(-1);
     user->setFirstName("Lucas");
     user->setLastName("Hinderberger");
+
+    auto address = postalAddressFactory.construct(-1);
+    address->setStreet("Teststraße");
+    address->setHouseNumber("1a");
+    address->setZip("01187");
+    address->setCity("Dresden");
+    address->persist();
+
+    user->setPostalAddress(address);
     user->persist();
 
     /* Create a lending */

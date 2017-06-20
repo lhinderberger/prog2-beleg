@@ -40,4 +40,6 @@ const char * initializingSQL = R"---(
         FOREIGN KEY(postal_address_id) REFERENCES postal_addresses(id)
     );
     INSERT INTO meta(name, value) VALUES('version', '1');
+    INSERT INTO meta(name, value) VALUES('default_lending_runtime', '28');
+    INSERT INTO meta(name, value) VALUES('default_extend_days', '14');
 )---";
