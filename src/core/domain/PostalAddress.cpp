@@ -33,9 +33,13 @@ PostalAddress::~PostalAddress() = default;
 
 void PostalAddress::persistImpl() {
     /* Prepare statement */
+    vector<string> columns = {"street", "house_number", "addition", "zip", "city"};
+    if (!isLoaded() && priv->id > 0)
+        columns.push_back("id");
+
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<PostalAddress>({"street", "house_number", "addition", "zip", "city"}, "WHERE id=?") :
-        buildInsertQuery<PostalAddress>({"street", "house_number", "addition", "zip", "city", "id"}, 1)
+        buildUpdateQuery<PostalAddress>(columns, "WHERE id=?") :
+        buildInsertQuery<PostalAddress>(columns, 1)
     );
 
     /* Bind parameters */
@@ -44,10 +48,13 @@ void PostalAddress::persistImpl() {
     statement.bind(3, priv->addition);
     statement.bind(4, priv->zip);
     statement.bind(5, priv->city);
-    statement.bind(6, priv->id);
+    if (priv->id > 0) // Only when explicitly setting ID
+        statement.bind(6, priv->id);
 
     /* Execute */
     statement.step();
+    if (priv->id <= 0) // Retrieve automatically generated ID
+        priv->id = (int)getConnection()->lastInsertRowId();
 }
 
 int PostalAddress::getId() const {

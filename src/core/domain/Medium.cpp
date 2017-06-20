@@ -117,9 +117,12 @@ unique_ptr<AbstractDatabaseObjectFactory> Medium::polymorphicFactory(
 
 void Medium::persistImpl() {
     /* Prepare statement */
+    vector<string> columns = {"format", "title", "subtitle", "author_id", "type"};
+    if (!isLoaded())
+        columns.push_back("ean");
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<Medium>({"format", "title", "subtitle", "author_id", "type"}, "WHERE ean=?") :
-        buildInsertQuery<Medium>({"format", "title", "subtitle", "author_id", "type", "ean"}, 1)
+        buildUpdateQuery<Medium>(columns, "WHERE ean=?") :
+        buildInsertQuery<Medium>(columns, 1)
     );
 
     /* Bind parameters */

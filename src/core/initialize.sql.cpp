@@ -23,13 +23,21 @@ const char * initializingSQL = R"---(
         FOREIGN KEY(medium_ean) REFERENCES media(ean)
     );
     CREATE TABLE postal_addresses(
-        id INT PRIMARY KEY,
+        id INTEGER PRIMARY KEY,
         street TEXT NOT NULL,
         house_number TEXT NOT NULL,
         addition TEXT NOT NULL,
         zip TEXT NOT NULL,
         city TEXT NOT NULL,
         CONSTRAINT address_unique UNIQUE (street, house_number, addition, zip, city)
+    );
+    CREATE TABLE library_users(
+        id INTEGER PRIMARY KEY,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        telephone TEXT NOT NULL,
+        postal_address_id INTEGER NOT NULL,
+        FOREIGN KEY(postal_address_id) REFERENCES postal_addresses(id)
     );
     INSERT INTO meta(name, value) VALUES('version', '1');
 )---";

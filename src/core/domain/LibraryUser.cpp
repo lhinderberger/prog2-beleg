@@ -34,9 +34,12 @@ LibraryUser::~LibraryUser() = default;
 
 void LibraryUser::persistImpl() {
     /* Prepare statement */
+    vector<string> columns = {"first_name", "last_name", "telephone", "postal_address_id"};
+    if (!isLoaded() && priv->id > 0)
+        columns.push_back("id");
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<LibraryUser>({"first_name", "last_name", "telephone", "postal_address_id"}, "WHERE id=?") :
-        buildInsertQuery<LibraryUser>({"first_name", "last_name", "telephone", "postal_address_id", "id"}, 1)
+        buildUpdateQuery<LibraryUser>(columns, "WHERE id=?") :
+        buildInsertQuery<LibraryUser>(columns, 1)
     );
 
     /* Bind parameters */
@@ -44,7 +47,8 @@ void LibraryUser::persistImpl() {
     statement.bind(2, priv->lastName);
     statement.bind(3, priv->telephone);
     //Param #4: See below
-    statement.bind(5, priv->id);
+    if (priv->id > 0) // Only when explicitly setting ID
+        statement.bind(5, priv->id);
 
     /* Bind postal address primary key */
     int primaryKey = 0;
@@ -52,10 +56,14 @@ void LibraryUser::persistImpl() {
         primaryKey = priv->postalAddress.getPrimaryKey();
     else if(priv->postalAddress.isLoaded())
         primaryKey = priv->postalAddress->getId();
+    if (primaryKey == 0)
+        throw NullPointerException();
     statement.bind(4, primaryKey);
 
     /* Execute */
     statement.step();
+    if (priv->id <= 0) // Retrieve automatically generated ID
+        priv->id = (int)getConnection()->lastInsertRowId();
 }
 
 
