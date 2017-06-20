@@ -1,6 +1,7 @@
 #include "core/domain/Lending.h"
 #include "core/domain/Lending.priv.h"
 #include "core/exceptions.h"
+#include "core/query-builder.h"
 
 #include <cstdlib>
 
@@ -12,7 +13,7 @@ const string Lending::tableName = "lendings";
 Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
                  shared_ptr<LibraryUser> libraryUser, time_t timestampLent)
         : DatabaseObject(database){
-    priv = make_unique<Lending_priv>();
+    priv = make_unique<Lending_priv>(database);
     priv->timesExtended = 0;
     priv->timestampReturned = 0;
 
@@ -20,9 +21,12 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
     if (!mediumCopy)
         throw NullPointerException();
     priv->mediumCopy = mediumCopy;
+    priv->mediumEan = mediumCopy->getMedium()->getEAN();
+    priv->mediumCopySerialNumber = mediumCopy->getSerialNumber();
+
     if (!libraryUser)
         throw NullPointerException();
-    priv->libraryUser = libraryUser;
+    priv->libraryUser.set(libraryUser);
 
     /* Set starting timestamp */
     priv->timestampLent = timestampLent;
@@ -42,22 +46,79 @@ Lending::Lending(
         shared_ptr<Database> database, SqlitePreparedStatement & query,
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
-    throw NotImplementedException();
+    priv->mediumCopySerialNumber = query.columnInt(columnIndexes.at("medium_copy_serial_number"));
+    priv->mediumEan = query.columnString(columnIndexes.at("medium_ean"));
+    priv->libraryUser.set(query.columnInt(columnIndexes.at("library_user_id")));
+    priv->timestampLent = query.columnInt(columnIndexes.at("timestamp_lent"));
+    priv->timestampReturned = query.columnInt(columnIndexes.at("timestamp_returned"));
+    int te = query.columnInt(columnIndexes.at("times_extended"));
+    if (te < 0)
+        throw DatabaseIntegrityException("Times extended is negative");
+    else
+        priv->timesExtended = (unsigned int)te;
+
+    /* Parse due date */
+    if (sscanf(
+            query.columnString(columnIndexes.at("due_date")).c_str(),
+            "%d-%d-%d",
+            &priv->dueDate.tm_year,
+            &priv->dueDate.tm_mon,
+            &priv->dueDate.tm_mday
+    ) != 3)
+        throw DatabaseIntegrityException("Invalid due date format in Database!");
 }
 
 Lending::~Lending() = default;
 
 
 void Lending::persistImpl() {
-    throw NotImplementedException();
+    /* Prepare statement */
+    SqlitePreparedStatement statement(getConnection(), isLoaded() ?
+        buildUpdateQuery<Lending>({"timestamp_returned", "times_extended"}, "WHERE medium_ean=? AND medium_copy_serial_number=? AND library_user_id = ? AND timestamp_lent = ?") :
+        buildInsertQuery<Lending>({"timestamp_returned", "times_extended", "medium_ean", "medium_copy_serial_number", "library_user_id", "timestamp_lent"}, 1)
+    );
+
+    /* Bind parameters */
+    statement.bind(1, (int)priv->timestampReturned);
+    statement.bind(2, (int)priv->timesExtended);
+    statement.bind(3, priv->mediumEan);
+    statement.bind(4, priv->mediumCopySerialNumber);
+    // 5: see below
+    statement.bind(6, (int)priv->timestampLent);
+
+    /* Get library user primary key */
+    int primaryKey = 0;
+    if (priv->libraryUser.getPrimaryKey())
+        primaryKey = priv->libraryUser.getPrimaryKey();
+    else if (priv->libraryUser.get())
+        primaryKey = priv->libraryUser.get()->getId();
+    if (primaryKey == 0)
+        throw logic_error("Primary key for library user cannot be 0");
+    statement.bind(5, primaryKey);
+
+    /* Execute */
+    statement.step();
 }
 
 shared_ptr<MediumCopy> Lending::getMediumCopy() {
+    /* On-the-fly read-only lazy loader */
+    if (!priv->mediumCopy) {
+        SqlitePreparedStatement query(
+                getConnection(),
+                string("SELECT * FROM ") + MediumCopy::tableName +
+                " WHERE medium_ean = ? AND serial_number = ?"
+        );
+        query.bind(1, priv->mediumEan);
+        query.bind(2, priv->mediumCopySerialNumber);
+        query.step();
+        priv->mediumCopy = DatabaseObjectFactory<MediumCopy>(getDatabase()).load(query);
+    }
+
     return priv->mediumCopy;
 }
 
 shared_ptr<LibraryUser> Lending::getLibraryUser() {
-    return priv->libraryUser;
+    return priv->libraryUser.get();
 }
 
 time_t Lending::getTimestampLent() const {
