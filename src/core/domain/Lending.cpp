@@ -80,18 +80,25 @@ Lending::~Lending() = default;
 
 void Lending::persistImpl() {
     /* Prepare statement */
+    vector<string> columns = {"timestamp_returned", "times_extended", "due_date", "library_user_id"};
+    if (!isLoaded()) {
+        vector<string> keyColumns = {"medium_ean", "medium_copy_serial_number", "timestamp_lent"};
+        for (const auto & c : keyColumns)
+            columns.push_back(c);
+    }
+
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<Lending>({"timestamp_returned", "times_extended", "due_date"}, "WHERE medium_ean=? AND medium_copy_serial_number=? AND library_user_id = ? AND timestamp_lent = ?") :
-        buildInsertQuery<Lending>({"timestamp_returned", "times_extended", "due_date", "medium_ean", "medium_copy_serial_number", "library_user_id", "timestamp_lent"}, 1)
+        buildUpdateQuery<Lending>(columns, "WHERE medium_ean=? AND medium_copy_serial_number=? AND timestamp_lent = ?") :
+        buildInsertQuery<Lending>(columns, 1)
     );
 
     /* Bind parameters */
     statement.bind(1, (int)priv->timestampReturned);
     statement.bind(2, (int)priv->timesExtended);
     // 3: see below
-    statement.bind(4, priv->mediumEan);
-    statement.bind(5, priv->mediumCopySerialNumber);
-    // 6: see below
+    // 4: see below
+    statement.bind(5, priv->mediumEan);
+    statement.bind(6, priv->mediumCopySerialNumber);
     statement.bind(7, (int)priv->timestampLent);
 
     /* Get due date */
@@ -109,7 +116,7 @@ void Lending::persistImpl() {
         primaryKey = priv->libraryUser.get()->getId();
     if (primaryKey == 0)
         throw logic_error("Primary key for library user cannot be 0");
-    statement.bind(6, primaryKey);
+    statement.bind(4, primaryKey);
 
     /* Execute */
     statement.step();
