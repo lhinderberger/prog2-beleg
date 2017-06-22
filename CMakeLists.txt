@@ -18,23 +18,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 file(GLOB_RECURSE CORE_INCLUDE_FILES "include/core/*")
 file(GLOB_RECURSE CORE_SRC_FILES "src/core/*")
 file(GLOB_RECURSE CORE_TEST_FILES "tests/core/*")
-file(GLOB_RECURSE WEBSERVICE_INCLUDE_FILES "include/webservice/*")
-file(GLOB_RECURSE WEBSERVICE_SRC_FILES "src/webservice/*")
-file(GLOB_RECURSE WEBSERVICE_TEST_FILES "tests/webservice/*")
 
-# Define core / webservice targets
+# Define core target
 add_library(core ${CORE_INCLUDE_FILES} ${CORE_SRC_FILES})
-add_executable(webservice ${WEBSERVICE_INCLUDE_FILES} ${WEBSERVICE_SRC_FILES})
 target_link_libraries(core sqlite3)
-
-target_link_libraries(webservice core)
-set_target_properties(webservice PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/cgi-bin)
 
 # Define tests
 add_executable(test-core ${CORE_TEST_FILES})
 add_test(test-core test-core)
 target_link_libraries(test-core gtest_main gtest pthread core)
-
-add_executable(test-webservice ${WEBSERVICE_TEST_FILES})
-add_test(test-webservice test-webservice)
-target_link_libraries(test-webservice gtest_main gtest pthread core)
