@@ -183,7 +183,7 @@ int Lending::getDaysLeft() const {
 int Lending::getDaysLeft(time_t reference) const {
     if (isReturned() && priv->timestampReturned < reference)
         reference = priv->timestampReturned;
-    return (int)((mktime(&priv->dueDate) + priv->dueDate.tm_gmtoff - reference) / 60 / 60 / 24); //TODO: Write test!
+    return (int)((mktime(&priv->dueDate) + priv->dueDate.tm_gmtoff - reference) / 60 / 60 / 24);
 }
 
 std::tm Lending::getDueDate() const {
