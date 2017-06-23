@@ -17,7 +17,7 @@ namespace pb2 {
 
     public:
         virtual ~App();
-        virtual bool onInit();
+        virtual bool OnInit() override;
 
         inline const MainFrame & getMainFrame() const { return *mainFrame; } //TODO: Is this correct?
         inline MainFrame & getMainFrame() { return *mainFrame; }
