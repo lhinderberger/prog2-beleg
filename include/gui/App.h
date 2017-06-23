@@ -13,7 +13,7 @@ namespace pb2 {
      */
     class App : public wxApp {
     private:
-        MainFrame * mainFrame;
+        MainFrame * mainFrame = nullptr;
 
     public:
         virtual ~App();

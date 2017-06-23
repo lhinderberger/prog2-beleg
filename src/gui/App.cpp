@@ -3,10 +3,7 @@
 using namespace pb2;
 using namespace std;
 
-App::~App() {
-    if (mainFrame)
-        mainFrame->Destroy();
-}
+App::~App() = default;
 
 bool App::OnInit() {
     mainFrame = new MainFrame("prog2-beleg GUI", wxDefaultPosition, wxSize(1024, 768));
