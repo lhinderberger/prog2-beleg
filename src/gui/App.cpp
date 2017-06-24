@@ -6,6 +6,10 @@ using namespace std;
 App::~App() = default;
 
 bool App::OnInit() {
+    /* Initialize locale */
+    wxLocale locale(wxLocale::GetSystemLanguage());
+
+    /* Initialize main frame */
     mainFrame = new MainFrame("prog2-beleg GUI", wxDefaultPosition, wxSize(1024, 768));
     mainFrame->Show(true);
     return true;
