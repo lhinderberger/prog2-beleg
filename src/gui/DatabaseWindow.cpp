@@ -14,7 +14,7 @@ DatabaseWindow::DatabaseWindow(wxWindow * parent, shared_ptr<Database> database)
     menuSizer->SetMinSize(200,300);
     sizer->Add(menuSizer);
     menuSizer->Add(new wxButton(this, 0, _("Medienkatalog")), 0, wxEXPAND);
-    menuSizer->Add(new wxButton(this, 0, _("Benutzer & Ausleihen")), 0, wxEXPAND);
+    menuSizer->Add(new wxButton(this, 0, _("Benutzer && Ausleihen")), 0, wxEXPAND);
 
     /* Create content window */
     contentWindow = new wxWindow(this, wxID_ANY);
