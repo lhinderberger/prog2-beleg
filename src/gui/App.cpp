@@ -7,10 +7,10 @@ App::~App() = default;
 
 bool App::OnInit() {
     /* Initialize locale */
-    wxLocale locale(wxLocale::GetSystemLanguage());
+    locale = make_unique<wxLocale>(wxLocale::GetSystemLanguage());
 
     /* Initialize main frame */
-    mainFrame = new MainFrame("prog2-beleg GUI", wxDefaultPosition, wxSize(1024, 768));
+    mainFrame = new MainFrame(_("Bibliotheksverwaltung"), wxDefaultPosition, wxSize(1024, 768));
     mainFrame->Show(true);
     return true;
 }

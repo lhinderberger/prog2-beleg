@@ -14,6 +14,7 @@ namespace pb2 {
     class App : public wxApp {
     private:
         MainFrame * mainFrame = nullptr;
+        std::unique_ptr<wxLocale> locale;
 
     public:
         virtual ~App();
@@ -21,6 +22,7 @@ namespace pb2 {
 
         inline const MainFrame & getMainFrame() const { return *mainFrame; } //TODO: Is this correct?
         inline MainFrame & getMainFrame() { return *mainFrame; }
+        inline wxLocale & getLocale() { return *locale; }
     };
 }
 
