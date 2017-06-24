@@ -30,7 +30,7 @@ find_package(wxWidgets COMPONENTS core base)
 if (wxWidgets_FOUND)
     include(${wxWidgets_USE_FILE})
     add_executable(gui ${GUI_INCLUDE_FILES} ${GUI_SRC_FILES})
-    target_link_libraries(gui ${wxWidgets_LIBRARIES})
+    target_link_libraries(gui ${wxWidgets_LIBRARIES} core)
 endif()
 
 # Define tests
