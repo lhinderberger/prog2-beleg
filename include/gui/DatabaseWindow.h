@@ -2,7 +2,10 @@
 #define PROG2_BELEG_GUI_DATABASE_WINDOW_H
 
 #include <wx/wx.h>
+#include <wx/aui/auibook.h>
 #include "core/Database.h"
+
+#include "BasketWindow.h"
 
 namespace pb2 {
     /**
@@ -11,7 +14,8 @@ namespace pb2 {
      */
     class DatabaseWindow : public wxWindow {
     private:
-        wxWindow * contentWindow = nullptr;
+        BasketWindow * basketWindow = nullptr;
+        wxAuiNotebook * notebook = nullptr;
         std::shared_ptr<Database> database;
 
     public:

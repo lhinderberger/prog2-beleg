@@ -1,4 +1,5 @@
 #include "gui/DatabaseWindow.h"
+#include <wx/statline.h>
 
 using namespace pb2;
 using namespace std;
@@ -9,17 +10,27 @@ DatabaseWindow::DatabaseWindow(wxWindow * parent, shared_ptr<Database> database)
     wxSizer * sizer = new wxBoxSizer(wxHORIZONTAL);
     SetSizer(sizer);
 
-    /* Create menu box sizer */
-    wxSizer * menuSizer = new wxBoxSizer(wxVERTICAL);
-    menuSizer->SetMinSize(200,300);
-    sizer->Add(menuSizer);
-    menuSizer->Add(new wxButton(this, 0, _("Medienkatalog")), 0, wxEXPAND);
-    menuSizer->Add(new wxButton(this, 0, _("Benutzer && Ausleihen")), 0, wxEXPAND);
+    /* Create sidebar box sizer */
+    wxSizer * sidebarSizer = new wxBoxSizer(wxVERTICAL);
+    sidebarSizer->SetMinSize(200,600);
+    sizer->Add(sidebarSizer);
 
-    /* Create content window */
-    contentWindow = new wxWindow(this, wxID_ANY);
-    contentWindow->SetWindowStyle(wxBORDER_SUNKEN);
-    sizer->Add(contentWindow);
+    /* Create "New tab" buttons */
+    sidebarSizer->Add(new wxStaticText(this, wxID_ANY, _("Neuer Tab:")));
+    sidebarSizer->Add(new wxButton(this, wxID_ANY, _("Medienkatalog")), 0, wxEXPAND);
+    sidebarSizer->Add(new wxButton(this, wxID_ANY, _("Benutzer && Ausleihen")), 0, wxEXPAND);
+
+    /* Divider and BasketWindow */
+    sidebarSizer->Add(new wxStaticLine(this));
+    basketWindow = new BasketWindow(this);
+    sidebarSizer->Add(basketWindow, 1, wxEXPAND | wxALL);
+
+    /* Create content wxAuiNotebook */
+    notebook = new wxAuiNotebook(this);
+    sizer->Add(notebook);
+
+    /* Open new media browser tab by default */
+    //TODO
 
     /* Fit to parent window */
     Fit();
