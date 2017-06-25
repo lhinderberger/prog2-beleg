@@ -72,6 +72,16 @@ void MainFrame::newDatabase() {
     database = Database::initialize(connection);
     databaseWindow = new DatabaseWindow(this, database);
 
+    /* Ask to generate example data */
+    int generateExampleData = wxMessageBox(
+            _("Soll die neue Datenbank mit Beispieldaten gefüllt werden?"),
+            _("Datenbank erstellen"), wxICON_QUESTION |wxYES_NO
+    );
+    if (generateExampleData == wxYES) {
+        database->generateExampleData();
+        connection->commit();
+    }
+
     /* Set status bar text */
     SetStatusText(_("Datenbank wurde angelegt!"));
 }
