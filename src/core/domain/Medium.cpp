@@ -151,8 +151,8 @@ void Medium::persistImpl() {
 
 const set<string>& Medium::allowedFormats() {
     static set<string> formats {
-        "book", "vinyl", "cassette", "floppy", "vhs", "cd", "dvd", "memory-card",
-        "usb-stick", "download", "online-access", "other"
+        "hardcover", "softcover", "vinyl", "cassette", "floppy", "vhs", "cd", "dvd",
+        "memory-card", "usb-stick", "download", "online-access", "other"
     };
     return formats;
 }
