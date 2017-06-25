@@ -24,6 +24,9 @@ MainFrame::MainFrame(const wxString & title, const wxPoint & pos, const wxSize &
     toolbar->AddTool((int)ID::NEW_DATABASE, _("Neu"), wxArtProvider::GetBitmap(wxART_NEW));
     toolbar->AddTool((int)ID::OPEN_DATABASE, _("Öffnen"), wxArtProvider::GetBitmap(wxART_FILE_OPEN));
     toolbar->AddTool((int)ID::CLOSE_DATABASE, _("Schließen"), wxArtProvider::GetBitmap(wxART_CLOSE));
+
+    /* Set minimum size */
+    SetMinSize(wxSize(1024, 768));
 }
 
 bool MainFrame::closeDatabase() {
