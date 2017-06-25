@@ -92,6 +92,13 @@ namespace pb2 {
          * the 'version' meta value! For version updates use migrate()
          */
         void setMeta(const std::string & name, const std::string & value);
+
+        /**
+         * Generates an extensive set of example data and inserts it in the current
+         * database transaction. Make sure to call commit() to persist this example data,
+         * if that is what you want.
+         */
+        void generateExampleData();
     };
 }
 

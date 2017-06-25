@@ -3,6 +3,8 @@
 #include "core/exceptions.h"
 #include "core/sqlite/SqlitePreparedStatement.h"
 
+#include "core/domain/LibraryUser.h"
+
 using namespace std;
 using namespace pb2;
 
@@ -106,4 +108,8 @@ void Database::setMeta(const string & name, const string & value) {
         priv->meta.insert({name, value});
     else
         existingIt->second = value;
+}
+
+void Database::generateExampleData() {
+    priv->connection->executeSQL(exampleDataSQL);
 }

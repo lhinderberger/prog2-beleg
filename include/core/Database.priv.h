@@ -8,6 +8,7 @@
 
 #include "core/sqlite/SqliteConnection.h"
 
+extern const char * exampleDataSQL;
 extern const char * initializingSQL;
 
 namespace pb2 {
