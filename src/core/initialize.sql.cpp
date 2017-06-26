@@ -19,6 +19,7 @@ const char * initializingSQL = R"---(
         serial_number INT,
         deaccessioned INT, -- boolean value, but SQLite lacks a dedicated type
         location TEXT,
+        availability_hint TEXT NOT NULL, -- only a hint, for actual availability information, look at lendings
         PRIMARY KEY(medium_ean, serial_number),
         FOREIGN KEY(medium_ean) REFERENCES media(ean)
     );

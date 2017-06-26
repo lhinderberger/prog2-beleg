@@ -16,7 +16,7 @@ namespace pb2 {
 
         ManyToOneLazyLoader<Medium,std::string,PolymorphicDatabaseObjectFactory<Medium>> medium;
         bool deaccessioned;
-        std::string location;
+        std::string location, availabilityHint;
         int serialNumber;
     };
 }

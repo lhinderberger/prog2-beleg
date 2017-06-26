@@ -102,11 +102,7 @@ void Lending::persistImpl() {
     statement.bind(7, (int)priv->timestampLent);
 
     /* Get due date */
-    char due[12];
-    due[11] = 0;
-    mktime(&priv->dueDate);
-    strftime(due, 11, "%F", &priv->dueDate);
-    statement.bind(3, due);
+    statement.bind(3, getDueDateISOString());
 
     /* Get library user primary key */
     int primaryKey = 0;
@@ -120,6 +116,10 @@ void Lending::persistImpl() {
 
     /* Execute */
     statement.step();
+
+    /* Set availability hint on MediumCopy */
+    getMediumCopy()->setAvailabilityHint(isReturned() ? "now" : getDueDateISOString());
+    getMediumCopy()->persist();
 }
 
 shared_ptr<MediumCopy> Lending::getMediumCopy() {
@@ -186,8 +186,16 @@ int Lending::getDaysLeft(time_t reference) const {
     return (int)((mktime(&priv->dueDate) + priv->dueDate.tm_gmtoff - reference) / 60 / 60 / 24);
 }
 
-std::tm Lending::getDueDate() const {
+tm Lending::getDueDate() const {
     return priv->dueDate;
+}
+
+string Lending::getDueDateISOString() const {
+    char due[12];
+    due[11] = 0;
+    mktime(&priv->dueDate);
+    strftime(due, 11, "%F", &priv->dueDate);
+    return string(due);
 }
 
 time_t Lending::getTimestampReturned() const {

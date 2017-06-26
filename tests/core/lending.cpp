@@ -46,7 +46,9 @@ TEST_F(LendingFixture, LendingDateAndStateTest) {
  */
 TEST_F(LendingFixture, LendingLoadPersistTest) {
     /* Persist lending */
+    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), string("now"));
     lending->persist();
+    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), lending->getDueDateISOString());
 
     /* Load lending from database */
     SqlitePreparedStatement query(connection, string("SELECT * FROM ") + Lending::tableName);
@@ -66,4 +68,17 @@ TEST_F(LendingFixture, LendingLoadPersistTest) {
     time_t l1due = mktime(&l1dueTm);
     time_t l2due = mktime(&l2dueTm);
     EXPECT_EQ(l1due, l2due);
+
+    /* Extend, return and verify availability hint */
+    string oldDueDate = lending->getDueDateISOString();
+    lending->extend();
+    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), oldDueDate);
+    lending->persist();
+    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), lending->getDueDateISOString());
+
+    oldDueDate = lending->getDueDateISOString();
+    lending->returnL();
+    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), oldDueDate);
+    lending->persist();
+    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), string("now"));
 }

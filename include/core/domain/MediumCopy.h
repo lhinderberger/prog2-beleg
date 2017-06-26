@@ -64,6 +64,15 @@ namespace pb2 {
         std::string getLocation() const;
         void setLocation(const std::string & location);
 
+        /**
+         * Pass in any string that hints the availability of the medium.
+         * Note: This is usually set by Lending!
+         * Caution: Do not rely on this for availability checking - this shall only serve
+         * as a general hint (i.e. in overview tables).
+         */
+        std::string getAvailabilityHint() const;
+        void setAvailabilityHint(const std::string & availabilityHint);
+
         int getSerialNumber() const;
     };
 }

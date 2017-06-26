@@ -15,6 +15,8 @@ namespace pb2 {
     /**
      * Relationship between a MediumCopy and a LibraryUser, basically meaning what media
      * the user has lent and for how long.
+     *
+     * Note: Persisting this will also set the availability hint on MediumCopy AND persist it!
      */
     class Lending : public DatabaseObject {
         friend class DatabaseObjectFactory<Lending>;
@@ -108,6 +110,11 @@ namespace pb2 {
          * for return.
          */
         std::tm getDueDate() const;
+
+        /**
+         * Returns the ISO representation of the due date
+         */
+        std::string getDueDateISOString() const;
 
         /**
          * If the user has already returned the medium, this will return the timestamp

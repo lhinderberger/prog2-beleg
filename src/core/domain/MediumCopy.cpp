@@ -20,6 +20,7 @@ MediumCopy::MediumCopy(shared_ptr<Database> database, shared_ptr<Medium> medium,
     assert(medium);
     priv->medium.set(medium);
     priv->serialNumber = serialNumber;
+    priv->availabilityHint = "now";
 
     // Initialize remaining fields
     priv->deaccessioned = false;
@@ -35,6 +36,7 @@ MediumCopy::MediumCopy(
     priv->location = query.columnString(columnIndexes.at("location"));
     priv->serialNumber = query.columnInt(columnIndexes.at("serial_number"));
     priv->medium.set(query.columnString(columnIndexes.at("medium_ean")));
+    priv->availabilityHint = query.columnString(columnIndexes.at("availability_hint"));
 }
 
 MediumCopy::~MediumCopy() = default;
@@ -52,15 +54,16 @@ void MediumCopy::persistImpl() {
 
     /* Prepare statement */
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<MediumCopy>({"deaccessioned", "location"}, "WHERE medium_ean=? AND serial_number=?") :
-        buildInsertQuery<MediumCopy>({"deaccessioned", "location", "medium_ean", "serial_number"}, 1)
+        buildUpdateQuery<MediumCopy>({"deaccessioned", "location", "availability_hint"}, "WHERE medium_ean=? AND serial_number=?") :
+        buildInsertQuery<MediumCopy>({"deaccessioned", "location", "availability_hint", "medium_ean", "serial_number"}, 1)
     );
 
     /* Bind parameters */
     statement.bind(1, priv->deaccessioned);
     statement.bind(2, priv->location);
-    statement.bind(3, priv->medium->getEAN());
-    statement.bind(4, serialNumber);
+    statement.bind(3, priv->availabilityHint);
+    statement.bind(4, priv->medium->getEAN());
+    statement.bind(5, serialNumber);
 
     /* Execute */
     statement.step();
@@ -86,6 +89,14 @@ string MediumCopy::getLocation() const {
 
 void MediumCopy::setLocation(const string &location) {
     priv->location = location;
+}
+
+string MediumCopy::getAvailabilityHint() const {
+    return priv->availabilityHint;
+}
+
+void MediumCopy::setAvailabilityHint(const string &availabilityHint) {
+    priv->availabilityHint = availabilityHint;
 }
 
 shared_ptr<Medium> MediumCopy::getMedium() const {
