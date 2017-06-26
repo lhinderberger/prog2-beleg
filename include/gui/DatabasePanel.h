@@ -1,5 +1,5 @@
-#ifndef PROG2_BELEG_GUI_DATABASE_WINDOW_H
-#define PROG2_BELEG_GUI_DATABASE_WINDOW_H
+#ifndef PROG2_BELEG_GUI_DATABASE_PANEL_H
+#define PROG2_BELEG_GUI_DATABASE_PANEL_H
 
 #include <wx/wx.h>
 #include <wx/aui/auibook.h>
@@ -9,17 +9,17 @@
 
 namespace pb2 {
     /**
-     * Window holding one currently loaded Database and offering all possible controls
+     * Panel holding one currently loaded Database and offering all possible controls
      * for modifying that Database.
      */
-    class DatabaseWindow : public wxWindow {
+    class DatabasePanel : public wxPanel {
     private:
         BasketWindow * basketWindow = nullptr;
         wxAuiNotebook * notebook = nullptr;
         std::shared_ptr<Database> database;
 
     public:
-        DatabaseWindow(wxWindow * parent, std::shared_ptr<Database> database);
+        DatabasePanel(wxWindow * parent, std::shared_ptr<Database> database);
 
         inline std::shared_ptr<Database> getDatabase() { return database; }
     };

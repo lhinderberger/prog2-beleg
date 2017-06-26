@@ -2,7 +2,7 @@
 #define PROG2_BELEG_GUI_MAIN_FRAME_H
 
 #include "core/Database.h"
-#include "gui/DatabaseWindow.h"
+#include "gui/DatabasePanel.h"
 #include <wx/wx.h>
 
 namespace pb2 {
@@ -22,12 +22,12 @@ namespace pb2 {
 
     private:
         std::shared_ptr<Database> database;
-        DatabaseWindow * databaseWindow = nullptr;
+        DatabasePanel * databasePanel = nullptr;
 
         void onClose(wxCloseEvent & event);
-        void tbCloseDatabase(wxCommandEvent & event) { closeDatabase(); }
-        void tbNewDatabase(wxCommandEvent & event) { newDatabase(); }
-        void tbOpenDatabase(wxCommandEvent & event) { openDatabase(); }
+        void evCloseDatabase(wxCommandEvent & event) { closeDatabase(); }
+        void evNewDatabase(wxCommandEvent & event) { newDatabase(); }
+        void evOpenDatabase(wxCommandEvent & event) { openDatabase(); }
 
         wxDECLARE_EVENT_TABLE();
     };

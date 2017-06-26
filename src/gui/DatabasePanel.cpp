@@ -1,11 +1,11 @@
-#include "gui/DatabaseWindow.h"
+#include "gui/DatabasePanel.h"
 #include <wx/statline.h>
 
 using namespace pb2;
 using namespace std;
 
-DatabaseWindow::DatabaseWindow(wxWindow * parent, shared_ptr<Database> database)
-    : wxWindow(parent, wxID_ANY), database(database) {
+DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
+    : wxPanel(parent, wxID_ANY), database(database) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxHORIZONTAL);
     SetSizer(sizer);

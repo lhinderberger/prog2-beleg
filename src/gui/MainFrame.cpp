@@ -7,9 +7,9 @@ using namespace std;
 
 wxBEGIN_EVENT_TABLE(pb2::MainFrame, wxFrame)
     EVT_CLOSE(MainFrame::onClose)
-    EVT_TOOL((int)MainFrame::ID::CLOSE_DATABASE, MainFrame::tbCloseDatabase)
-    EVT_TOOL((int)MainFrame::ID::NEW_DATABASE, MainFrame::tbNewDatabase)
-    EVT_TOOL((int)MainFrame::ID::OPEN_DATABASE, MainFrame::tbOpenDatabase)
+    EVT_TOOL((int)MainFrame::ID::CLOSE_DATABASE, MainFrame::evCloseDatabase)
+    EVT_TOOL((int)MainFrame::ID::NEW_DATABASE, MainFrame::evNewDatabase)
+    EVT_TOOL((int)MainFrame::ID::OPEN_DATABASE, MainFrame::evOpenDatabase)
 wxEND_EVENT_TABLE()
 
 
@@ -42,8 +42,8 @@ bool MainFrame::closeDatabase() {
         return false;
 
     /* Close database in every case, but destroy DatabaseWindow first */
-    if (databaseWindow)
-        databaseWindow->Destroy();
+    if (databasePanel)
+        databasePanel->Destroy();
     database = nullptr;
 
     /* Set status bar text */
@@ -73,7 +73,7 @@ void MainFrame::newDatabase() {
     /* Initialize database + open DatabaseWindow */
     auto connection = SqliteConnection::construct(filename, true);
     database = Database::initialize(connection);
-    databaseWindow = new DatabaseWindow(this, database);
+    databasePanel = new DatabasePanel(this, database);
 
     /* Ask to generate example data */
     int generateExampleData = wxMessageBox(
@@ -104,7 +104,7 @@ void MainFrame::openDatabase() {
     /* Open database + open DatabaseWindow */
     auto connection = SqliteConnection::construct(fileDialog.GetPath().ToStdString(), false);
     database = Database::open(connection);
-    databaseWindow = new DatabaseWindow(this, database);
+    databasePanel = new DatabasePanel(this, database);
 
     /* Set status bar text */
     SetStatusText(_("Datenbank wurde geöffnet."));
