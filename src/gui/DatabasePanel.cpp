@@ -1,4 +1,5 @@
 #include "gui/DatabasePanel.h"
+#include "gui/MediaBrowsePanel.h"
 #include <wx/statline.h>
 
 using namespace pb2;
@@ -41,8 +42,7 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
 }
 
 void DatabasePanel::newMediaBrowserTab() {
-    //TODO Implement
-    throw NotImplementedException();
+    notebook->AddPage(new MediaBrowsePanel(notebook), _("Medienkatalog"));
 }
 
 void DatabasePanel::newUserBrowserTab() {
