@@ -19,6 +19,8 @@ namespace pb2 {
     public:
         virtual ~App();
         virtual bool OnInit() override;
+        virtual void OnFatalException() override;
+        virtual void OnUnhandledException() override;
 
         inline const MainFrame & getMainFrame() const { return *mainFrame; } //TODO: Is this correct?
         inline MainFrame & getMainFrame() { return *mainFrame; }
