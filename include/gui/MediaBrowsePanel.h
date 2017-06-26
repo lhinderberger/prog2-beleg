@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 
+#include "core/Database.h"
 #include "MediaSearchTable.h"
 
 namespace pb2 {
@@ -11,7 +12,7 @@ namespace pb2 {
         MediaSearchTable * searchTable = nullptr;
 
     public:
-        MediaBrowsePanel(wxWindow * parent);
+        MediaBrowsePanel(wxWindow * parent, std::shared_ptr<Database> database);
     };
 }
 
