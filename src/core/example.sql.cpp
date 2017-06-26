@@ -23,8 +23,8 @@ const char * exampleDataSQL = R"---(
          "55 Möglichkeiten, Ihre Programme und Entwürfe zu verbessern"),
         ("978-3898428392", 2, "book", "hardcover", "C/C++", "Das umfassende Lehrbuch");
 
-    INSERT INTO media_copies(medium_ean, serial_number, deaccessioned, location) VALUES
-        ("978-3958750494", 1, 0, "A123"), ("978-3958750494", 2, 0, "A123"),
-        ("978-3827330789", 1, 1, "A124"),
-        ("978-3898428392", 1, 0, "B125"), ("978-3898428392", 2, 1, "B125");
+    INSERT INTO media_copies(medium_ean, serial_number, deaccessioned, location, availability_hint) VALUES
+        ("978-3958750494", 1, 0, "A123", "now"), ("978-3958750494", 2, 0, "A123", "now"),
+        ("978-3827330789", 1, 1, "A124", "now"),
+        ("978-3898428392", 1, 0, "B125", "now"), ("978-3898428392", 2, 1, "B125", "now");
 )---";

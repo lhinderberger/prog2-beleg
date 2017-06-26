@@ -20,3 +20,11 @@ TEST_F(DatabaseFixture, DatabaseMetaTest) {
     database->setMeta(key, newValue);
     EXPECT_EQ(database->getMeta(key), newValue);
 }
+
+/**
+ * Tests whether the example data can be successfully generated.
+ */
+TEST_F(DatabaseFixture, ExampleDataTest) {
+    database->generateExampleData();
+    connection->commit();
+}
