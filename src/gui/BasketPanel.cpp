@@ -1,9 +1,9 @@
-#include "gui/BasketWindow.h"
+#include "gui/BasketPanel.h"
 
 using namespace pb2;
 
-BasketWindow::BasketWindow(wxWindow * parent)
-    : wxWindow(parent, wxID_ANY) {
+BasketPanel::BasketPanel(wxWindow * parent)
+    : wxPanel(parent, wxID_ANY) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(sizer);

@@ -4,12 +4,12 @@
 #include <wx/wx.h>
 
 namespace pb2 {
-    class BasketWindow : public wxWindow {
+    class BasketPanel : public wxPanel {
     private:
         wxListBox * listBox = nullptr;
 
     public:
-        BasketWindow(wxWindow * parent);
+        BasketPanel(wxWindow * parent);
     };
 }
 

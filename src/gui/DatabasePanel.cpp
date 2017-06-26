@@ -24,9 +24,9 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
     sidebarSizer->Add(new wxButton(this, (int)ID::NEW_MEDIA_BROWSER_TAB, _("Medienkatalog")), 0, wxEXPAND);
     sidebarSizer->Add(new wxButton(this, (int)ID::NEW_USER_BROWSER_TAB, _("Benutzer && Ausleihen")), 0, wxEXPAND);
 
-    /* Divider and BasketWindow */
+    /* Divider and BasketPanel */
     sidebarSizer->Add(new wxStaticLine(this));
-    basketWindow = new BasketWindow(this);
+    basketWindow = new BasketPanel(this);
     sidebarSizer->Add(basketWindow, 1, wxEXPAND);
 
     /* Create content wxNotebook */

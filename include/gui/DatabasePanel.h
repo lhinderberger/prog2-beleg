@@ -5,7 +5,7 @@
 #include <wx/aui/auibook.h>
 #include "core/Database.h"
 
-#include "BasketWindow.h"
+#include "BasketPanel.h"
 
 namespace pb2 {
     /**
@@ -14,7 +14,7 @@ namespace pb2 {
      */
     class DatabasePanel : public wxPanel {
     private:
-        BasketWindow * basketWindow = nullptr;
+        BasketPanel * basketWindow = nullptr;
         wxNotebook * notebook = nullptr;
         std::shared_ptr<Database> database;
 
