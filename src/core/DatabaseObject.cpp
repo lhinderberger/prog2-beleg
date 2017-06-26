@@ -24,6 +24,9 @@ void DatabaseObject::persist() {
 
     /* Call persist implementation */
     persistImpl();
+
+    /* Set loaded flag */
+    priv->loaded = true;
 }
 
 void DatabaseObject::setLoaded(bool loaded) {
