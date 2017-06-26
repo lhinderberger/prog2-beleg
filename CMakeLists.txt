@@ -26,7 +26,7 @@ add_library(core ${CORE_INCLUDE_FILES} ${CORE_SRC_FILES})
 target_link_libraries(core sqlite3)
 
 # Define GUI target
-find_package(wxWidgets COMPONENTS core base adv)
+find_package(wxWidgets COMPONENTS core base adv aui)
 if (wxWidgets_FOUND)
     include(${wxWidgets_USE_FILE})
     add_executable(gui ${GUI_INCLUDE_FILES} ${GUI_SRC_FILES})

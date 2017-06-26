@@ -15,7 +15,7 @@ namespace pb2 {
     class DatabasePanel : public wxPanel {
     private:
         BasketPanel * basketWindow = nullptr;
-        wxNotebook * notebook = nullptr;
+        wxAuiNotebook * notebook = nullptr;
         std::shared_ptr<Database> database;
 
         void evNewMediaBrowserTab(wxCommandEvent & event) { newMediaBrowserTab(); }
