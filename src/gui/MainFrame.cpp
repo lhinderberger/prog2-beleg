@@ -72,9 +72,9 @@ void MainFrame::newDatabase() {
     if (fileDialog.GetFilterIndex() == 0 && (filenameLen < 3 || filename.substr(filenameLen - 3) != ".db"))
         filename += ".db";
 
-    /* Initialize database + open DatabaseWindow */
+    /* Initialize database */
     auto connection = SqliteConnection::construct(filename, true);
-    setDatabaseAndOpenPanel(Database::initialize(connection));
+    auto database = Database::initialize(connection);
 
     /* Ask to generate example data */
     int generateExampleData = wxMessageBox(
@@ -85,6 +85,12 @@ void MainFrame::newDatabase() {
         database->generateExampleData();
         connection->commit();
     }
+
+    /* Open DatabasePanel */
+    //Note: This has to be behind generating example data, as otherwise example data
+    //wouldn't be visible right away in the MediaBrowsePanel opened by default
+    //by DatabasePanel
+    setDatabaseAndOpenPanel(database);
 
     /* Set status bar text */
     SetStatusText(_("Datenbank wurde angelegt!"));
@@ -102,7 +108,7 @@ void MainFrame::openDatabase() {
     if (fileDialog.ShowModal() == wxID_CANCEL)
         return;
 
-    /* Open database + open DatabaseWindow */
+    /* Open database + open DatabasePanel */
     auto connection = SqliteConnection::construct(fileDialog.GetPath().ToStdString(), false);
     setDatabaseAndOpenPanel(Database::open(connection));
 
