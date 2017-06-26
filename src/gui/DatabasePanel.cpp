@@ -13,7 +13,7 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
     /* Create sidebar box sizer */
     wxSizer * sidebarSizer = new wxBoxSizer(wxVERTICAL);
     sidebarSizer->SetMinSize(200,600);
-    sizer->Add(sidebarSizer);
+    sizer->Add(sidebarSizer, 0, wxALL, 10);
 
     /* Create "New tab" buttons */
     sidebarSizer->Add(new wxStaticText(this, wxID_ANY, _("Neuer Tab:")));
@@ -23,7 +23,7 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
     /* Divider and BasketWindow */
     sidebarSizer->Add(new wxStaticLine(this));
     basketWindow = new BasketWindow(this);
-    sidebarSizer->Add(basketWindow, 1, wxEXPAND | wxALL);
+    sidebarSizer->Add(basketWindow, 1, wxEXPAND);
 
     /* Create content wxAuiNotebook */
     notebook = new wxAuiNotebook(this);
