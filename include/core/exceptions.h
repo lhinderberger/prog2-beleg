@@ -68,11 +68,12 @@ namespace pb2 {
 
     class ColumnNotFoundException : public CoreException {
     private:
-        std::string fullColumnName;
+        std::string description, fullColumnName;
     public:
         ColumnNotFoundException(const std::string & fullColumnName);
 
         inline const std::string & getFullColumnName() const { return fullColumnName; }
+        inline virtual const char * what() const noexcept override { return description.c_str(); }
     };
 
     class DatabaseFormatException : public CoreException {

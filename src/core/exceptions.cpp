@@ -12,6 +12,7 @@ FileExistsException::FileExistsException(const string & filename) {
 
 ColumnNotFoundException::ColumnNotFoundException(const string & fullColumnName) {
     this->fullColumnName = fullColumnName;
+    description = "Column not found: " + fullColumnName;
 }
 
 
