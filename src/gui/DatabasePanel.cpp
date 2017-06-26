@@ -25,8 +25,8 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
     basketWindow = new BasketWindow(this);
     sidebarSizer->Add(basketWindow, 1, wxEXPAND);
 
-    /* Create content wxAuiNotebook */
-    notebook = new wxAuiNotebook(this);
+    /* Create content wxNotebook */
+    notebook = new wxNotebook(this, wxID_ANY);
     sizer->Add(notebook);
 
     /* Open new media browser tab by default */
