@@ -32,7 +32,7 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
 
     /* Create content wxNotebook */
     notebook = new wxNotebook(this, wxID_ANY);
-    sizer->Add(notebook);
+    sizer->Add(notebook, 1, wxEXPAND | wxBOTTOM | wxRIGHT, 10);
 
     /* Open new media browser tab by default */
     newMediaBrowserTab();

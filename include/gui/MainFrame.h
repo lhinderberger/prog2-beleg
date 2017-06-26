@@ -28,6 +28,7 @@ namespace pb2 {
         void evCloseDatabase(wxCommandEvent & event) { closeDatabase(); }
         void evNewDatabase(wxCommandEvent & event) { newDatabase(); }
         void evOpenDatabase(wxCommandEvent & event) { openDatabase(); }
+        void setDatabaseAndOpenPanel(std::shared_ptr<Database> database);
 
         wxDECLARE_EVENT_TABLE();
     };

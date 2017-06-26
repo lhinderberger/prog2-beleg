@@ -42,8 +42,10 @@ bool MainFrame::closeDatabase() {
         return false;
 
     /* Close database in every case, but destroy DatabaseWindow first */
-    if (databasePanel)
+    if (databasePanel) {
         databasePanel->Destroy();
+        databasePanel = nullptr;
+    }
     database = nullptr;
 
     /* Set status bar text */
@@ -72,8 +74,7 @@ void MainFrame::newDatabase() {
 
     /* Initialize database + open DatabaseWindow */
     auto connection = SqliteConnection::construct(filename, true);
-    database = Database::initialize(connection);
-    databasePanel = new DatabasePanel(this, database);
+    setDatabaseAndOpenPanel(Database::initialize(connection));
 
     /* Ask to generate example data */
     int generateExampleData = wxMessageBox(
@@ -103,8 +104,7 @@ void MainFrame::openDatabase() {
 
     /* Open database + open DatabaseWindow */
     auto connection = SqliteConnection::construct(fileDialog.GetPath().ToStdString(), false);
-    database = Database::open(connection);
-    databasePanel = new DatabasePanel(this, database);
+    setDatabaseAndOpenPanel(Database::open(connection));
 
     /* Set status bar text */
     SetStatusText(_("Datenbank wurde geöffnet."));
@@ -115,4 +115,17 @@ void MainFrame::onClose(wxCloseEvent & event) {
         event.Veto();
     else
         event.Skip();
+}
+
+void MainFrame::setDatabaseAndOpenPanel(shared_ptr<Database> database) {
+    /* Destroy current panel, if any */
+    if (databasePanel)
+        databasePanel->Destroy();
+
+    /* Set database pointer */
+    this->database = database;
+
+    /* Initialize new panel */
+    databasePanel = new DatabasePanel(this, database);
+    databasePanel->SetSize(GetClientSize());
 }
