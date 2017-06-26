@@ -4,6 +4,10 @@
 using namespace pb2;
 using namespace std;
 
+wxBEGIN_EVENT_TABLE(pb2::DatabasePanel, wxWindow)
+    EVT_BUTTON((int)DatabasePanel::ID::NEW_MEDIA_BROWSER_TAB, DatabasePanel::evNewMediaBrowserTab)
+wxEND_EVENT_TABLE()
+
 DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
     : wxPanel(parent, wxID_ANY), database(database) {
     /* Create top-level box sizer */
@@ -17,8 +21,8 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
 
     /* Create "New tab" buttons */
     sidebarSizer->Add(new wxStaticText(this, wxID_ANY, _("Neuer Tab:")));
-    sidebarSizer->Add(new wxButton(this, wxID_ANY, _("Medienkatalog")), 0, wxEXPAND);
-    sidebarSizer->Add(new wxButton(this, wxID_ANY, _("Benutzer && Ausleihen")), 0, wxEXPAND);
+    sidebarSizer->Add(new wxButton(this, (int)ID::NEW_MEDIA_BROWSER_TAB, _("Medienkatalog")), 0, wxEXPAND);
+    sidebarSizer->Add(new wxButton(this, (int)ID::NEW_USER_BROWSER_TAB, _("Benutzer && Ausleihen")), 0, wxEXPAND);
 
     /* Divider and BasketWindow */
     sidebarSizer->Add(new wxStaticLine(this));
@@ -30,8 +34,18 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
     sizer->Add(notebook);
 
     /* Open new media browser tab by default */
-    //TODO
+    newMediaBrowserTab();
 
     /* Fit to parent window */
     Fit();
+}
+
+void DatabasePanel::newMediaBrowserTab() {
+    //TODO Implement
+    throw NotImplementedException();
+}
+
+void DatabasePanel::newUserBrowserTab() {
+    //TODO Implement
+    throw NotImplementedException();
 }
