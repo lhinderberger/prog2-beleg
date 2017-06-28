@@ -58,12 +58,12 @@ wxString LendingsSearchTable::getColumnContent(int column) {
         wxDateTime dateTime((time_t)query->columnInt("lendings.timestamp_lent"));
         if (!dateTime.IsValid())
             return unknownString;
-        return dateTime.Format(_("%d.%m.%C"));
+        return dateTime.Format(_("%d.%m.%y"));
     }
     else if (column == 5) {
         /* Build label for times_extended */
         wxString out;
-        if (out.sprintf(_("%dx"), query->columnInt("lendings.times_extended")) != 1)
+        if (out.Printf(_("%dx"), query->columnInt("lendings.times_extended")) < 0)
             return unknownString;
         return out;
     }
