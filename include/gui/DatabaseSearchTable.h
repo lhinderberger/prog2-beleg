@@ -11,14 +11,14 @@
 namespace pb2 {
     class DatabaseSearchTable : public wxPanel {
     private:
-        wxSearchCtrl * searchCtrl = nullptr;
-        wxDataViewListCtrl * dataView = nullptr;
-
         void buildColumns(const std::vector<wxString> & headings);
         void buildRows();
         void evSearch(wxCommandEvent & ev);
 
     protected:
+        wxSearchCtrl * searchCtrl = nullptr;
+        wxDataViewListCtrl * dataView = nullptr;
+
         /* Implementing class shall prepare a search query and set it ready to be used
          * in subsequent calls to step() / getColumnContent().
          */
