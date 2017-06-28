@@ -27,8 +27,21 @@ MediaBrowsePanel::MediaBrowsePanel(
 }
 
 void MediaBrowsePanel::evAddToBasket(wxCommandEvent & ev) {
-    auto selectedMedium = searchTable->getSelectedMediumCopy();
-    if (!selectedMedium)
+    /* Retrieve mediumCopy */
+    auto selectedMediumCopy = searchTable->getSelectedMediumCopy();
+    if (!selectedMediumCopy)
         return;
-    basket->add(selectedMedium);
+
+    /* Ask user for confirmation if copy is not available */
+    if (selectedMediumCopy->getAvailabilityHint() != "now" || selectedMediumCopy->getDeaccessioned()) {
+        if (wxMessageBox(
+                _("Das gewählte Medium scheint nicht verfügbar zu sein. Trotzdem zum Warenkorb hinzufügen?"),
+                _("Warenkorb - Warnung"),
+                wxYES_NO | wxICON_WARNING
+        ) == wxNO)
+            return;
+    }
+
+    /* Add to basket */
+    basket->add(selectedMediumCopy);
 }
