@@ -51,6 +51,7 @@ namespace pb2 {
         std::shared_ptr<Lending> getActiveLending() const;
 
         std::shared_ptr<Medium> getMedium() const;
+        std::string getMediumEAN() const;
 
         /**
          * If a medium is deaccessioned, it is no longer available for lending.

@@ -103,6 +103,13 @@ shared_ptr<Medium> MediumCopy::getMedium() const {
     return priv->medium.get();
 }
 
+string MediumCopy::getMediumEAN() const {
+    if (priv->medium.isPrimaryKeySet())
+        return priv->medium.getPrimaryKey();
+    else
+        return priv->medium.get()->getEAN();
+}
+
 int MediumCopy::getSerialNumber() const {
     return priv->serialNumber;
 }
