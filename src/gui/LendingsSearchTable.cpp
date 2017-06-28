@@ -27,9 +27,9 @@ string LendingsSearchTable::getSearchSQL() {
 
 string LendingsSearchTable::getListSQL() {
     return  "SELECT * FROM lendings "
-            "JOIN media_copies ON lendings.medium_ean = media_copies.medium_ean, lendings.medium_copy_serial_number = media_copies.serial_number "
+            "JOIN media_copies ON lendings.medium_ean = media_copies.medium_ean AND lendings.medium_copy_serial_number = media_copies.serial_number "
             "JOIN media ON media.ean = lendings.medium_ean "
-            "JOIN authors ON author.id = media.author_id "
+            "JOIN authors ON authors.id = media.author_id "
             "WHERE lendings.library_user_id = :user_id ";
 }
 
