@@ -22,7 +22,8 @@ MediaSearchTable::MediaSearchTable(wxWindow * parent, shared_ptr<Database> datab
 string MediaSearchTable::getSearchSQL() {
     return getListSQL() + " WHERE media.title LIKE " LIKEQUERY " OR media.subtitle LIKE " LIKEQUERY " "
            "OR authors.first_name LIKE " LIKEQUERY " OR authors.last_name LIKE " LIKEQUERY " "
-           "OR media_copies.location LIKE " LIKEQUERY " OR media.ean LIKE " LIKEQUERY;
+           "OR media_copies.location LIKE " LIKEQUERY " OR media.ean LIKE " LIKEQUERY
+           "OR (media.ean || media_copies.serial_number) LIKE " LIKEQUERY;
 }
 
 string MediaSearchTable::getListSQL() {
