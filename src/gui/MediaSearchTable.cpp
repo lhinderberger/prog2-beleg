@@ -6,72 +6,34 @@
 using namespace pb2;
 using namespace std;
 
-const char * basicSQL =
-        "SELECT * FROM media_copies "
-        "JOIN media ON media_copies.medium_ean = media.ean "
-        "JOIN authors ON authors.id = media.author_id ";
-
 MediaSearchTable::MediaSearchTable(wxWindow * parent, shared_ptr<Database> database)
-    : DatabaseSearchTable(
+    : TwoQuerySearchTable(
         parent, _("Neues Medium..."),
         {
             _("EAN"), _("Serien-Nr."), _("Autor"), _("Titel"), _("Format"),
             _("Standort"), _("Verfügbarkeit")
-        }
-    ), database(database) {
+        },
+        database
+    ) {
 
 }
 
 
-void MediaSearchTable::prepareSearch(const wxString & query) {
-    /* Prepare query, if necessary */
-    if (searchQuery == nullptr) {
-        searchQuery = make_shared<SqlitePreparedStatement>(
-                database->getConnection(),
-                string(basicSQL) +
-                " WHERE media.title LIKE " LIKEQUERY " OR media.subtitle LIKE " LIKEQUERY " "
-                "OR authors.first_name LIKE " LIKEQUERY " OR authors.last_name LIKE " LIKEQUERY " "
-                "OR media_copies.location LIKE " LIKEQUERY " OR media.ean LIKE " LIKEQUERY ""
-        );
-    }
-    currentQuery = QueryType::SEARCH;
-
-    /* Reset query */
-    searchQuery->reset();
-
-    /* Bind parameter */
-    searchQuery->bind(1, query.ToStdString());
+string MediaSearchTable::getSearchSQL() {
+    return getListSQL() + " WHERE media.title LIKE " LIKEQUERY " OR media.subtitle LIKE " LIKEQUERY " "
+           "OR authors.first_name LIKE " LIKEQUERY " OR authors.last_name LIKE " LIKEQUERY " "
+           "OR media_copies.location LIKE " LIKEQUERY " OR media.ean LIKE " LIKEQUERY;
 }
 
-void MediaSearchTable::prepareList() {
-    /* Prepare query, if necessary */
-    if (listQuery == nullptr)
-        listQuery = make_shared<SqlitePreparedStatement>(database->getConnection(), string(basicSQL));
-    currentQuery = QueryType::LIST;
-
-    /* Reset query */
-    listQuery->reset();
-}
-
-bool MediaSearchTable::step() {
-    if (currentQuery == QueryType::LIST)
-        return listQuery->step();
-    else if (currentQuery == QueryType::SEARCH)
-        return searchQuery->step();
-    else
-        return false;
+string MediaSearchTable::getListSQL() {
+    return  "SELECT * FROM media_copies "
+            "JOIN media ON media_copies.medium_ean = media.ean "
+            "JOIN authors ON authors.id = media.author_id ";
 }
 
 wxString MediaSearchTable::getColumnContent(int column) {
-    //TODO: Move all list/search query wrangling into own base class
     /* Get current query */
-    shared_ptr<SqlitePreparedStatement> query = nullptr;
-    if (currentQuery == QueryType::LIST)
-        query = listQuery;
-    else if (currentQuery == QueryType::SEARCH)
-        query = searchQuery;
-    else
-        throw logic_error("Trying to retrieve column content without active query!");
+    shared_ptr<SqlitePreparedStatement> query = currentQuery();
 
     /* Retrieve media object */
     string directQueryColumn;
