@@ -24,7 +24,12 @@ const char * exampleDataSQL = R"---(
         ("978-3898428392", 2, "book", "hardcover", "C/C++", "Das umfassende Lehrbuch");
 
     INSERT INTO media_copies(medium_ean, serial_number, deaccessioned, location, availability_hint) VALUES
-        ("978-3958750494", 1, 0, "A123", "now"), ("978-3958750494", 2, 0, "A123", "now"),
+        ("978-3958750494", 1, 0, "A123", "2017-07-12"), ("978-3958750494", 2, 0, "A123", "now"),
         ("978-3827330789", 1, 1, "A124", "now"),
-        ("978-3898428392", 1, 0, "B125", "now"), ("978-3898428392", 2, 1, "B125", "now");
+        ("978-3898428392", 1, 0, "B125", "2017-06-26"), ("978-3898428392", 2, 1, "B125", "now");
+
+    INSERT INTO lendings(medium_ean, medium_copy_serial_number, library_user_id, timestamp_lent, timestamp_returned, times_extended, due_date) VALUES
+        ("978-3958750494", 1, 2, 1498660800, 0, 0, "2017-07-12"),
+        ("978-3898428392", 1, 4, 1497278400, 0, 0, "2017-06-26"),
+        ("978-3958750494", 2, 3, 1497278400, 1498660800, 0, "2017-06-26");
 )---";
