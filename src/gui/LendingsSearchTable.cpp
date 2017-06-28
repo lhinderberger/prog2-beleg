@@ -23,9 +23,9 @@ LendingsSearchTable::LendingsSearchTable(wxWindow * parent, wxWindowID id, share
 
 
 string LendingsSearchTable::getSearchSQL() {
-    return getListSQL() + " WHERE media.ean LIKE " LIKEQUERY " OR media.title LIKE " LIKEQUERY " "
+    return getListSQL() + " AND (media.ean LIKE " LIKEQUERY " OR media.title LIKE " LIKEQUERY " "
            "OR authors.last_name LIKE " LIKEQUERY " OR authors.first_name LIKE " LIKEQUERY " "
-           "OR (media.ean || media_copies.serial_number) LIKE " LIKEQUERY;
+           "OR (media.ean || media_copies.serial_number) LIKE " LIKEQUERY ")";
 }
 
 string LendingsSearchTable::getListSQL() {
@@ -117,7 +117,7 @@ void LendingsSearchTable::prepareList() {
 
 void LendingsSearchTable::prepareSearch(const wxString & query) {
     /* Prepare */
-    TwoQuerySearchTable::prepareList();
+    TwoQuerySearchTable::prepareSearch(query);
 
     /* Bind parameters */
     auto statement = currentQuery();
