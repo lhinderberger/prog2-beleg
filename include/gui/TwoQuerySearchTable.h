@@ -46,7 +46,7 @@ namespace pb2 {
         );
         virtual ~TwoQuerySearchTable() = default;
 
-        inline std::shared_ptr<Database> getDatabase() { return database; }
+        inline std::shared_ptr<Database> getDatabase() const { return database; }
 
     private:
         bool noBind = false;
