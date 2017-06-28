@@ -14,7 +14,7 @@ namespace pb2 {
         virtual wxString getColumnContent(int column) override;
 
     public:
-        UserSearchTable(wxWindow * parent, std::shared_ptr<Database> database);
+        UserSearchTable(wxWindow * parent, wxWindowID id, std::shared_ptr<Database> database);
         virtual ~UserSearchTable() = default;
 
         /**

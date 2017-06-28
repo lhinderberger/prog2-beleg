@@ -4,9 +4,9 @@ using namespace pb2;
 using namespace std;
 
 TwoQuerySearchTable::TwoQuerySearchTable(
-        wxWindow * parent, const wxString & newItemButtonLabel,
+        wxWindow * parent, wxWindowID id, const wxString & newItemButtonLabel,
         const vector<wxString> & columnHeadings, shared_ptr<Database> database
-) : DatabaseSearchTable(parent, newItemButtonLabel, columnHeadings), database(database) {
+) : DatabaseSearchTable(parent, id, newItemButtonLabel, columnHeadings), database(database) {
 
 }
 

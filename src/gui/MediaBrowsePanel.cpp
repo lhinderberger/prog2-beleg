@@ -10,7 +10,7 @@ MediaBrowsePanel::MediaBrowsePanel(wxWindow * parent, shared_ptr<Database> datab
     SetSizer(sizer);
 
     /* Add Search table */
-    searchTable = new MediaSearchTable(this, database);
+    searchTable = new MediaSearchTable(this, wxID_ANY, database);
     sizer->Add(searchTable, 0, wxEXPAND);
     searchTable->list();
 }

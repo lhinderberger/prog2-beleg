@@ -14,8 +14,8 @@ wxBEGIN_EVENT_TABLE(pb2::DatabaseSearchTable, wxWindow)
 wxEND_EVENT_TABLE()
 
 DatabaseSearchTable::DatabaseSearchTable(
-    wxWindow * parent, const wxString & newItemButtonLabel, const vector<wxString> & columnHeadings
-) : wxPanel(parent, wxID_ANY) {
+    wxWindow * parent, wxWindowID id, const wxString & newItemButtonLabel, const vector<wxString> & columnHeadings
+) : wxPanel(parent, id) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(sizer);

@@ -47,7 +47,7 @@ namespace pb2 {
         enum class ID { SEARCH_CTRL = 1, NEW_ITEM_BUTTON, DATA_VIEW };
 
         DatabaseSearchTable(
-            wxWindow * parent, const wxString & newItemButtonLabel,
+            wxWindow * parent, wxWindowID id, const wxString & newItemButtonLabel,
             const std::vector<wxString> & columnHeadings
         );
         virtual ~DatabaseSearchTable() = default;

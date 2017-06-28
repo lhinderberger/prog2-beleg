@@ -13,7 +13,7 @@ namespace pb2 {
         virtual wxString getColumnContent(int column) override;
 
     public:
-        MediaSearchTable(wxWindow * parent, std::shared_ptr<Database> database);
+        MediaSearchTable(wxWindow * parent, wxWindowID id, std::shared_ptr<Database> database);
         virtual ~MediaSearchTable() = default;
     };
 }

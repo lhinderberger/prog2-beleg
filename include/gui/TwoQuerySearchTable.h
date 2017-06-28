@@ -40,7 +40,7 @@ namespace pb2 {
 
     public:
         TwoQuerySearchTable(
-                wxWindow * parent, const wxString & newItemButtonLabel,
+                wxWindow * parent, wxWindowID id, const wxString & newItemButtonLabel,
                 const std::vector<wxString> & columnHeadings,
                 std::shared_ptr<Database> database
         );

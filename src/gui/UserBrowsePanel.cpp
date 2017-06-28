@@ -10,7 +10,7 @@ UserBrowsePanel::UserBrowsePanel(wxWindow * parent, shared_ptr<Database> databas
     SetSizer(sizer);
 
     /* Add User table */
-    searchTable = new UserSearchTable(this, database);
+    searchTable = new UserSearchTable(this, wxID_ANY, database);
     sizer->Add(searchTable, 0, wxEXPAND);
     searchTable->list();
 

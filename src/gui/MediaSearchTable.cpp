@@ -6,9 +6,9 @@
 using namespace pb2;
 using namespace std;
 
-MediaSearchTable::MediaSearchTable(wxWindow * parent, shared_ptr<Database> database)
+MediaSearchTable::MediaSearchTable(wxWindow * parent, wxWindowID id, shared_ptr<Database> database)
     : TwoQuerySearchTable(
-        parent, _("Neues Medium..."),
+        parent, id, _("Neues Medium..."),
         {
             _("EAN"), _("Serien-Nr."), _("Autor"), _("Titel"), _("Format"),
             _("Standort"), _("Verfügbarkeit")

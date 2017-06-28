@@ -6,9 +6,9 @@
 using namespace pb2;
 using namespace std;
 
-UserSearchTable::UserSearchTable(wxWindow * parent, shared_ptr<Database> database)
+UserSearchTable::UserSearchTable(wxWindow * parent, wxWindowID id, shared_ptr<Database> database)
     : TwoQuerySearchTable(
-        parent, _("Neuer Benutzer..."),
+        parent, id, _("Neuer Benutzer..."),
         {
             _("Benutzer-Nr."), _("Nachname"), _("Vorname"), _("PLZ"), _("Ort"), _("Anschrift")
         },
