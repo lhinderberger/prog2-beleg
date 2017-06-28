@@ -47,8 +47,8 @@ namespace pb2 {
         );
         virtual ~DatabaseSearchTable() = default;
 
-        void list();
-        void search(const wxString & query);
+        virtual void list();
+        virtual void search(const wxString & query);
 
     wxDECLARE_EVENT_TABLE();
     };
