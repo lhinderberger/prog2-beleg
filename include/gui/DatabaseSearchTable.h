@@ -18,7 +18,7 @@ namespace pb2 {
         void buildRows();
         void evSearch(wxCommandEvent & ev);
         void evNewItem(wxCommandEvent & ev);
-        void evRowSelected(wxCommandEvent & ev);
+        void evRowSelected(wxDataViewEvent & ev);
 
     protected:
         wxSearchCtrl * searchCtrl = nullptr;

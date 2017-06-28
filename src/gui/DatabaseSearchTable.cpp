@@ -66,13 +66,13 @@ void DatabaseSearchTable::evSearch(wxCommandEvent & ev) {
 
 void DatabaseSearchTable::evNewItem(wxCommandEvent & ev) {
     /* Generate and send an ST_NEW_ITEM event */
-    wxEvent event(PB2_EVT_ST_NEW_ITEM);
+    wxCommandEvent event(PB2_EVT_ST_NEW_ITEM);
     wxPostEvent(GetParent(), event);
 }
 
-void DatabaseSearchTable::evRowSelected(wxCommandEvent & ev) {
+void DatabaseSearchTable::evRowSelected(wxDataViewEvent & ev) {
     /* Generate and send an ST_SELECTED event */
-    wxEvent event(PB2_EVT_ST_SELECTED);
+    wxCommandEvent event(PB2_EVT_ST_SELECTED);
     wxPostEvent(GetParent(), event);
 }
 
