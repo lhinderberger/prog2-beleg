@@ -10,7 +10,7 @@ LendingsSearchTable::LendingsSearchTable(wxWindow * parent, wxWindowID id, share
     : TwoQuerySearchTable(
         parent, id, _("Neue Ausleihe..."),
         {
-            _("EAN"), _("Serien-Nr."), _("Autor"), _("Name"), _("Ausgeliehen am"), _("Fälligkeit")
+            _("EAN"), _("Serien-Nr."), _("Autor"), _("Name"), _("Ausgeliehen am"), _("Verlängert"), _("Fälligkeit")
         },
         database
     ) {
@@ -34,6 +34,8 @@ string LendingsSearchTable::getListSQL() {
 }
 
 wxString LendingsSearchTable::getColumnContent(int column) {
+    static wxString unknownString = _("Unbekannt");
+
     /* Get current query */
     shared_ptr<SqlitePreparedStatement> query = currentQuery();
 
@@ -51,14 +53,21 @@ wxString LendingsSearchTable::getColumnContent(int column) {
         /* Build label from timestamp_lent */
         wxDateTime dateTime((time_t)query->columnInt("lendings.timestamp_lent"));
         if (!dateTime.IsValid())
-            return _("Unbekannt (siehe Details)");
+            return unknownString;
         return dateTime.Format(_("%d.%m.%C"));
     }
     else if (column == 5) {
+        /* Build label for times_extended */
+        wxString out;
+        if (out.sprintf(_("%dx"), query->columnInt("lendings.times_extended")) != 1)
+            return unknownString;
+        return out;
+    }
+    else if (column == 6) {
         /* Build label from due_date */
         wxDateTime dateTime;
         if (!dateTime.ParseISODate(query->columnString("lendings.due_date")))
-            return _("Unbekannt (siehe Details)");
+            return unknownString;
         return dateTime.Format(_("%e. %B"));
     }
     else throw logic_error("Invalid column index!");
