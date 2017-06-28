@@ -3,6 +3,7 @@
 
 #include "TwoQuerySearchTable.h"
 #include "core/Database.h"
+#include "core/domain/MediumCopy.h"
 #include "core/sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
@@ -15,6 +16,9 @@ namespace pb2 {
     public:
         MediaSearchTable(wxWindow * parent, wxWindowID id, std::shared_ptr<Database> database);
         virtual ~MediaSearchTable() = default;
+
+        std::pair<std::string,int> getSelectedEanSerial() const;
+        std::shared_ptr<MediumCopy> getSelectedMediumCopy() const;
     };
 }
 

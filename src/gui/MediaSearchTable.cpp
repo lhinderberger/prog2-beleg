@@ -83,3 +83,43 @@ wxString MediaSearchTable::getColumnContent(int column) {
     /* Direct query */
     return query->columnString(directQueryColumn);
 }
+
+pair<string,int> MediaSearchTable::getSelectedEanSerial() const {
+    static pair<string,int> invalid = {"", -1};
+    /* Is there any row selected? */
+    int selectedRow = dataView->GetSelectedRow();
+    if (selectedRow == wxNOT_FOUND || selectedRow < 0)
+        return invalid;
+
+    /* Retrieve medium EAN */
+    wxVariant eanVal;
+    wxString ean;
+    dataView->GetValue(eanVal, (unsigned int)selectedRow, 0);
+    if (!eanVal.Convert(&ean))
+        return invalid;
+
+    /* Retrieve medium Serial Number */
+    wxVariant serialVal;
+    long serial;
+    dataView->GetValue(serialVal, (unsigned int)selectedRow, 1);
+    if (!serialVal.Convert(&serial) || serial > INT_MAX)
+        return invalid;
+
+    return pair<string,int>{ean.ToStdString(), serial};
+}
+
+shared_ptr<MediumCopy> MediaSearchTable::getSelectedMediumCopy() const {
+    /* Get primary key */
+    auto eanSerial = getSelectedEanSerial();
+    if (eanSerial.second < 0)
+        return nullptr;
+
+    /* Query and load MediumCopy */
+    SqlitePreparedStatement query(getDatabase()->getConnection(), "SELECT * FROM media_copies WHERE medium_ean = ? AND serial_number = ?");
+    query.bind(1, eanSerial.first);
+    query.bind(2, eanSerial.second);
+    if (!query.step())
+        return nullptr;
+
+    return DatabaseObjectFactory<MediumCopy>(getDatabase()).load(query);
+}

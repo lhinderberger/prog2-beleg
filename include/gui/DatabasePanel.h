@@ -5,6 +5,7 @@
 #include <wx/aui/auibook.h>
 #include "core/Database.h"
 
+#include "Basket.h"
 #include "BasketPanel.h"
 
 namespace pb2 {
@@ -17,6 +18,7 @@ namespace pb2 {
         BasketPanel * basketWindow = nullptr;
         wxAuiNotebook * notebook = nullptr;
         std::shared_ptr<Database> database;
+        std::shared_ptr<Basket> basket;
 
         void evNewMediaBrowserTab(wxCommandEvent & event) { newMediaBrowserTab(); }
         void evNewUserBrowserTab(wxCommandEvent & event) { newUserBrowserTab(); }
@@ -26,7 +28,9 @@ namespace pb2 {
 
         DatabasePanel(wxWindow * parent, std::shared_ptr<Database> database);
 
+        inline std::shared_ptr<Basket> getBasket() const { return basket; }
         inline std::shared_ptr<Database> getDatabase() { return database; }
+
         void newMediaBrowserTab();
         void newUserBrowserTab();
 

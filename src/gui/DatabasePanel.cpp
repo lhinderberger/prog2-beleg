@@ -13,6 +13,9 @@ wxEND_EVENT_TABLE()
 
 DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
     : wxPanel(parent, wxID_ANY), database(database) {
+    /* Initialize Basket */
+    basket = make_shared<Basket>();
+
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxHORIZONTAL);
     SetSizer(sizer);
@@ -29,7 +32,7 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
 
     /* Divider and BasketPanel */
     sidebarSizer->Add(new wxStaticLine(this));
-    basketWindow = new BasketPanel(this);
+    basketWindow = new BasketPanel(this, basket);
     sidebarSizer->Add(basketWindow, 1, wxEXPAND);
 
     /* Create content wxNotebook */
@@ -44,7 +47,7 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
 }
 
 void DatabasePanel::newMediaBrowserTab() {
-    notebook->AddPage(new MediaBrowsePanel(notebook, database), _("Medienkatalog"));
+    notebook->AddPage(new MediaBrowsePanel(notebook, database, basket), _("Medienkatalog"));
 }
 
 void DatabasePanel::newUserBrowserTab() {
