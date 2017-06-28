@@ -6,7 +6,7 @@
 using namespace pb2;
 using namespace std;
 
-wxBEGIN_EVENT_TABLE(pb2::DatabasePanel, wxWindow)
+wxBEGIN_EVENT_TABLE(pb2::DatabasePanel, wxPanel)
     EVT_BUTTON((int)DatabasePanel::ID::NEW_MEDIA_BROWSER_TAB, DatabasePanel::evNewMediaBrowserTab)
     EVT_BUTTON((int)DatabasePanel::ID::NEW_USER_BROWSER_TAB, DatabasePanel::evNewUserBrowserTab)
 wxEND_EVENT_TABLE()
