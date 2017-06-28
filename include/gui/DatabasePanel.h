@@ -19,7 +19,7 @@ namespace pb2 {
         std::shared_ptr<Database> database;
 
         void evNewMediaBrowserTab(wxCommandEvent & event) { newMediaBrowserTab(); }
-        void evUserBrowserTab(wxCommandEvent & event) { newUserBrowserTab(); }
+        void evNewUserBrowserTab(wxCommandEvent & event) { newUserBrowserTab(); }
 
     public:
         enum class ID { NEW_MEDIA_BROWSER_TAB, NEW_USER_BROWSER_TAB };

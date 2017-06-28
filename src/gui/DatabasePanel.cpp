@@ -1,5 +1,6 @@
 #include "gui/DatabasePanel.h"
 #include "gui/MediaBrowsePanel.h"
+#include "gui/UserBrowsePanel.h"
 #include <wx/statline.h>
 
 using namespace pb2;
@@ -7,6 +8,7 @@ using namespace std;
 
 wxBEGIN_EVENT_TABLE(pb2::DatabasePanel, wxWindow)
     EVT_BUTTON((int)DatabasePanel::ID::NEW_MEDIA_BROWSER_TAB, DatabasePanel::evNewMediaBrowserTab)
+    EVT_BUTTON((int)DatabasePanel::ID::NEW_USER_BROWSER_TAB, DatabasePanel::evNewUserBrowserTab)
 wxEND_EVENT_TABLE()
 
 DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
@@ -46,6 +48,5 @@ void DatabasePanel::newMediaBrowserTab() {
 }
 
 void DatabasePanel::newUserBrowserTab() {
-    //TODO Implement
-    throw NotImplementedException();
+    notebook->AddPage(new UserBrowsePanel(notebook, database), _("Benutzer & Ausleihen"));
 }
