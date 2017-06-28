@@ -54,12 +54,14 @@ bool MainFrame::closeDatabase() {
 }
 
 void MainFrame::newDatabase() {
+    static wxString dialogHeading = _("Datenbank erstellen");
+
     /* Close currently open database, if any */
     closeDatabase();
 
     /* Open file chooser dialog to determine file name */
     wxFileDialog fileDialog(
-            this, _("Neue Datenbankdatei erstellen..."), wxEmptyString, wxEmptyString,
+            this, dialogHeading, wxEmptyString, wxEmptyString,
             _("Datenbankdateien (*.db)|*.db|Alle Dateien|*"), wxFD_SAVE
     );
     if (fileDialog.ShowModal() == wxID_CANCEL)
@@ -72,6 +74,19 @@ void MainFrame::newDatabase() {
     if (fileDialog.GetFilterIndex() == 0 && (filenameLen < 3 || filename.substr(filenameLen - 3) != ".db"))
         filename += ".db";
 
+    /* Ask to overwrite file, if it already exists */
+    if (wxFileExists(filename)) {
+        int confirmOverwrite = wxMessageBox(
+                _("Soll die bestehende Datei " + filename + " wirklich überschrieben werden?"),
+                dialogHeading, wxICON_QUESTION |wxYES_NO
+        );
+        if (confirmOverwrite != wxYES) {
+            newDatabase(); // Start over
+            return;
+        } else
+            wxRemoveFile(filename);
+    }
+
     /* Initialize database */
     auto connection = SqliteConnection::construct(filename, true);
     auto database = Database::initialize(connection);
@@ -79,7 +94,7 @@ void MainFrame::newDatabase() {
     /* Ask to generate example data */
     int generateExampleData = wxMessageBox(
             _("Soll die neue Datenbank mit Beispieldaten gefüllt werden?"),
-            _("Datenbank erstellen"), wxICON_QUESTION |wxYES_NO
+            dialogHeading, wxICON_QUESTION |wxYES_NO
     );
     if (generateExampleData == wxYES) {
         database->generateExampleData();
