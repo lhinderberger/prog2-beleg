@@ -23,12 +23,12 @@ UserBrowsePanel::UserBrowsePanel(wxWindow * parent, shared_ptr<Database> databas
     sizer->Add(lendingsHeading, 0, wxTOP, 15);
 
     /* Add Lendings table */
-    lendingsTable = new LendingsSearchTable(this, (int)ID::LENDINGS_TABLE, database);
+    lendingsTable = new LendingsSearchTable(this, (int)ID::LENDINGS_TABLE, database, true);
     sizer->Add(lendingsTable, 0, wxEXPAND);
 }
 
 wxString UserBrowsePanel::getLendingsHeading(bool userSelected) const {
-    static wxString baseHeading =  _("Ausleihen");
+    static wxString baseHeading =  _("Aktive Ausleihen");
     static wxString selectUserMsg =  baseHeading + " - " + _("Bitte zuerst Nutzer auswählen!");
 
     /* Return only heading when a user is selected, otherwise return descriptive message */

@@ -6,7 +6,7 @@
 using namespace pb2;
 using namespace std;
 
-LendingsSearchTable::LendingsSearchTable(wxWindow * parent, wxWindowID id, shared_ptr<Database> database)
+LendingsSearchTable::LendingsSearchTable(wxWindow * parent, wxWindowID id, shared_ptr<Database> database, bool activeOnly)
     : TwoQuerySearchTable(
         parent, id, _("Neue Ausleihe..."),
         {
@@ -16,6 +16,9 @@ LendingsSearchTable::LendingsSearchTable(wxWindow * parent, wxWindowID id, share
     ) {
     /* Configure TwoQuerySearchTable */
     setNoBind(true); // There is more than one search/list parameter, so TwoQuerySearchTable shall not auto-bind
+
+    /* Copy configuration values */
+    this->activeOnly = activeOnly;
 }
 
 
@@ -26,11 +29,12 @@ string LendingsSearchTable::getSearchSQL() {
 }
 
 string LendingsSearchTable::getListSQL() {
+    string activeFilter = activeOnly ? "(lendings.timestamp_returned = 0 OR lendings.timestamp_returned IS NULL) AND" : "";
     return  "SELECT * FROM lendings "
             "JOIN media_copies ON lendings.medium_ean = media_copies.medium_ean AND lendings.medium_copy_serial_number = media_copies.serial_number "
             "JOIN media ON media.ean = lendings.medium_ean "
             "JOIN authors ON authors.id = media.author_id "
-            "WHERE lendings.library_user_id = :user_id ";
+            "WHERE " + activeFilter + " lendings.library_user_id = :user_id ";
 }
 
 wxString LendingsSearchTable::getColumnContent(int column) {

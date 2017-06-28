@@ -8,6 +8,7 @@
 namespace pb2 {
     class LendingsSearchTable : public TwoQuerySearchTable {
     private:
+        bool activeOnly;
         int userId = 0;
 
     protected:
@@ -18,12 +19,19 @@ namespace pb2 {
         virtual void prepareList() override;
 
     public:
-        LendingsSearchTable(wxWindow * parent, wxWindowID id, std::shared_ptr<Database> database);
+        /**
+         * Constructs a new LendingsSearchTable
+         * @param activeOnly Set this to true to only show lendings that are not returned
+         * yet.
+         */
+        LendingsSearchTable(wxWindow * parent, wxWindowID id, std::shared_ptr<Database> database, bool activeOnly);
         virtual ~LendingsSearchTable() = default;
 
         void setUserId(int id);
         virtual void list() override;
         virtual void search(const wxString & query) override;
+
+        inline bool getActiveOnly() const { return activeOnly; }
     };
 }
 
