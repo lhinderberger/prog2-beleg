@@ -3,9 +3,14 @@
 using namespace pb2;
 using namespace std;
 
+wxDEFINE_EVENT(PB2_EVT_ST_SELECTED, wxCommandEvent);
+wxDEFINE_EVENT(PB2_EVT_ST_NEW_ITEM, wxCommandEvent);
+
 wxBEGIN_EVENT_TABLE(pb2::DatabaseSearchTable, wxWindow)
     EVT_SEARCHCTRL_SEARCH_BTN((int)DatabaseSearchTable::ID::SEARCH_CTRL, DatabaseSearchTable::evSearch)
     EVT_TEXT_ENTER((int)DatabaseSearchTable::ID::SEARCH_CTRL, DatabaseSearchTable::evSearch)
+    EVT_BUTTON((int)DatabaseSearchTable::ID::NEW_ITEM_BUTTON, DatabaseSearchTable::evNewItem)
+    EVT_DATAVIEW_SELECTION_CHANGED((int)DatabaseSearchTable::ID::DATA_VIEW, DatabaseSearchTable::evRowSelected)
 wxEND_EVENT_TABLE()
 
 DatabaseSearchTable::DatabaseSearchTable(
@@ -20,12 +25,12 @@ DatabaseSearchTable::DatabaseSearchTable(
 
     searchCtrl = new wxSearchCtrl(this, (int)ID::SEARCH_CTRL, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     searchBoxSizer->Add(searchCtrl, 1, wxEXPAND);
-    searchBoxSizer->Add(new wxButton(this, 12345 /* TODO */, newItemButtonLabel));
+    searchBoxSizer->Add(new wxButton(this, (int)ID::NEW_ITEM_BUTTON, newItemButtonLabel));
 
     sizer->Add(searchBoxSizer, 0, wxEXPAND);
 
     /* Create table */
-    dataView = new wxDataViewListCtrl(this, wxID_ANY);
+    dataView = new wxDataViewListCtrl(this, (int)ID::DATA_VIEW);
     dataView->SetMinSize(wxSize(0, 300));
     buildColumns(columnHeadings);
     sizer->Add(dataView, 1, wxEXPAND);
@@ -57,6 +62,18 @@ void DatabaseSearchTable::evSearch(wxCommandEvent & ev) {
         list();
     else
         search(query);
+}
+
+void DatabaseSearchTable::evNewItem(wxCommandEvent & ev) {
+    /* Generate and send an ST_NEW_ITEM event */
+    wxEvent event(PB2_EVT_ST_NEW_ITEM);
+    wxPostEvent(GetParent(), event);
+}
+
+void DatabaseSearchTable::evRowSelected(wxCommandEvent & ev) {
+    /* Generate and send an ST_SELECTED event */
+    wxEvent event(PB2_EVT_ST_SELECTED);
+    wxPostEvent(GetParent(), event);
 }
 
 void DatabaseSearchTable::list() {

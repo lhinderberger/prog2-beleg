@@ -8,12 +8,17 @@
 
 #include "core/sqlite/SqlitePreparedStatement.h"
 
+wxDECLARE_EVENT(PB2_EVT_ST_SELECTED, wxCommandEvent);
+wxDECLARE_EVENT(PB2_EVT_ST_NEW_ITEM, wxCommandEvent);
+
 namespace pb2 {
     class DatabaseSearchTable : public wxPanel {
     private:
         void buildColumns(const std::vector<wxString> & headings);
         void buildRows();
         void evSearch(wxCommandEvent & ev);
+        void evNewItem(wxCommandEvent & ev);
+        void evRowSelected(wxCommandEvent & ev);
 
     protected:
         wxSearchCtrl * searchCtrl = nullptr;
@@ -39,7 +44,7 @@ namespace pb2 {
         virtual wxString getColumnContent(int column) = 0;
 
     public:
-        enum class ID { SEARCH_CTRL = 1 };
+        enum class ID { SEARCH_CTRL = 1, NEW_ITEM_BUTTON, DATA_VIEW };
 
         DatabaseSearchTable(
             wxWindow * parent, const wxString & newItemButtonLabel,
