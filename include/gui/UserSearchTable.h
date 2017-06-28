@@ -4,6 +4,7 @@
 #include "TwoQuerySearchTable.h"
 #include "core/Database.h"
 #include "core/sqlite/SqlitePreparedStatement.h"
+#include "core/domain/LibraryUser.h"
 
 namespace pb2 {
     class UserSearchTable : public TwoQuerySearchTable {
@@ -15,6 +16,18 @@ namespace pb2 {
     public:
         UserSearchTable(wxWindow * parent, std::shared_ptr<Database> database);
         virtual ~UserSearchTable() = default;
+
+        /**
+         * Returns a shared pointer to the currently selected user, or nullptr if no
+         * user is selected / could be determined.
+         */
+        std::shared_ptr<LibraryUser> getSelectedUser() const;
+
+        /**
+         * Returns the ID of the currently selected user, or 0 if no user is selected or
+         * could be determined.
+         */
+        int getSelectedId() const;
     };
 }
 

@@ -57,3 +57,32 @@ wxString UserSearchTable::getColumnContent(int column) {
     /* Direct query */
     return query->columnString(directQueryColumn);
 }
+
+shared_ptr<LibraryUser> UserSearchTable::getSelectedUser() const {
+    /* Is there a user selected? */
+    int userId = getSelectedId();
+    if (!userId)
+        return nullptr;
+
+    /* Load the user with the given ID */
+    SqlitePreparedStatement query(getDatabase()->getConnection(), "SELECT * FROM library_users WHERE id = :id");
+    query.bind(1, userId);
+    query.step();
+    return DatabaseObjectFactory<LibraryUser>(getDatabase()).load(query);
+}
+
+int UserSearchTable::getSelectedId() const {
+    /* Is there any row selected? */
+    int selectedRow = dataView->GetSelectedRow();
+    if (selectedRow == wxNOT_FOUND || selectedRow < 0)
+        return 0;
+
+    /* Retrieve user ID */
+    wxVariant val;
+    long userId;
+    dataView->GetValue(val, (unsigned int)selectedRow, 0);
+    if (!val.Convert(&userId) || userId > INT_MAX)
+        return 0;
+    else
+        return (int)userId;
+}
