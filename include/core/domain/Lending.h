@@ -60,6 +60,8 @@ namespace pb2 {
 
     public:
         static const std::string tableName;
+        static int getDefaultExtensionDays(std::shared_ptr<Database> database);
+        static int getDefaultLendingRuntime(std::shared_ptr<Database> database);
 
         virtual ~Lending();
 

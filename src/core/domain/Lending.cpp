@@ -49,7 +49,7 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
     priv->dueDate = *gmtime(&priv->timestampLent);
     priv->dueDate.tm_hour = 23;
     priv->dueDate.tm_min = priv->dueDate.tm_sec = 59;
-    priv->dueDate.tm_mday += atoi(getDatabase()->getMeta("default_lending_runtime").c_str());
+    priv->dueDate.tm_mday += getDefaultLendingRuntime(getDatabase());
 }
 
 Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
@@ -77,6 +77,14 @@ Lending::Lending(
 }
 
 Lending::~Lending() = default;
+
+int Lending::getDefaultExtensionDays(shared_ptr<Database> database) {
+    return atoi(database->getMeta("default_extend_days").c_str());
+}
+
+int Lending::getDefaultLendingRuntime(shared_ptr<Database> database) {
+    return atoi(database->getMeta("default_lending_runtime").c_str());
+}
 
 
 void Lending::persistImpl() {
@@ -152,7 +160,7 @@ time_t Lending::getTimestampLent() const {
 }
 
 void Lending::extend() {
-    extend(atoi(getDatabase()->getMeta("default_extend_days").c_str()));
+    extend(getDefaultExtensionDays(getDatabase()));
 }
 
 void Lending::extend(int days) {

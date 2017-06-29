@@ -9,8 +9,8 @@ using namespace pb2;
  * Test date calculation assumptions for Lending objects
  */
 TEST_F(LendingFixture, LendingDateAndStateTest) {
-    int defaultRuntime = atoi(database->getMeta("default_lending_runtime").c_str());
-    int defaultExtension = atoi(database->getMeta("default_extend_days").c_str());
+    int defaultRuntime = Lending::getDefaultLendingRuntime(database);
+    int defaultExtension = Lending::getDefaultExtensionDays(database);
 
     /* Check initial state */
     EXPECT_EQ(lending->isReturned(), false);
