@@ -17,6 +17,8 @@ namespace pb2 {
         UserSearchTable * userTable = nullptr;
         wxStaticText * lendingsHeading = nullptr;
 
+        std::shared_ptr<Basket> basket;
+
         wxString getLendingsHeading(bool userSelected) const;
 
         void evLendingExtend(wxCommandEvent & event);

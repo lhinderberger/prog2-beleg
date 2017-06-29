@@ -11,7 +11,7 @@ wxEND_EVENT_TABLE()
 
 UserBrowsePanel::UserBrowsePanel(
         wxWindow * parent, shared_ptr<Database> database, shared_ptr<Basket> basket
-) : wxPanel(parent, wxID_ANY), lendingsController(basket) {
+) : wxPanel(parent, wxID_ANY), basket(basket) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(sizer);
@@ -50,8 +50,9 @@ void UserBrowsePanel::evLendingExtend(wxCommandEvent & event) {
     if (!lending)
         return;
 
-    /* Pass on control */
-    lendingsController.extend(lending);
+    /* Pass on control and reload on success */
+    if (lendingsController.extend(lending))
+        lendingsTable->reload();
 }
 
 void UserBrowsePanel::evLendingReturn(wxCommandEvent & event) {
@@ -60,8 +61,9 @@ void UserBrowsePanel::evLendingReturn(wxCommandEvent & event) {
     if (!lending)
         return;
 
-    /* Pass on control */
-    lendingsController.returnL(lending);
+    /* Pass on control and reload on success */
+    if (lendingsController.returnL(lending))
+        lendingsTable->reload();
 }
 
 void UserBrowsePanel::evUserSelected(wxCommandEvent & event) {
