@@ -36,16 +36,16 @@ bool LendingsController::extend(shared_ptr<Lending> lending) {
     try {
         lending->extend(daysExtend);
         lending->persist();
-        lending->getDatabase()->getConnection()->commit();
+        lending->getConnection()->commit();
         wxMessageBox(_("Das Medium wurde erfolgreich verlängert!"), dialogCaption, wxICON_INFORMATION);
     }
     catch (pb2::NotExtensibleException & e) {
-        lending->getDatabase()->getConnection()->rollback();
+        lending->getConnection()->rollback();
         wxMessageBox(_("Das Medium ist nicht verlängerbar. Liegt vielleicht das neue Rückgabedatum vor dem alten?"), dialogCaption, wxICON_ERROR);
         return false;
     }
     catch (pb2::Exception & e) {
-        lending->getDatabase()->getConnection()->rollback();
+        lending->getConnection()->rollback();
         wxMessageBox(_("Es ist ein Fehler aufgetreten. Versuchen Sie es erneut."), dialogCaption, wxICON_ERROR);
         return false;
     }
@@ -167,7 +167,7 @@ bool LendingsController::returnL(shared_ptr<Lending> lending) {
     try {
         lending->returnL();
         lending->persist();
-        lending->getDatabase()->getConnection()->commit();
+        lending->getConnection()->commit();
         wxMessageBox(_("Das Medium wurde erfolgreich zurückgenommen!"), dialogCaption, wxICON_INFORMATION);
     }
     catch (pb2::Exception & e) {
