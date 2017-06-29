@@ -5,6 +5,7 @@ using namespace std;
 
 wxBEGIN_EVENT_TABLE(pb2::UserBrowsePanel, wxPanel)
     EVT_COMMAND((int)UserBrowsePanel::ID::USER_TABLE, PB2_EVT_ST_SELECTED, UserBrowsePanel::evUserSelected)
+    EVT_COMMAND((int)UserBrowsePanel::ID::LENDINGS_TABLE, PB2_EVT_ST_NEW_ITEM, UserBrowsePanel::evNewLending)
     EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_EXTEND, UserBrowsePanel::evLendingExtend)
     EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_RETURN, UserBrowsePanel::evLendingReturn)
 wxEND_EVENT_TABLE()
@@ -63,6 +64,19 @@ void UserBrowsePanel::evLendingReturn(wxCommandEvent & event) {
 
     /* Pass on control and reload on success */
     if (lendingsController.returnL(lending))
+        lendingsTable->reload();
+}
+
+void UserBrowsePanel::evNewLending(wxCommandEvent & event) {
+    /* Retrieve selected user */
+    auto user = userTable->getSelectedUser();
+    if (!user) {
+        wxMessageBox(_("Bitte wählen Sie zunächst einen Benutzer aus!"));
+        return;
+    }
+
+    /* Pass on control and reload on success */
+    if (lendingsController.newLending(user, basket))
         lendingsTable->reload();
 }
 

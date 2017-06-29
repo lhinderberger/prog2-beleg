@@ -23,6 +23,7 @@ namespace pb2 {
 
         void evLendingExtend(wxCommandEvent & event);
         void evLendingReturn(wxCommandEvent & event);
+        void evNewLending(wxCommandEvent & event);
         void evUserSelected(wxCommandEvent & event);
 
     public:
