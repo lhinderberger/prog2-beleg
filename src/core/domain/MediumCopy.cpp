@@ -72,7 +72,18 @@ void MediumCopy::persistImpl() {
 
 
 shared_ptr<Lending> MediumCopy::getActiveLending() const {
-    throw NotImplementedException();
+    SqlitePreparedStatement query(
+            getDatabase()->getConnection(),
+            "SELECT * FROM " + Lending::tableName +
+            " WHERE medium_ean = ? AND medium_copy_serial_number = ? "
+            "AND (timestamp_returned = 0 OR timestamp_returned IS NULL)"
+    );
+    query.bind(1, getMediumEAN());
+    query.bind(2, getSerialNumber());
+    if (!query.step())
+        return nullptr;
+    else
+        return DatabaseObjectFactory<Lending>(getDatabase()).load(query);
 }
 
 bool MediumCopy::getDeaccessioned() const {
