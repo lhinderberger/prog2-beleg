@@ -102,3 +102,18 @@ shared_ptr<PostalAddress> LibraryUser::getPostalAddress() const {
 void LibraryUser::setPostalAddress(shared_ptr<PostalAddress> postalAddress) {
     priv->postalAddress.set(postalAddress);
 }
+
+vector<shared_ptr<Lending>> LibraryUser::queryLendings() const {
+    /* Build query to get all lendings of this user */
+    SqlitePreparedStatement query(
+            getConnection(),
+            string("SELECT * FROM ") + Lending::tableName + " WHERE library_user_id = ?"
+    );
+    query.bind(1, priv->id);
+
+    /* Try to retrieve at least one object and pass on control to factory on success */
+    if (query.step())
+        return DatabaseObjectFactory<Lending>(getDatabase()).loadMany(query, -1);
+    else
+        return vector<shared_ptr<Lending>>();
+}

@@ -10,6 +10,7 @@
 
 namespace pb2 {
     class LibraryUser_priv;
+    class Lending;
 
     class LibraryUser : public DatabaseObject {
         friend class DatabaseObjectFactory<LibraryUser>;
@@ -56,7 +57,14 @@ namespace pb2 {
          * the LibraryUser.
          */
         void setPostalAddress(std::shared_ptr<PostalAddress> postalAddress);
+
+        /**
+         * Lazy-loads all Lendings that are issued to the LibraryUser.
+         */
+        std::vector<std::shared_ptr<Lending>> queryLendings() const;
     };
 }
+
+#include "Lending.h"
 
 #endif
