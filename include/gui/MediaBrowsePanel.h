@@ -15,9 +15,10 @@ namespace pb2 {
         std::shared_ptr<Basket> basket;
 
         void evAddToBasket(wxCommandEvent & ev);
+        void evDeleteMedium(wxCommandEvent & ev);
 
     public:
-        enum class ID { BTN_ADD_TO_BASKET = 1 };
+        enum class ID { BTN_ADD_TO_BASKET = 1, BTN_DELETE_MEDIUM };
 
         MediaBrowsePanel(
                 wxWindow * parent, std::shared_ptr<Database> database,

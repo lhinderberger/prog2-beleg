@@ -5,6 +5,7 @@ using namespace std;
 
 BEGIN_EVENT_TABLE(pb2::MediaBrowsePanel, wxPanel)
     EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_ADD_TO_BASKET, MediaBrowsePanel::evAddToBasket)
+    EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_DELETE_MEDIUM, MediaBrowsePanel::evDeleteMedium)
 END_EVENT_TABLE()
 
 MediaBrowsePanel::MediaBrowsePanel(
@@ -21,6 +22,7 @@ MediaBrowsePanel::MediaBrowsePanel(
 
     /* Add Media controls */
     wxSizer * mediaControlsSizer = new wxBoxSizer(wxHORIZONTAL);
+    mediaControlsSizer->Add(new wxButton(this, (int)ID::BTN_DELETE_MEDIUM, _("Medium löschen")), 0, wxALIGN_RIGHT);
     mediaControlsSizer->Add(new wxButton(this, (int)ID::BTN_ADD_TO_BASKET, _("Zum Warenkorb hinzufügen")), 0, wxALIGN_RIGHT);
 
     sizer->Add(mediaControlsSizer, 3, wxALIGN_RIGHT);
@@ -44,6 +46,39 @@ void MediaBrowsePanel::evAddToBasket(wxCommandEvent & ev) {
 
     /* Add to basket */
     basket->add(selectedMediumCopy);
+}
+
+void MediaBrowsePanel::evDeleteMedium(wxCommandEvent & ev) {
+    /* Retrieve mediumCopy */
+    auto mediumCopy = searchTable->getSelectedMediumCopy();
+    if (!mediumCopy)
+        return;
+
+    /* Ask user for confirmation */
+    auto medium = mediumCopy->getMedium();
+    wxString message;
+    message.Printf(
+            _(
+                    "Wollen Sie das Medium %s/%d (%s: %s) wirklich löschen?\n"
+                    "Dadurch werden jegliche Daten gelöscht, die mit dem Medium in Beziehung stehen.\n"
+                    "Dies kann nicht mehr rückgängig gemacht werden!\n\n"
+                    "Hinweis: Sie können auch ein Medium nur vorübergehend aus dem Bestand nehmen. Klicken Sie hierzu auf Details/Bearbeiten..."
+            ),
+            medium->getEAN(), mediumCopy->getSerialNumber(), medium->getAuthor()->getLastName(), medium->getTitle()
+    );
+    if (wxMessageBox(message, _("Medium löschen"), wxICON_WARNING | wxYES_NO) != wxYES)
+        return;
+
+    /* Delete MediumCopy */
+    mediumCopy->del();
+
+    /* Delete Medium as well, if it is the last copy */
+    if (medium->queryCopies().size() == 0)
+        medium->del();
+
+    /* Commit and refresh */
+    medium->getConnection()->commit();
+    refreshCascade();
 }
 
 void MediaBrowsePanel::refresh() {
