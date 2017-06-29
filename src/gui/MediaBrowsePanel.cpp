@@ -9,7 +9,7 @@ END_EVENT_TABLE()
 
 MediaBrowsePanel::MediaBrowsePanel(
         wxWindow * parent, shared_ptr<Database> database, shared_ptr<Basket> basket
-) : wxPanel(parent, wxID_ANY), basket(basket) {
+) : BrowsePanel(parent), basket(basket) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(sizer);
@@ -44,4 +44,8 @@ void MediaBrowsePanel::evAddToBasket(wxCommandEvent & ev) {
 
     /* Add to basket */
     basket->add(selectedMediumCopy);
+}
+
+void MediaBrowsePanel::refresh() {
+    searchTable->reload();
 }

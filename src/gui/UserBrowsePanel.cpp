@@ -1,4 +1,5 @@
 #include "gui/UserBrowsePanel.h"
+#include "gui/events.h"
 
 using namespace pb2;
 using namespace std;
@@ -13,7 +14,7 @@ wxEND_EVENT_TABLE()
 
 UserBrowsePanel::UserBrowsePanel(
         wxWindow * parent, shared_ptr<Database> database, shared_ptr<Basket> basket
-) : wxPanel(parent, wxID_ANY), basket(basket) {
+) : BrowsePanel(parent), basket(basket) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(sizer);
@@ -59,7 +60,7 @@ void UserBrowsePanel::evLendingExtend(wxCommandEvent & event) {
 
     /* Pass on control and reload on success */
     if (lendingsController.extend(lending))
-        lendingsTable->reload();
+        refreshCascade();
 }
 
 void UserBrowsePanel::evLendingReturn(wxCommandEvent & event) {
@@ -70,7 +71,7 @@ void UserBrowsePanel::evLendingReturn(wxCommandEvent & event) {
 
     /* Pass on control and reload on success */
     if (lendingsController.returnL(lending))
-        lendingsTable->reload();
+        refreshCascade();
 }
 
 void UserBrowsePanel::evNewLending(wxCommandEvent & event) {
@@ -83,7 +84,7 @@ void UserBrowsePanel::evNewLending(wxCommandEvent & event) {
 
     /* Pass on control and reload on success */
     if (lendingsController.newLending(user, basket))
-        lendingsTable->reload();
+        refreshCascade();
 }
 
 void UserBrowsePanel::evUserSelected(wxCommandEvent & event) {
@@ -119,5 +120,10 @@ void UserBrowsePanel::evDeleteUser(wxCommandEvent & event) {
     user->getConnection()->commit();
 
     /* Reload */
+    refreshCascade();
+}
+
+void UserBrowsePanel::refresh() {
     userTable->reload();
+    lendingsTable->reload();
 }

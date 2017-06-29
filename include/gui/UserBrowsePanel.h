@@ -5,12 +5,13 @@
 
 #include "core/Database.h"
 #include "Basket.h"
+#include "BrowsePanel.h"
 #include "LendingsController.h"
 #include "LendingsSearchTable.h"
 #include "UserSearchTable.h"
 
 namespace pb2 {
-    class UserBrowsePanel : public wxPanel {
+    class UserBrowsePanel : public BrowsePanel {
     private:
         LendingsController lendingsController;
         LendingsSearchTable * lendingsTable = nullptr;
@@ -37,6 +38,8 @@ namespace pb2 {
                 wxWindow * parent, std::shared_ptr<Database> database,
                 std::shared_ptr<Basket> basket
         );
+
+        virtual void refresh() override;
 
     wxDECLARE_EVENT_TABLE();
     };

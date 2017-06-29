@@ -5,10 +5,11 @@
 
 #include "core/Database.h"
 #include "Basket.h"
+#include "BrowsePanel.h"
 #include "MediaSearchTable.h"
 
 namespace pb2 {
-    class MediaBrowsePanel : public wxPanel {
+    class MediaBrowsePanel : public BrowsePanel {
     private:
         MediaSearchTable * searchTable = nullptr;
         std::shared_ptr<Basket> basket;
@@ -22,6 +23,8 @@ namespace pb2 {
                 wxWindow * parent, std::shared_ptr<Database> database,
                 std::shared_ptr<Basket> basket
         );
+
+        virtual void refresh() override;
 
         DECLARE_EVENT_TABLE();
     };

@@ -8,5 +8,6 @@
  */
 wxDECLARE_EVENT(PB2_EVT_ST_SELECTED, wxCommandEvent);
 wxDECLARE_EVENT(PB2_EVT_ST_NEW_ITEM, wxCommandEvent);
+wxDECLARE_EVENT(PB2_EVT_REFRESH_REQUIRED, wxCommandEvent);
 
 #endif
