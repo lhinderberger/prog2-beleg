@@ -18,6 +18,7 @@ namespace pb2 {
 
     public:
         bool extend(std::shared_ptr<Lending> lending);
+        bool newLending(std::shared_ptr<LibraryUser> libraryUser, std::shared_ptr<Basket> basket);
         bool returnL(std::shared_ptr<Lending> lending);
     };
 }
