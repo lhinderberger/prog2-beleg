@@ -8,6 +8,7 @@ wxBEGIN_EVENT_TABLE(pb2::UserBrowsePanel, wxPanel)
     EVT_COMMAND((int)UserBrowsePanel::ID::LENDINGS_TABLE, PB2_EVT_ST_NEW_ITEM, UserBrowsePanel::evNewLending)
     EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_EXTEND, UserBrowsePanel::evLendingExtend)
     EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_RETURN, UserBrowsePanel::evLendingReturn)
+    EVT_BUTTON((int)UserBrowsePanel::ID::BTN_DELETE_USER, UserBrowsePanel::evDeleteUser)
 wxEND_EVENT_TABLE()
 
 UserBrowsePanel::UserBrowsePanel(
@@ -21,6 +22,11 @@ UserBrowsePanel::UserBrowsePanel(
     userTable = new UserSearchTable(this, (int)ID::USER_TABLE, database);
     sizer->Add(userTable, 2, wxEXPAND);
     userTable->list();
+
+    /* Add User controls */
+    wxSizer * userControlsSizer = new wxBoxSizer(wxHORIZONTAL);
+    userControlsSizer->Add(new wxButton(this, (int)ID::BTN_DELETE_USER, _("Benutzer löschen")), 0, wxALIGN_RIGHT);
+    sizer->Add(userControlsSizer, 0, wxALIGN_RIGHT);
 
     /* Add Lendings heading */
     lendingsHeading = new wxStaticText(this, wxID_ANY, getLendingsHeading(false));
@@ -87,4 +93,31 @@ void UserBrowsePanel::evUserSelected(wxCommandEvent & event) {
     /* Update lendings heading and table */
     lendingsHeading->SetLabelText(getLendingsHeading(userId != 0));
     lendingsTable->setUserId(userId);
+}
+
+void UserBrowsePanel::evDeleteUser(wxCommandEvent & event) {
+    /* Retrieve ID of selected user */
+    auto user = userTable->getSelectedUser();
+    if (!user)
+        return;
+
+    /* Ask user for confirmation */
+    wxString message;
+    message.Printf(
+            _(
+                    "Wollen Sie den Benutzer Nr. %d (%s %s) wirklich löschen?\n"
+                    "Dadurch werden jegliche Daten gelöscht, die mit dem Benutzer in Beziehung stehen.\n"
+                    "Dies kann nicht mehr rückgängig gemacht werden!"
+            ),
+            user->getId(), user->getFirstName(), user->getLastName()
+    );
+    if (wxMessageBox(message, _("Benutzer löschen"), wxICON_WARNING | wxYES_NO) != wxYES)
+        return;
+
+    /* Delete user */
+    user->del();
+    user->getConnection()->commit();
+
+    /* Reload */
+    userTable->reload();
 }

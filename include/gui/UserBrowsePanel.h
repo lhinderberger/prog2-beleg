@@ -25,9 +25,13 @@ namespace pb2 {
         void evLendingReturn(wxCommandEvent & event);
         void evNewLending(wxCommandEvent & event);
         void evUserSelected(wxCommandEvent & event);
+        void evDeleteUser(wxCommandEvent & event);
 
     public:
-        enum class ID { USER_TABLE = 1, LENDINGS_TABLE, LENDINGS_EXTEND, LENDINGS_RETURN };
+        enum class ID {
+            USER_TABLE = 1, LENDINGS_TABLE, LENDINGS_EXTEND, LENDINGS_RETURN,
+            BTN_DELETE_USER
+        };
 
         UserBrowsePanel(
                 wxWindow * parent, std::shared_ptr<Database> database,
