@@ -21,7 +21,7 @@ const char * initializingSQL = R"---(
         location TEXT,
         availability_hint TEXT NOT NULL, -- only a hint, for actual availability information, look at lendings
         PRIMARY KEY(medium_ean, serial_number),
-        FOREIGN KEY(medium_ean) REFERENCES media(ean)
+        FOREIGN KEY(medium_ean) REFERENCES media(ean) ON DELETE CASCADE
     );
     CREATE TABLE postal_addresses(
         id INTEGER PRIMARY KEY,
@@ -49,8 +49,8 @@ const char * initializingSQL = R"---(
         timestamp_returned INTEGER NOT NULL,
         times_extended UNSIGNED INTEGER NOT NULL,
         due_date TEXT NOT NULL,
-        FOREIGN KEY(medium_ean, medium_copy_serial_number) REFERENCES media_copies(medium_ean, serial_number),
-        FOREIGN KEY(library_user_id) REFERENCES library_users(id),
+        FOREIGN KEY(medium_ean, medium_copy_serial_number) REFERENCES media_copies(medium_ean, serial_number) ON DELETE CASCADE,
+        FOREIGN KEY(library_user_id) REFERENCES library_users(id) ON DELETE CASCADE,
         CONSTRAINT lending_unique UNIQUE (medium_ean, medium_copy_serial_number, timestamp_lent),
         CONSTRAINT returned_unique UNIQUE (medium_ean, medium_copy_serial_number, timestamp_returned)
     );
