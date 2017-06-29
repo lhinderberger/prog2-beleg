@@ -5,10 +5,13 @@ using namespace std;
 
 wxBEGIN_EVENT_TABLE(pb2::UserBrowsePanel, wxPanel)
     EVT_COMMAND((int)UserBrowsePanel::ID::USER_TABLE, PB2_EVT_ST_SELECTED, UserBrowsePanel::evUserSelected)
+    EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_EXTEND, UserBrowsePanel::evLendingExtend)
+    EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_RETURN, UserBrowsePanel::evLendingReturn)
 wxEND_EVENT_TABLE()
 
-UserBrowsePanel::UserBrowsePanel(wxWindow * parent, shared_ptr<Database> database)
-        : wxPanel(parent, wxID_ANY) {
+UserBrowsePanel::UserBrowsePanel(
+        wxWindow * parent, shared_ptr<Database> database, shared_ptr<Basket> basket
+) : wxPanel(parent, wxID_ANY), lendingsController(basket) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(sizer);
@@ -25,6 +28,12 @@ UserBrowsePanel::UserBrowsePanel(wxWindow * parent, shared_ptr<Database> databas
     /* Add Lendings table */
     lendingsTable = new LendingsSearchTable(this, (int)ID::LENDINGS_TABLE, database, true);
     sizer->Add(lendingsTable, 1, wxEXPAND);
+
+    /* Add Lendings controls */
+    wxSizer * lendingsControlsSizer = new wxBoxSizer(wxHORIZONTAL);
+    lendingsControlsSizer->Add(new wxButton(this, (int)ID::LENDINGS_EXTEND, _("Verlängerung...")));
+    lendingsControlsSizer->Add(new wxButton(this, (int)ID::LENDINGS_RETURN, _("Rückgabe...")));
+    sizer->Add(lendingsControlsSizer, 0, wxALIGN_RIGHT);
 }
 
 wxString UserBrowsePanel::getLendingsHeading(bool userSelected) const {
@@ -33,6 +42,26 @@ wxString UserBrowsePanel::getLendingsHeading(bool userSelected) const {
 
     /* Return only heading when a user is selected, otherwise return descriptive message */
     return userSelected ? baseHeading : selectUserMsg;
+}
+
+void UserBrowsePanel::evLendingExtend(wxCommandEvent & event) {
+    /* Retrieve selected lending */
+    auto lending = lendingsTable->getSelectedLending();
+    if (!lending)
+        return;
+
+    /* Pass on control */
+    lendingsController.extend(lending);
+}
+
+void UserBrowsePanel::evLendingReturn(wxCommandEvent & event) {
+    /* Retrieve selected lending */
+    auto lending = lendingsTable->getSelectedLending();
+    if (!lending)
+        return;
+
+    /* Pass on control */
+    lendingsController.returnL(lending);
 }
 
 void UserBrowsePanel::evUserSelected(wxCommandEvent & event) {

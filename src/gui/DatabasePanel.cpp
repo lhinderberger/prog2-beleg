@@ -52,6 +52,6 @@ void DatabasePanel::newMediaBrowserTab() {
 }
 
 void DatabasePanel::newUserBrowserTab() {
-    notebook->AddPage(new UserBrowsePanel(notebook, database), _("Benutzer & Ausleihen"));
+    notebook->AddPage(new UserBrowsePanel(notebook, database, basket), _("Benutzer & Ausleihen"));
     notebook->ChangeSelection(notebook->GetPageCount() - 1);
 }
