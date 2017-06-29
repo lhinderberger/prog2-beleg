@@ -33,6 +33,14 @@ LibraryUser::~LibraryUser() = default;
 
 
 void LibraryUser::del() {
+    /* Return all lendings! */
+    auto lendings = queryLendings();
+    for (auto & l : lendings) {
+        l->returnL();
+        l->persist();
+    }
+
+    /* Delete user */
     SqlitePreparedStatement query(getConnection(), "DELETE FROM " + tableName + " WHERE id = ?");
     query.bind(1, priv->id);
     query.step();
