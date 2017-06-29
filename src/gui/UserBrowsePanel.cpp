@@ -15,7 +15,7 @@ UserBrowsePanel::UserBrowsePanel(wxWindow * parent, shared_ptr<Database> databas
 
     /* Add User table */
     userTable = new UserSearchTable(this, (int)ID::USER_TABLE, database);
-    sizer->Add(userTable, 0, wxEXPAND);
+    sizer->Add(userTable, 2, wxEXPAND);
     userTable->list();
 
     /* Add Lendings heading */
@@ -24,7 +24,7 @@ UserBrowsePanel::UserBrowsePanel(wxWindow * parent, shared_ptr<Database> databas
 
     /* Add Lendings table */
     lendingsTable = new LendingsSearchTable(this, (int)ID::LENDINGS_TABLE, database, true);
-    sizer->Add(lendingsTable, 0, wxEXPAND);
+    sizer->Add(lendingsTable, 1, wxEXPAND);
 }
 
 wxString UserBrowsePanel::getLendingsHeading(bool userSelected) const {

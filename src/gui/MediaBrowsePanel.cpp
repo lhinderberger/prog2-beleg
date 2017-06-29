@@ -16,14 +16,14 @@ MediaBrowsePanel::MediaBrowsePanel(
 
     /* Add Search table */
     searchTable = new MediaSearchTable(this, wxID_ANY, database);
-    sizer->Add(searchTable, 0, wxEXPAND);
+    sizer->Add(searchTable, 7, wxEXPAND);
     searchTable->list();
 
     /* Add Media controls */
     wxSizer * mediaControlsSizer = new wxBoxSizer(wxHORIZONTAL);
     mediaControlsSizer->Add(new wxButton(this, (int)ID::BTN_ADD_TO_BASKET, _("Zum Warenkorb hinzufügen")), 0, wxALIGN_RIGHT);
 
-    sizer->Add(mediaControlsSizer, 0, wxALIGN_RIGHT);
+    sizer->Add(mediaControlsSizer, 3, wxALIGN_RIGHT);
 }
 
 void MediaBrowsePanel::evAddToBasket(wxCommandEvent & ev) {

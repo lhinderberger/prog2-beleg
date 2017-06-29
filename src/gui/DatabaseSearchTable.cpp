@@ -31,7 +31,6 @@ DatabaseSearchTable::DatabaseSearchTable(
 
     /* Create table */
     dataView = new wxDataViewListCtrl(this, (int)ID::DATA_VIEW);
-    dataView->SetMinSize(wxSize(0, 300));
     buildColumns(columnHeadings);
     sizer->Add(dataView, 1, wxEXPAND);
 }
