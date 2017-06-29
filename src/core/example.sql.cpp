@@ -14,7 +14,7 @@ const char * exampleDataSQL = R"---(
         (4, "Markus", "Mustermeier", "0151 234567", 4);
 
     INSERT INTO authors(id, first_name, last_name) VALUES
-        (1, "Scott", "Meyers"), (2, "Kaiser", "Ulrich");
+        (1, "Scott", "Meyers"), (2, "Ulrich", "Kaiser");
 
     INSERT INTO media(ean, author_id, type, format, title, subtitle) VALUES
         ("978-3958750494", 1, "book", "hardcover", "Effektives modernes C++",
