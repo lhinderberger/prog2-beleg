@@ -54,6 +54,7 @@ namespace pb2 {
 
         virtual void list();
         virtual void search(const wxString & query);
+        virtual void reload();
 
     wxDECLARE_EVENT_TABLE();
     };

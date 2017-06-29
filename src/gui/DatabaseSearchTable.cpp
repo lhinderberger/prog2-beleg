@@ -56,11 +56,7 @@ void DatabaseSearchTable::buildRows() {
 }
 
 void DatabaseSearchTable::evSearch(wxCommandEvent & ev) {
-    wxString query = ev.GetString().Trim();
-    if (query.IsEmpty())
-        list();
-    else
-        search(query);
+    reload();
 }
 
 void DatabaseSearchTable::evNewItem(wxCommandEvent & ev) {
@@ -78,6 +74,14 @@ void DatabaseSearchTable::evRowSelected(wxDataViewEvent & ev) {
 void DatabaseSearchTable::list() {
     prepareList();
     buildRows();
+}
+
+void DatabaseSearchTable::reload() {
+    wxString query = searchCtrl->GetValue().Trim();
+    if (query.IsEmpty())
+        list();
+    else
+        search(query);
 }
 
 void DatabaseSearchTable::search(const wxString & query) {
