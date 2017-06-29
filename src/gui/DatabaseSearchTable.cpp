@@ -3,9 +3,6 @@
 using namespace pb2;
 using namespace std;
 
-wxDEFINE_EVENT(PB2_EVT_ST_SELECTED, wxCommandEvent);
-wxDEFINE_EVENT(PB2_EVT_ST_NEW_ITEM, wxCommandEvent);
-
 wxBEGIN_EVENT_TABLE(pb2::DatabaseSearchTable, wxPanel)
     EVT_SEARCHCTRL_SEARCH_BTN((int)DatabaseSearchTable::ID::SEARCH_CTRL, DatabaseSearchTable::evSearch)
     EVT_TEXT_ENTER((int)DatabaseSearchTable::ID::SEARCH_CTRL, DatabaseSearchTable::evSearch)

@@ -6,10 +6,8 @@
 #include <wx/dataview.h>
 #include <wx/srchctrl.h>
 
+#include "events.h"
 #include "core/sqlite/SqlitePreparedStatement.h"
-
-wxDECLARE_EVENT(PB2_EVT_ST_SELECTED, wxCommandEvent);
-wxDECLARE_EVENT(PB2_EVT_ST_NEW_ITEM, wxCommandEvent);
 
 namespace pb2 {
     class DatabaseSearchTable : public wxPanel {
