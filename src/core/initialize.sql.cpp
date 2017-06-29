@@ -41,6 +41,7 @@ const char * initializingSQL = R"---(
         FOREIGN KEY(postal_address_id) REFERENCES postal_addresses(id)
     );
     CREATE TABLE lendings(
+        id INTEGER PRIMARY KEY,
         medium_ean TEXT NOT NULL,
         medium_copy_serial_number INTEGER NOT NULL,
         library_user_id INTEGER NOT NULL,
@@ -50,7 +51,7 @@ const char * initializingSQL = R"---(
         due_date TEXT NOT NULL,
         FOREIGN KEY(medium_ean, medium_copy_serial_number) REFERENCES media_copies(medium_ean, serial_number),
         FOREIGN KEY(library_user_id) REFERENCES library_users(id),
-        PRIMARY KEY (medium_ean, medium_copy_serial_number, timestamp_lent),
+        CONSTRAINT lending_unique UNIQUE (medium_ean, medium_copy_serial_number, timestamp_lent),
         CONSTRAINT returned_unique UNIQUE (medium_ean, medium_copy_serial_number, timestamp_returned)
     );
     INSERT INTO meta(name, value) VALUES('version', '1');

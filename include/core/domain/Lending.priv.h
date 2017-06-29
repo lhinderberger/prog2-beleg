@@ -14,8 +14,8 @@ namespace pb2 {
         Lending_priv(std::shared_ptr<Database> database)
                 : libraryUser(database, "id") {}
 
+        int id, mediumCopySerialNumber;
         std::shared_ptr<MediumCopy> mediumCopy;
-        int mediumCopySerialNumber;
         std::string mediumEan;
         ManyToOneLazyLoader<LibraryUser,int> libraryUser;
         time_t timestampLent, timestampReturned;

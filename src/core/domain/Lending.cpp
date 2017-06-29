@@ -25,7 +25,7 @@ void parseDate(std::tm & tm, const string & isoDateString) {
 }
 
 Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
-                 shared_ptr<LibraryUser> libraryUser, time_t timestampLent)
+                 shared_ptr<LibraryUser> libraryUser, time_t timestampLent, int id)
         : DatabaseObject(database){
     priv = make_unique<Lending_priv>(database);
     priv->timesExtended = 0;
@@ -53,8 +53,8 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
 }
 
 Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
-                 shared_ptr<LibraryUser> libraryUser)
-        : Lending(database, mediumCopy, libraryUser, time(NULL)) {}
+                 shared_ptr<LibraryUser> libraryUser, int id)
+        : Lending(database, mediumCopy, libraryUser, time(NULL), id) {}
 
 Lending::Lending(
         shared_ptr<Database> database, SqlitePreparedStatement & query,
@@ -62,6 +62,7 @@ Lending::Lending(
 ) : DatabaseObject(database) {
     priv = make_unique<Lending_priv>(database);
 
+    priv->id = query.columnInt(columnIndexes.at("id"));
     priv->mediumCopySerialNumber = query.columnInt(columnIndexes.at("medium_copy_serial_number"));
     priv->mediumEan = query.columnString(columnIndexes.at("medium_ean"));
     priv->libraryUser.set(query.columnInt(columnIndexes.at("library_user_id")));
@@ -80,15 +81,12 @@ Lending::~Lending() = default;
 
 void Lending::persistImpl() {
     /* Prepare statement */
-    vector<string> columns = {"timestamp_returned", "times_extended", "due_date", "library_user_id"};
-    if (!isLoaded()) {
-        vector<string> keyColumns = {"medium_ean", "medium_copy_serial_number", "timestamp_lent"};
-        for (const auto & c : keyColumns)
-            columns.push_back(c);
-    }
+    vector<string> columns = {"timestamp_returned", "times_extended", "due_date", "library_user_id", "medium_ean", "medium_copy_serial_number", "timestamp_lent"};
+    if (!isLoaded() && priv->id > 0)
+        columns.push_back("id");
 
     SqlitePreparedStatement statement(getConnection(), isLoaded() ?
-        buildUpdateQuery<Lending>(columns, "WHERE medium_ean=? AND medium_copy_serial_number=? AND timestamp_lent = ?") :
+        buildUpdateQuery<Lending>(columns, "WHERE id = ?") :
         buildInsertQuery<Lending>(columns, 1)
     );
 
@@ -100,6 +98,8 @@ void Lending::persistImpl() {
     statement.bind(5, priv->mediumEan);
     statement.bind(6, priv->mediumCopySerialNumber);
     statement.bind(7, (int)priv->timestampLent);
+    if (priv->id > 0)
+        statement.bind(8, priv->id);
 
     /* Get due date */
     statement.bind(3, getDueDateISOString());
@@ -116,6 +116,10 @@ void Lending::persistImpl() {
 
     /* Execute */
     statement.step();
+
+    /* Retrieve ID */
+    if (priv->id <= 0)
+        priv->id = (int)getConnection()->lastInsertRowId();
 
     /* Set availability hint on MediumCopy */
     getMediumCopy()->setAvailabilityHint(isReturned() ? "now" : getDueDateISOString());

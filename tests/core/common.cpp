@@ -42,5 +42,5 @@ LendingFixture::LendingFixture() {
     user->persist();
 
     /* Create a lending */
-    lending = lendingFactory.construct(mediumCopy, user, someTimestamp);
+    lending = lendingFactory.construct(mediumCopy, user, someTimestamp, -1);
 }

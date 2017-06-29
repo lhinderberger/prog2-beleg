@@ -28,8 +28,8 @@ const char * exampleDataSQL = R"---(
         ("978-3827330789", 1, 1, "A124", "now"),
         ("978-3898428392", 1, 0, "B125", "2017-06-26"), ("978-3898428392", 2, 1, "B125", "now");
 
-    INSERT INTO lendings(medium_ean, medium_copy_serial_number, library_user_id, timestamp_lent, timestamp_returned, times_extended, due_date) VALUES
-        ("978-3958750494", 1, 2, 1498660800, 0, 0, "2017-07-12"),
-        ("978-3898428392", 1, 4, 1497278400, 0, 0, "2017-06-26"),
-        ("978-3958750494", 2, 3, 1497278400, 1498660800, 0, "2017-06-26");
+    INSERT INTO lendings(id, medium_ean, medium_copy_serial_number, library_user_id, timestamp_lent, timestamp_returned, times_extended, due_date) VALUES
+        (1, "978-3958750494", 1, 2, 1498660800, 0, 0, "2017-07-12"),
+        (2, "978-3898428392", 1, 4, 1497278400, 0, 0, "2017-06-26"),
+        (3, "978-3958750494", 2, 3, 1497278400, 1498660800, 0, "2017-06-26");
 )---";
