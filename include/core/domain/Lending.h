@@ -65,6 +65,8 @@ namespace pb2 {
 
         virtual ~Lending();
 
+        virtual void del() override;
+
         // Getters for read-only values set in constructor.
         std::shared_ptr<MediumCopy> getMediumCopy();
         std::shared_ptr<LibraryUser> getLibraryUser();

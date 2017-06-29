@@ -32,6 +32,8 @@ namespace pb2 {
 
         virtual ~PostalAddress();
 
+        virtual void del() override;
+
         int getId() const;
 
         std::string getStreet() const;

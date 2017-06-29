@@ -42,6 +42,13 @@ MediumCopy::MediumCopy(
 MediumCopy::~MediumCopy() = default;
 
 
+void MediumCopy::del() {
+    SqlitePreparedStatement query(getConnection(), "DELETE FROM " + tableName + " WHERE medium_ean = ? AND serial_number = ?");
+    query.bind(1, getMediumEAN());
+    query.bind(2, getSerialNumber());
+    query.step();
+}
+
 void MediumCopy::persistImpl() {
     /* Determine serial number, if required */
     int serialNumber = priv->serialNumber;
@@ -73,7 +80,7 @@ void MediumCopy::persistImpl() {
 
 shared_ptr<Lending> MediumCopy::getActiveLending() const {
     SqlitePreparedStatement query(
-            getDatabase()->getConnection(),
+            getConnection(),
             "SELECT * FROM " + Lending::tableName +
             " WHERE medium_ean = ? AND medium_copy_serial_number = ? "
             "AND (timestamp_returned = 0 OR timestamp_returned IS NULL)"

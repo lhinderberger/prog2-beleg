@@ -40,6 +40,8 @@ namespace pb2 {
 
         virtual ~Medium();
 
+        virtual void del() override;
+
         /**
          * Lower-case class name of the concrete medium object
          */

@@ -44,6 +44,8 @@ namespace pb2 {
 
         virtual ~MediumCopy();
 
+        virtual void del() override;
+
         /**
          * If a LibraryUser has currently lent the copy, this will return a pointer
          * to the relevant Lending instance. Otherwise it will return a null pointer.

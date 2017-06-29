@@ -56,6 +56,12 @@ namespace pb2 {
          */
         void persist();
 
+        /**
+         * Adds a query to delete the DatabaseObject from the database
+         * to the current transaction.
+         */
+        virtual void del() = 0;
+
 
         // Getters
         const std::shared_ptr<Database> getDatabase() const;

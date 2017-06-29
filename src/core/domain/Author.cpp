@@ -29,6 +29,12 @@ Author::Author(
 Author::~Author() = default;
 
 
+void Author::del() {
+    SqlitePreparedStatement query(getConnection(), "DELETE FROM " + tableName + " WHERE id = ?");
+    query.bind(1, priv->id);
+    query.step();
+}
+
 void Author::persistImpl() {
     /* Prepare statement */
     string query = "";

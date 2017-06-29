@@ -29,6 +29,8 @@ namespace pb2 {
     public:
         virtual ~Author();
 
+        virtual void del() override;
+
         static const std::string tableName;
 
         int getId() const;

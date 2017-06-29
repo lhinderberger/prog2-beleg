@@ -35,6 +35,8 @@ namespace pb2 {
 
         virtual ~LibraryUser();
 
+        virtual void del() override;
+
 
         int getId() const;
 

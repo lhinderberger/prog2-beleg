@@ -32,6 +32,12 @@ LibraryUser::LibraryUser(
 LibraryUser::~LibraryUser() = default;
 
 
+void LibraryUser::del() {
+    SqlitePreparedStatement query(getConnection(), "DELETE FROM " + tableName + " WHERE id = ?");
+    query.bind(1, priv->id);
+    query.step();
+}
+
 void LibraryUser::persistImpl() {
     /* Prepare statement */
     vector<string> columns = {"first_name", "last_name", "telephone", "postal_address_id"};

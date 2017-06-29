@@ -31,6 +31,12 @@ PostalAddress::PostalAddress(
 PostalAddress::~PostalAddress() = default;
 
 
+void PostalAddress::del() {
+    SqlitePreparedStatement query(getConnection(), "DELETE FROM " + tableName + " WHERE id = ?");
+    query.bind(1, priv->id);
+    query.step();
+}
+
 void PostalAddress::persistImpl() {
     /* Prepare statement */
     vector<string> columns = {"street", "house_number", "addition", "zip", "city"};

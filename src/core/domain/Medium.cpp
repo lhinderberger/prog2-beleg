@@ -96,6 +96,12 @@ Medium::Medium(shared_ptr<Database> database, SqlitePreparedStatement & query,
 Medium::~Medium() = default;
 
 
+void Medium::del() {
+    SqlitePreparedStatement query(getConnection(), "DELETE FROM " + tableName + " WHERE ean = ?");
+    query.bind(1, priv->ean);
+    query.step();
+}
+
 unique_ptr<AbstractDatabaseObjectFactory> Medium::polymorphicFactory(
         shared_ptr<Database> database, const string & type) {
     unique_ptr<AbstractDatabaseObjectFactory> factory = nullptr;

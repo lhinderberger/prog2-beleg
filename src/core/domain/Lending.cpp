@@ -87,6 +87,12 @@ int Lending::getDefaultLendingRuntime(shared_ptr<Database> database) {
 }
 
 
+void Lending::del() {
+    SqlitePreparedStatement query(getConnection(), "DELETE FROM " + tableName + " WHERE id = ?");
+    query.bind(1, priv->id);
+    query.step();
+}
+
 void Lending::persistImpl() {
     /* Prepare statement */
     vector<string> columns = {"timestamp_returned", "times_extended", "due_date", "library_user_id", "medium_ean", "medium_copy_serial_number", "timestamp_lent"};
