@@ -3,6 +3,7 @@
 
 #include "TwoQuerySearchTable.h"
 #include "core/Database.h"
+#include "core/domain/Lending.h"
 #include "core/sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
@@ -32,6 +33,18 @@ namespace pb2 {
         virtual void search(const wxString & query) override;
 
         inline bool getActiveOnly() const { return activeOnly; }
+
+        /**
+         * Returns a shared pointer to the currently selected lending, or nullptr if no
+         * lending is selected / could be determined.
+         */
+        std::shared_ptr<Lending> getSelectedLending() const;
+
+        /**
+         * Returns the ID of the currently selected Lending, or 0 if no user is selected or
+         * could be determined.
+         */
+        int getSelectedId() const;
     };
 }
 

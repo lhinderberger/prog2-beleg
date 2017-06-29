@@ -10,7 +10,7 @@ LendingsSearchTable::LendingsSearchTable(wxWindow * parent, wxWindowID id, share
     : TwoQuerySearchTable(
         parent, id, _("Neue Ausleihe..."),
         {
-            _("EAN"), _("Serien-Nr."), _("Autor"), _("Name"), _("Ausgeliehen am"), _("Verlängert"), _("Fälligkeit")
+            _("Verleih-Nr."), _("EAN"), _("Serien-Nr."), _("Autor"), _("Name"), _("Ausgeliehen am"), _("Verlängert"), _("Fälligkeit")
         },
         database
     ) {
@@ -46,28 +46,30 @@ wxString LendingsSearchTable::getColumnContent(int column) {
     /* Retrieve media object */
     string directQueryColumn;
     if (column == 0)
-        directQueryColumn = "media.ean";
+        directQueryColumn = "lendings.id";
     else if (column == 1)
-        directQueryColumn = "media_copies.serial_number";
+        directQueryColumn = "media.ean";
     else if (column == 2)
-        return query->columnString("authors.last_name") + ", " + query->columnString("authors.first_name");
+        directQueryColumn = "media_copies.serial_number";
     else if (column == 3)
+        return query->columnString("authors.last_name") + ", " + query->columnString("authors.first_name");
+    else if (column == 4)
         directQueryColumn = "media.title";
-    else if (column == 4) {
+    else if (column == 5) {
         /* Build label from timestamp_lent */
         wxDateTime dateTime((time_t)query->columnInt("lendings.timestamp_lent"));
         if (!dateTime.IsValid())
             return unknownString;
         return dateTime.Format(_("%d.%m.%y"));
     }
-    else if (column == 5) {
+    else if (column == 6) {
         /* Build label for times_extended */
         wxString out;
         if (out.Printf(_("%dx"), query->columnInt("lendings.times_extended")) < 0)
             return unknownString;
         return out;
     }
-    else if (column == 6) {
+    else if (column == 7) {
         /* Build label from due_date */
         wxDateTime dateTime;
         if (!dateTime.ParseISODate(query->columnString("lendings.due_date")))
@@ -123,4 +125,33 @@ void LendingsSearchTable::prepareSearch(const wxString & query) {
     auto statement = currentQuery();
     statement->bind(1, userId);
     statement->bind(2, query.ToStdString());
+}
+
+shared_ptr<Lending> LendingsSearchTable::getSelectedLending() const {
+    /* Is there a Lending selected? */
+    int lendingId = getSelectedId();
+    if (!lendingId)
+        return nullptr;
+
+    /* Load the user with the given ID */
+    SqlitePreparedStatement query(getDatabase()->getConnection(), "SELECT * FROM lendings WHERE id = :id");
+    query.bind(1, lendingId);
+    query.step();
+    return DatabaseObjectFactory<Lending>(getDatabase()).load(query);
+}
+
+int LendingsSearchTable::getSelectedId() const {
+    /* Is there any row selected? */
+    int selectedRow = dataView->GetSelectedRow();
+    if (selectedRow == wxNOT_FOUND || selectedRow < 0)
+        return 0;
+
+    /* Retrieve ID */
+    wxVariant val;
+    long userId;
+    dataView->GetValue(val, (unsigned int)selectedRow, 0);
+    if (!val.Convert(&userId) || userId > INT_MAX)
+        return 0;
+    else
+        return (int)userId;
 }
