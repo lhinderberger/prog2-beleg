@@ -159,6 +159,9 @@ void Lending::extend(time_t reference, int days) {
     if (days <= 0)
         throw logic_error("Extend Days cannot be zero or negative!");
 
+    if (isReturned())
+        throw logic_error("Cannot extend returned Lending!");
+
     /* Calculate new due date */
     std::tm newDueDate = *gmtime(&reference);
     newDueDate.tm_mday += days;
