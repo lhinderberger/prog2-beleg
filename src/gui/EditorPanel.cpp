@@ -1,4 +1,5 @@
 #include "gui/EditorPanel.h"
+#include "gui/events.h"
 
 using namespace std;
 using namespace pb2;
@@ -32,8 +33,13 @@ void EditorPanel::evAbortClicked(wxCommandEvent & event) {
 }
 
 void EditorPanel::evSaveClicked(wxCommandEvent & event) {
-    save();
-    closeTab();
+    if (save()) {
+        /* Before closing, send refresh event to all other panels */
+        wxCommandEvent refreshEvent(PB2_EVT_REFRESH_REQUIRED, GetId());
+        wxPostEvent(GetParent(), refreshEvent);
+
+        closeTab();
+    }
 }
 
 void EditorPanel::closeTab() {
