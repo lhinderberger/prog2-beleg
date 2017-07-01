@@ -5,6 +5,7 @@ using namespace pb2;
 using namespace std;
 
 BEGIN_EVENT_TABLE(pb2::MediaBrowsePanel, wxPanel)
+    EVT_COMMAND((int)MediaBrowsePanel::ID::MEDIA_TABLE, PB2_EVT_ST_NEW_ITEM, MediaBrowsePanel::evNewMedium)
     EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_ADD_TO_BASKET, MediaBrowsePanel::evAddToBasket)
     EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_DELETE_MEDIUM, MediaBrowsePanel::evDeleteMedium)
     EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_DUPLICATE_MEDIUM, MediaBrowsePanel::evDuplicateMedium)
@@ -19,7 +20,7 @@ MediaBrowsePanel::MediaBrowsePanel(
     SetSizer(sizer);
 
     /* Add Search table */
-    searchTable = new MediaSearchTable(this, wxID_ANY, database);
+    searchTable = new MediaSearchTable(this, (int)ID::MEDIA_TABLE, database);
     sizer->Add(searchTable, 7, wxEXPAND);
     searchTable->list();
 
@@ -87,7 +88,20 @@ void MediaBrowsePanel::evDeleteMedium(wxCommandEvent & ev) {
 }
 
 void MediaBrowsePanel::evEditMedium(wxCommandEvent & ev) {
-    throw NotImplementedException();
+    /* Retrieve mediumCopy */
+    auto mediumCopy = searchTable->getSelectedMediumCopy();
+    if (!mediumCopy)
+        return;
+
+    /* Open editor */
+    MediaEditorPanel * editor = new MediaEditorPanel(castedParent(), mediumCopy);
+    castedParent()->InsertPage((size_t)castedParent()->GetPageIndex(this) + 1, editor, _("Medium bearbeiten"), true);
+}
+
+void MediaBrowsePanel::evNewMedium(wxCommandEvent & ev) {
+    /* Open editor */
+    MediaEditorPanel * editor = new MediaEditorPanel(castedParent(), searchTable->getDatabase());
+    castedParent()->InsertPage((size_t)castedParent()->GetPageIndex(this) + 1, editor, _("Neues Medium"), true);
 }
 
 void MediaBrowsePanel::evDuplicateMedium(wxCommandEvent & ev) {

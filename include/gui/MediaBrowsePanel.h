@@ -18,10 +18,12 @@ namespace pb2 {
         void evDeleteMedium(wxCommandEvent & ev);
         void evEditMedium(wxCommandEvent & ev);
         void evDuplicateMedium(wxCommandEvent & ev);
+        void evNewMedium(wxCommandEvent & ev);
 
     public:
         enum class ID {
-            BTN_ADD_TO_BASKET = 1, BTN_DELETE_MEDIUM, BTN_DUPLICATE_MEDIUM, BTN_EDIT_MEDIUM
+            BTN_ADD_TO_BASKET = 1, BTN_DELETE_MEDIUM, BTN_DUPLICATE_MEDIUM,
+            BTN_EDIT_MEDIUM, MEDIA_TABLE
         };
 
         MediaBrowsePanel(
