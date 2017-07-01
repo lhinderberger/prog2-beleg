@@ -4,21 +4,21 @@ const char * initializingSQL = R"---(
     CREATE TABLE meta(name text PRIMARY KEY, value TEXT);
     CREATE TABLE authors(
         id INTEGER PRIMARY KEY,
-        first_name TEXT, -- Usually, this would be something like a CHAR(32), but SQLite does not have fixed-size strings
-        last_name TEXT
+        first_name TEXT NOT NULL, -- Usually, this would be something like a CHAR(32), but SQLite does not have fixed-size strings
+        last_name TEXT NOT NULL
     );
     CREATE TABLE media(
         ean TEXT PRIMARY KEY,
-        author_id INTEGER,
+        author_id INTEGER NOT NULL,
         type TEXT NOT NULL,
-        format TEXT, title TEXT, subtitle TEXT,
+        format TEXT NOT NULL, title TEXT NOT NULL, subtitle TEXT NOT NULL,
         FOREIGN KEY(author_id) REFERENCES authors(id)
     );
     CREATE TABLE media_copies(
-        medium_ean TEXT,
-        serial_number INT,
+        medium_ean TEXT NOT NULL,
+        serial_number INT NOT NULL,
         deaccessioned INT, -- boolean value, but SQLite lacks a dedicated type
-        location TEXT,
+        location TEXT NOT NULL,
         availability_hint TEXT NOT NULL, -- only a hint, for actual availability information, look at lendings
         PRIMARY KEY(medium_ean, serial_number),
         FOREIGN KEY(medium_ean) REFERENCES media(ean) ON DELETE CASCADE
