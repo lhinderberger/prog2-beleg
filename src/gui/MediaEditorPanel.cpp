@@ -108,6 +108,8 @@ void MediaEditorPanel::buildFormControls() {
 }
 
 bool MediaEditorPanel::save() {
+    auto database = creating() ? createDatabase : editMediumCopy->getDatabase();
+
     auto selectedClientData = [](wxComboBox * comboBox) {
         void * result = nullptr;
         int index = comboBox->GetSelection();
@@ -117,7 +119,6 @@ bool MediaEditorPanel::save() {
     };
 
     try {
-        auto database = creating() ? createDatabase : editMediumCopy->getDatabase();
         auto mediumCopyFactory = DatabaseObjectFactory<MediumCopy>(database);
         auto authorFactory = DatabaseObjectFactory<Author>(database);
 
@@ -187,10 +188,14 @@ bool MediaEditorPanel::save() {
 
     }
     catch (pb2::ValidationException & e) {
+        database->getConnection()->rollback();
+
         wxMessageBox(_("Ein Fehler ist aufgetreten:\n") + e.what(), _("Fehler"), wxICON_ERROR);
         return false;
     }
     catch (pb2::SqliteException & e) {
+        database->getConnection()->rollback();
+
         if (e.getSqliteErrorCode() == SQLITE_CONSTRAINT_NOTNULL)
             wxMessageBox(_("Bitte füllen Sie alle Pflichtfelder aus!"), _("Fehler"), wxICON_ERROR);
         else
