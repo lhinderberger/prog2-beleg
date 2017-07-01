@@ -47,11 +47,9 @@ DatabasePanel::DatabasePanel(wxWindow * parent, shared_ptr<Database> database)
 }
 
 void DatabasePanel::newMediaBrowserTab() {
-    notebook->AddPage(new MediaBrowsePanel(notebook, database, basket), _("Medienkatalog"));
-    notebook->ChangeSelection(notebook->GetPageCount() - 1);
+    notebook->AddPage(new MediaBrowsePanel(notebook, database, basket), _("Medienkatalog"), true);
 }
 
 void DatabasePanel::newUserBrowserTab() {
-    notebook->AddPage(new UserBrowsePanel(notebook, database, basket), _("Benutzer & Ausleihen"));
-    notebook->ChangeSelection(notebook->GetPageCount() - 1);
+    notebook->AddPage(new UserBrowsePanel(notebook, database, basket), _("Benutzer & Ausleihen"), true);
 }
