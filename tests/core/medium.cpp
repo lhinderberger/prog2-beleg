@@ -92,6 +92,12 @@ TEST_F(DatabaseFixture, MediumCopyPersistLoadTest) {
 
     connection->commit();
 
+    /* Duplicate copy and make sure it refers to the same medium */
+    auto dupCopy = copy2->duplicate();
+    EXPECT_EQ(dupCopy->getMediumEAN(), medium->getEAN());
+    EXPECT_EQ(dupCopy->getLocation(), copy2->getLocation());
+    EXPECT_EQ(dupCopy->getSerialNumber(), -1);
+
     /* Query for medium */
     SqlitePreparedStatement query(connection, "SELECT * FROM " + Medium::tableName + " WHERE ean = ?");
     query.bind(1, medium->getEAN());
@@ -125,4 +131,8 @@ TEST_F(DatabaseFixture, MediumCopyPersistLoadTest) {
     }
 
     EXPECT_TRUE(copy1compared && copy2compared);
+
+    /* Check serial number auto-generation on duplicate */
+    dupCopy->persist();
+    EXPECT_EQ(dupCopy->getSerialNumber(), 3);
 }

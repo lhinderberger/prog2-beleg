@@ -49,6 +49,17 @@ void MediumCopy::del() {
     query.step();
 }
 
+shared_ptr<MediumCopy> MediumCopy::duplicate() const {
+    auto duplicateCopy = DatabaseObjectFactory<MediumCopy>(getDatabase()).construct(
+            getMedium(), -1
+    );
+
+    duplicateCopy->setLocation(getLocation());
+    duplicateCopy->setDeaccessioned(getDeaccessioned());
+
+    return duplicateCopy;
+}
+
 void MediumCopy::persistImpl() {
     /* Determine serial number, if required */
     int serialNumber = priv->serialNumber;

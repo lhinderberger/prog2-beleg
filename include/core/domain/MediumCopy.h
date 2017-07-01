@@ -46,6 +46,12 @@ namespace pb2 {
 
         virtual void del() override;
 
+        /*
+         * Creates a new, identical MediumCopy, except for its serial number, which will
+         * be initialized as -1 (auto-generate).
+         */
+        std::shared_ptr<MediumCopy> duplicate() const;
+
         /**
          * If a LibraryUser has currently lent the copy, this will return a pointer
          * to the relevant Lending instance. Otherwise it will return a null pointer.
