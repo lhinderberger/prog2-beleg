@@ -6,8 +6,8 @@ using namespace std;
 BEGIN_EVENT_TABLE(pb2::MediaBrowsePanel, wxPanel)
     EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_ADD_TO_BASKET, MediaBrowsePanel::evAddToBasket)
     EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_DELETE_MEDIUM, MediaBrowsePanel::evDeleteMedium)
+    EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_DUPLICATE_MEDIUM, MediaBrowsePanel::evDuplicateMedium)
     EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_EDIT_MEDIUM, MediaBrowsePanel::evEditMedium)
-    EVT_BUTTON((int)MediaBrowsePanel::ID::BTN_NEW_COPY, MediaBrowsePanel::evNewCopy)
 END_EVENT_TABLE()
 
 MediaBrowsePanel::MediaBrowsePanel(
@@ -24,7 +24,7 @@ MediaBrowsePanel::MediaBrowsePanel(
 
     /* Add Media controls */
     wxSizer * mediaControlsSizer = new wxBoxSizer(wxHORIZONTAL);
-    mediaControlsSizer->Add(new wxButton(this, (int)ID::BTN_NEW_COPY, _("Exemplar duplizieren")), 0, wxALIGN_RIGHT);
+    mediaControlsSizer->Add(new wxButton(this, (int)ID::BTN_DUPLICATE_MEDIUM, _("Exemplar duplizieren")), 0, wxALIGN_RIGHT);
     mediaControlsSizer->Add(new wxButton(this, (int)ID::BTN_DELETE_MEDIUM, _("Exemplar löschen...")), 0, wxALIGN_RIGHT);
     mediaControlsSizer->Add(new wxButton(this, (int)ID::BTN_EDIT_MEDIUM, _("Details / Bearbeiten...")), 0, wxALIGN_RIGHT);
     mediaControlsSizer->Add(new wxButton(this, (int)ID::BTN_ADD_TO_BASKET, _("Zum Warenkorb hinzufügen")), 0, wxALIGN_RIGHT);
@@ -89,8 +89,8 @@ void MediaBrowsePanel::evEditMedium(wxCommandEvent & ev) {
     throw NotImplementedException();
 }
 
-void MediaBrowsePanel::evNewCopy(wxCommandEvent & ev) {
-
+void MediaBrowsePanel::evDuplicateMedium(wxCommandEvent & ev) {
+    throw NotImplementedException();
 }
 
 void MediaBrowsePanel::refresh() {
