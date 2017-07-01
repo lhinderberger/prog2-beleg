@@ -90,7 +90,18 @@ void MediaBrowsePanel::evEditMedium(wxCommandEvent & ev) {
 }
 
 void MediaBrowsePanel::evDuplicateMedium(wxCommandEvent & ev) {
-    throw NotImplementedException();
+    /* Retrieve mediumCopy */
+    auto mediumCopy = searchTable->getSelectedMediumCopy();
+    if (!mediumCopy)
+        return;
+
+    /* Create a new MediumCopy with auto-generated serial number */
+    auto duplicateCopy = mediumCopy->duplicate();
+    duplicateCopy->persist();
+
+    /* Commit and refresh */
+    mediumCopy->getConnection()->commit();
+    refreshCascade();
 }
 
 void MediaBrowsePanel::refresh() {
