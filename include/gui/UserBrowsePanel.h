@@ -28,6 +28,7 @@ namespace pb2 {
         void evUserSelected(wxCommandEvent & event);
         void evDeleteUser(wxCommandEvent & event);
         void evEditUser(wxCommandEvent & event);
+        void evNewUser(wxCommandEvent & event);
 
     public:
         enum class ID {

@@ -1,4 +1,5 @@
 #include "gui/UserBrowsePanel.h"
+#include "gui/UserEditorPanel.h"
 #include "gui/events.h"
 
 using namespace pb2;
@@ -6,6 +7,7 @@ using namespace std;
 
 wxBEGIN_EVENT_TABLE(pb2::UserBrowsePanel, wxPanel)
     EVT_COMMAND((int)UserBrowsePanel::ID::USER_TABLE, PB2_EVT_ST_SELECTED, UserBrowsePanel::evUserSelected)
+    EVT_COMMAND((int)UserBrowsePanel::ID::USER_TABLE, PB2_EVT_ST_NEW_ITEM, UserBrowsePanel::evNewUser)
     EVT_COMMAND((int)UserBrowsePanel::ID::LENDINGS_TABLE, PB2_EVT_ST_NEW_ITEM, UserBrowsePanel::evNewLending)
     EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_EXTEND, UserBrowsePanel::evLendingExtend)
     EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_RETURN, UserBrowsePanel::evLendingReturn)
@@ -126,7 +128,18 @@ void UserBrowsePanel::evDeleteUser(wxCommandEvent & event) {
 }
 
 void UserBrowsePanel::evEditUser(wxCommandEvent & event) {
-    throw NotImplementedException();
+    /* Retrieve ID of selected user */
+    auto user = userTable->getSelectedUser();
+    if (!user)
+        return;
+
+    /* Open editor */
+    castedParent()->AddPage(new UserEditorPanel(castedParent(), user), _("Benutzer bearbeiten"), true);
+}
+
+void UserBrowsePanel::evNewUser(wxCommandEvent & event) {
+    /* Open editor */
+    castedParent()->AddPage(new UserEditorPanel(castedParent(), userTable->getDatabase()), _("Neuer Benutzer"), true);
 }
 
 void UserBrowsePanel::refresh() {
