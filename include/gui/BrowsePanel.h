@@ -35,6 +35,8 @@ namespace pb2 {
 
         /* Refresh ONLY own views, do NOT cascade */
         virtual void refresh() = 0;
+
+        inline wxAuiNotebook * castedParent() const { return (wxAuiNotebook*)GetParent(); }
     };
 }
 
