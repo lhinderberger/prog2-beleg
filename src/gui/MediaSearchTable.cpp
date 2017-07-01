@@ -68,7 +68,7 @@ wxString MediaSearchTable::getColumnContent(int column) {
             /* Build date object from availability string */
             wxDateTime dateTime;
             if (!dateTime.ParseISODate(availHint))
-                return _("Unbekannt (siehe Details)");
+                return _("Unbekannt)");
 
             // Medium might be not available until short before the library closes on
             // return date, so better safe than sorry - add a day
