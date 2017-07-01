@@ -27,11 +27,12 @@ namespace pb2 {
         void evNewLending(wxCommandEvent & event);
         void evUserSelected(wxCommandEvent & event);
         void evDeleteUser(wxCommandEvent & event);
+        void evEditUser(wxCommandEvent & event);
 
     public:
         enum class ID {
             USER_TABLE = 1, LENDINGS_TABLE, LENDINGS_EXTEND, LENDINGS_RETURN,
-            BTN_DELETE_USER
+            BTN_DELETE_USER, BTN_EDIT_USER
         };
 
         UserBrowsePanel(

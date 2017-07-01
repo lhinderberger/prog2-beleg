@@ -10,6 +10,7 @@ wxBEGIN_EVENT_TABLE(pb2::UserBrowsePanel, wxPanel)
     EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_EXTEND, UserBrowsePanel::evLendingExtend)
     EVT_BUTTON((int)UserBrowsePanel::ID::LENDINGS_RETURN, UserBrowsePanel::evLendingReturn)
     EVT_BUTTON((int)UserBrowsePanel::ID::BTN_DELETE_USER, UserBrowsePanel::evDeleteUser)
+    EVT_BUTTON((int)UserBrowsePanel::ID::BTN_EDIT_USER, UserBrowsePanel::evEditUser)
 wxEND_EVENT_TABLE()
 
 UserBrowsePanel::UserBrowsePanel(
@@ -26,7 +27,8 @@ UserBrowsePanel::UserBrowsePanel(
 
     /* Add User controls */
     wxSizer * userControlsSizer = new wxBoxSizer(wxHORIZONTAL);
-    userControlsSizer->Add(new wxButton(this, (int)ID::BTN_DELETE_USER, _("Benutzer löschen")), 0, wxALIGN_RIGHT);
+    userControlsSizer->Add(new wxButton(this, (int)ID::BTN_DELETE_USER, _("Benutzer löschen...")), 0, wxALIGN_RIGHT);
+    userControlsSizer->Add(new wxButton(this, (int)ID::BTN_EDIT_USER, _("Details / Bearbeiten...")), 0, wxALIGN_RIGHT);
     sizer->Add(userControlsSizer, 0, wxALIGN_RIGHT);
 
     /* Add Lendings heading */
@@ -121,6 +123,10 @@ void UserBrowsePanel::evDeleteUser(wxCommandEvent & event) {
 
     /* Reload */
     refreshCascade();
+}
+
+void UserBrowsePanel::evEditUser(wxCommandEvent & event) {
+    throw NotImplementedException();
 }
 
 void UserBrowsePanel::refresh() {
