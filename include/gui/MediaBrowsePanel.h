@@ -25,7 +25,7 @@ namespace pb2 {
         };
 
         MediaBrowsePanel(
-                wxWindow * parent, std::shared_ptr<Database> database,
+                wxAuiNotebook * parent, std::shared_ptr<Database> database,
                 std::shared_ptr<Basket> basket
         );
 

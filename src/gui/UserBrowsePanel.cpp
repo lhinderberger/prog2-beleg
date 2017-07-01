@@ -14,7 +14,7 @@ wxBEGIN_EVENT_TABLE(pb2::UserBrowsePanel, wxPanel)
 wxEND_EVENT_TABLE()
 
 UserBrowsePanel::UserBrowsePanel(
-        wxWindow * parent, shared_ptr<Database> database, shared_ptr<Basket> basket
+        wxAuiNotebook * parent, shared_ptr<Database> database, shared_ptr<Basket> basket
 ) : BrowsePanel(parent), basket(basket) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxVERTICAL);

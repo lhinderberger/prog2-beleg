@@ -2,6 +2,7 @@
 #define PROG2_BELEG_GUI_BROWSE_PANEL_H
 
 #include <wx/wx.h>
+#include <wx/aui/auibook.h>
 
 namespace pb2 {
     class BrowsePanel;
@@ -27,7 +28,7 @@ namespace pb2 {
     private:
         BrowsePanelEventFilter filter;
     public:
-        BrowsePanel(wxWindow * parent);
+        BrowsePanel(wxAuiNotebook * parent);
 
         /* Refresh own Views, send event to parent for other tables */
         void refreshCascade();

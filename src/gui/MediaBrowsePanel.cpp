@@ -1,4 +1,5 @@
 #include "gui/MediaBrowsePanel.h"
+#include "gui/MediaEditorPanel.h"
 
 using namespace pb2;
 using namespace std;
@@ -11,7 +12,7 @@ BEGIN_EVENT_TABLE(pb2::MediaBrowsePanel, wxPanel)
 END_EVENT_TABLE()
 
 MediaBrowsePanel::MediaBrowsePanel(
-        wxWindow * parent, shared_ptr<Database> database, shared_ptr<Basket> basket
+        wxAuiNotebook * parent, shared_ptr<Database> database, shared_ptr<Basket> basket
 ) : BrowsePanel(parent), basket(basket) {
     /* Create top-level box sizer */
     wxSizer * sizer = new wxBoxSizer(wxVERTICAL);

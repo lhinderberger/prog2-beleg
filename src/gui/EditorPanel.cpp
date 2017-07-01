@@ -6,10 +6,9 @@ using namespace pb2;
 BEGIN_EVENT_TABLE(pb2::EditorPanel, wxPanel)
     EVT_BUTTON((int)EditorPanel::ID::BTN_ABORT, EditorPanel::evAbortClicked)
     EVT_BUTTON((int)EditorPanel::ID::BTN_SAVE, EditorPanel::evSaveClicked)
-    EVT_CLOSE(EditorPanel::evPanelClosing)
 END_EVENT_TABLE()
 
-EditorPanel::EditorPanel(wxWindow * parent)
+EditorPanel::EditorPanel(wxAuiNotebook * parent)
     : wxPanel(parent, wxID_ANY) {
 
     wxSizer * mainSizer = new wxBoxSizer(wxVERTICAL);
@@ -29,32 +28,15 @@ EditorPanel::EditorPanel(wxWindow * parent)
 }
 
 void EditorPanel::evAbortClicked(wxCommandEvent & event) {
-    Close(true); // Force Close - Don't call event handler
+    closeTab();
 }
 
 void EditorPanel::evSaveClicked(wxCommandEvent & event) {
     save();
-    Close(true); // Force Close - Don't call event handler
+    closeTab();
 }
 
-void EditorPanel::evPanelClosing(wxCloseEvent & event) {
-    if (!event.CanVeto()) {
-        event.Skip();
-        return;
-    }
-
-    /* Ask user whether they want to save their changes */
-    int confirmation = wxMessageBox(
-            _("Wollen Sie Ihre Änderungen speichern?"),
-            _("Editor schließen"),
-            wxYES_NO | wxCANCEL
-    );
-
-    if (confirmation == wxCANCEL) {
-        event.Veto();
-        return;
-    } else if (confirmation == wxYES)
-        save();
-
-    event.Skip();
+void EditorPanel::closeTab() {
+    auto* parent = (wxAuiNotebook*)GetParent();
+    parent->DeletePage((size_t)parent->GetPageIndex(this));
 }

@@ -22,7 +22,7 @@ int BrowsePanelEventFilter::FilterEvent(wxEvent & event) {
 }
 
 
-BrowsePanel::BrowsePanel(wxWindow * parent)
+BrowsePanel::BrowsePanel(wxAuiNotebook * parent)
         : wxPanel(parent, wxID_ANY), filter(this) {
 
 }

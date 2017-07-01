@@ -2,13 +2,15 @@
 #define PROG2_BELEG_GUI_EDITOR_PANEL_H
 
 #include <wx/wx.h>
+#include <wx/aui/auibook.h>
 
 namespace pb2 {
     class EditorPanel : public wxPanel {
     private:
         void evAbortClicked(wxCommandEvent & event);
         void evSaveClicked(wxCommandEvent & event);
-        void evPanelClosing(wxCloseEvent & event);
+
+        void closeTab();
 
     protected:
         wxSizer * formControlsSizer = nullptr;
@@ -17,7 +19,7 @@ namespace pb2 {
     public:
         enum class ID { BTN_ABORT = 1, BTN_SAVE = 2 };
 
-        EditorPanel(wxWindow * parent);
+        EditorPanel(wxAuiNotebook * parent);
 
         DECLARE_EVENT_TABLE();
     };
