@@ -40,6 +40,7 @@ void DatabaseSearchTable::buildColumns(const vector<wxString> & headings) {
 void DatabaseSearchTable::buildRows() {
     dataView->DeleteAllItems();
 
+    /* Fill data */
     unsigned columnCount = dataView->GetColumnCount();
     while (step()) {
         /* Build values vector */
@@ -49,6 +50,15 @@ void DatabaseSearchTable::buildRows() {
 
         /* Append to dataView */
         dataView->AppendItem(values);
+    }
+
+    /* Set header width */
+    for (unsigned int i = 0; i < columnCount; i++) {
+        wxDataViewColumn * column = dataView->GetColumn(i);
+        if (column) {
+            column->SetWidth(wxCOL_WIDTH_AUTOSIZE);
+            column->SetSortable(true);
+        }
     }
 }
 
