@@ -8,7 +8,7 @@ using namespace pb2;
 
 DatabaseObject::DatabaseObject(std::shared_ptr<Database> database) {
     if (!database)
-        throw NullPointerException();
+        throw NullPointerException("No database set for DatabaseObject");
 
     priv = make_unique<DatabaseObject_priv>();
     priv->database = database;
@@ -20,7 +20,7 @@ DatabaseObject::~DatabaseObject() = default;
 void DatabaseObject::persist() {
     /* Make sure we only persist when a transaction is active */
     if (!priv->database->getConnection()->isTransactionActive())
-        throw logic_error("DatabaseObjects cannot be persisted without an active transaction!");
+        throw LogicError("DatabaseObjects cannot be persisted without an active transaction!");
 
     /* Call persist implementation */
     persistImpl();

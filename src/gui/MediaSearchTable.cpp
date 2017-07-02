@@ -78,7 +78,7 @@ wxString MediaSearchTable::getColumnContent(int column) {
             return dateTime.Format(_("Verfügbar ab %e. %B"));
         }
     }
-    else throw logic_error("Invalid column index!");
+    else throw LogicError("Invalid column index!");
 
     /* Direct query */
     return query->columnString(directQueryColumn);

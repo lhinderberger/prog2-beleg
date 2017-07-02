@@ -4,111 +4,67 @@
 #include <stdexcept>
 #include <sqlite3.h>
 
+#define DEFAULT_EXCEPTION_CONSTRUCTORS(E_TYPE) E_TYPE(); \
+E_TYPE(const std::string & whatString);
+
+#define BASIC_EXCEPTION(E_TYPE, PARENT_TYPE) class E_TYPE : public PARENT_TYPE { \
+public: \
+    DEFAULT_EXCEPTION_CONSTRUCTORS(E_TYPE) \
+};
+
+#define BASIC_EXCEPTION_IMPL(E_TYPE, PARENT_TYPE, defaultWhat) E_TYPE::E_TYPE() : PARENT_TYPE(defaultWhat) {} \
+E_TYPE::E_TYPE(const std::string & whatString) : PARENT_TYPE(std::string(defaultWhat) + "\n" + whatString) {}
+
 namespace pb2 {
-    class Exception : public std::exception {};
-    class CoreException : public Exception {};
-
-    //TODO: Find a better hierarchy for exceptions
-    //TODO: Too much repeated code here - refactor before finishing the exam
-    //TODO: Either inline all exceptions or none
-
-    class NotImplementedException : public CoreException {
-    public:
-        NotImplementedException() {}
-    };
-
-    class LendingNotReturnedException : public CoreException {
-    public:
-        LendingNotReturnedException() {}
-    };
-
-    class NotExtensibleException : public CoreException {
-    public:
-        NotExtensibleException() {}
-    };
-
-    class NullPointerException : public CoreException {
-    public:
-        NullPointerException() {}
-    };
-
-    class StringTooLongException : public CoreException {
-    public:
-        StringTooLongException() {}
-    };
-
-    class ValidationException : public CoreException {
+    /** Base class for all exceptions thrown from prog2-beleg */
+    class Exception : public std::exception {
     private:
-        std::string description;
+        const std::string whatString;
 
     public:
-        ValidationException(const std::string & description) { this->description = description; }
+        DEFAULT_EXCEPTION_CONSTRUCTORS(Exception);
 
-        inline virtual const char * what() const noexcept override { return description.c_str(); }
+        virtual const char * what() const noexcept override;
     };
 
-    class DatabaseIntegrityException : public CoreException {
-    private:
-        std::string description;
+    /** Base class for all exceptions specifically thrown from the core library */
+    BASIC_EXCEPTION(CoreException, Exception)
 
-    public:
-        DatabaseIntegrityException(const std::string & description) { this->description = description; }
+    /* === General Exceptions === */
+    BASIC_EXCEPTION(LogicError, Exception)
+    BASIC_EXCEPTION(NotImplementedException, Exception)
+    BASIC_EXCEPTION(NullPointerException, Exception)
 
-        inline virtual const char * what() const noexcept override { return description.c_str(); }
-    };
-
-    class FileExistsException : public CoreException {
-    private:
-        std::string filename;
-    public:
-        FileExistsException(const std::string & filename);
-
-        inline const std::string & getFilename() const { return filename; }
-    };
-
-    class ColumnNotFoundException : public CoreException {
-    private:
-        std::string description, fullColumnName;
-    public:
-        ColumnNotFoundException(const std::string & fullColumnName);
-
-        inline const std::string & getFullColumnName() const { return fullColumnName; }
-        inline virtual const char * what() const noexcept override { return description.c_str(); }
-    };
-
-    class DatabaseFormatException : public CoreException {
-    private:
-        std::string description;
-
-    public:
-        DatabaseFormatException(const std::string & description) { this->description = description; }
-
-        inline virtual const char * what() const noexcept override { return description.c_str(); }
-    };
-
-    class DatabaseVersionException : public CoreException {
-    private:
-        int databaseVersion;
-    public:
-        inline DatabaseVersionException(int databaseVersion) { this->databaseVersion = databaseVersion; }
-        inline int getDatabaseVersion() const { return databaseVersion; }
-    };
+    /* === Core Exceptions === */
+    BASIC_EXCEPTION(DatabaseFileExistsException, CoreException)
+    BASIC_EXCEPTION(DatabaseFormatException, CoreException)
+    BASIC_EXCEPTION(DatabaseIntegrityException, CoreException)
+    BASIC_EXCEPTION(NotExtensibleException, CoreException)
+    BASIC_EXCEPTION(SqlColumnNotFoundException, CoreException)
+    BASIC_EXCEPTION(SqlStringTooLongException, CoreException)
+    BASIC_EXCEPTION(ValidationException, CoreException)
 
     class SqliteException : public CoreException {
     private:
         int sqliteErrorCode;
-        std::string sqliteErrorString, whatString;
 
-        void buildWhatString();
+        static std::string buildWhatString(int errorCode);
+        static std::string buildWhatString(sqlite3 * db);
+        static std::string buildWhatString(int errCode, const std::string & errString);
 
     public:
         SqliteException(int errorCode);
         SqliteException(sqlite3 * db);
 
-        virtual const char * what() const noexcept override;
-
         inline int getSqliteErrorCode() const { return sqliteErrorCode; }
-        inline std::string getSqliteErrorString() const { return sqliteErrorString; }
+    };
+
+    class UnsupportedDatabaseVersionException : public CoreException {
+    private:
+        int databaseVersion;
+    public:
+        inline UnsupportedDatabaseVersionException(int databaseVersion) { this->databaseVersion = databaseVersion; }
+        inline int getDatabaseVersion() const { return databaseVersion; }
     };
 }
 

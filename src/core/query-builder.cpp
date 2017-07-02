@@ -1,4 +1,5 @@
 #include "core/query-builder.h"
+#include "core/exceptions.h"
 
 #include <stdexcept>
 
@@ -31,7 +32,7 @@ string pb2::buildInsertQuery(
         vector<string> columnNames, int nObjects, const string & tableName
 ) {
     if (nObjects < 0)
-        throw logic_error("nObjects must not be negative!");
+        throw LogicError("nObjects must not be negative!");
 
     /* Begin query */
     string query = "INSERT INTO " + tableName;

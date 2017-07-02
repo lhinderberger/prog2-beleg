@@ -76,7 +76,7 @@ wxString LendingsSearchTable::getColumnContent(int column) {
             return unknownString;
         return dateTime.Format(_("%e. %B"));
     }
-    else throw logic_error("Invalid column index!");
+    else throw LogicError("Invalid column index!");
 
     /* Direct query */
     return query->columnString(directQueryColumn);

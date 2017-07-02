@@ -41,7 +41,7 @@ namespace pb2 {
         ManyToOneLazyLoader(const std::shared_ptr<Database> & database,
                             const std::string & primaryKeyName) {
             if (!database)
-                throw NullPointerException();
+                throw NullPointerException("No database set for ManyToOneLazyLoader");
 
             this->database = database;
             this->primaryKeyName = primaryKeyName;
@@ -53,7 +53,7 @@ namespace pb2 {
          */
         PrimaryKeyType getPrimaryKey() const {
             if (!primaryKey)
-                throw NullPointerException();
+                throw NullPointerException("Primary key not set");
             return *primaryKey;
         }
 

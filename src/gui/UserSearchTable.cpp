@@ -52,7 +52,7 @@ wxString UserSearchTable::getColumnContent(int column) {
         wxString houseNumber = query->columnString("postal_addresses.house_number");
         return street + ' ' + houseNumber;
     }
-    else throw logic_error("Invalid column index!");
+    else throw LogicError("Invalid column index!");
 
     /* Direct query */
     return query->columnString(directQueryColumn);

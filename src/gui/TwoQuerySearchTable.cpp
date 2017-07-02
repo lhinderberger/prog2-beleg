@@ -17,7 +17,7 @@ shared_ptr<SqlitePreparedStatement> TwoQuerySearchTable::currentQuery() {
     else if (currentQueryType == QueryType::SEARCH)
         return searchQuery;
     else
-        throw logic_error("currentQuery: No active query!");
+        throw LogicError("currentQuery: No active query!");
 }
 
 void TwoQuerySearchTable::generalPrepare(shared_ptr<SqlitePreparedStatement> & query,

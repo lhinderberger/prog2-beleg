@@ -129,7 +129,7 @@ void MainFrame::openDatabase() {
         auto connection = StatusbarDbConnection::construct(GetStatusBar(), fileDialog.GetPath().ToStdString(), false);
         setDatabaseAndOpenPanel(Database::open(connection));
     }
-    catch (DatabaseVersionException & e) {
+    catch (UnsupportedDatabaseVersionException & e) {
         wxMessageBox(
                 _("Die Datenbank verwendet eine neuere Version. Bitte installieren Sie die neueste Version der Software!"),
                 _("Fehler"), wxICON_ERROR

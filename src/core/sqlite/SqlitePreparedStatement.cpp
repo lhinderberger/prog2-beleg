@@ -13,7 +13,7 @@ SqlitePreparedStatement::SqlitePreparedStatement(
         shared_ptr<SqliteConnection> connection, const string & sql
 ) {
     if (!connection)
-        throw NullPointerException();
+        throw NullPointerException("No Connection given for SqlitePreparedStatement");
 
     priv = make_unique<SqlitePreparedStatement_priv>();
     priv->connection = connection;
@@ -21,7 +21,7 @@ SqlitePreparedStatement::SqlitePreparedStatement(
     /* Get statement size */
     auto statementSize = sql.size();
     if (statementSize > INT_MAX)
-        throw StringTooLongException();
+        throw SqlStringTooLongException("Statement size exceeds INT_MAX");
 
     /* Prepare statement */
     if (sqlite3_prepare_v2(
@@ -70,7 +70,7 @@ void SqlitePreparedStatement::bind(int paramIndex) {
 void SqlitePreparedStatement::bind(int paramIndex, const string & value) {
     auto valSize = value.size();
     if (valSize > INT_MAX)
-        throw StringTooLongException();
+        throw SqlStringTooLongException("Bind String size extends INT_MAX");
 
     if (sqlite3_bind_text(priv->statement, paramIndex, value.c_str(), (int)value.size(), NULL) != SQLITE_OK)
         throw priv->connection->buildException();
@@ -135,7 +135,7 @@ const map<string, int> & SqlitePreparedStatement::columnIndexes() {
 int SqlitePreparedStatement::getColumnCount() {
     int columnCount = sqlite3_column_count(priv->statement);
     if (columnCount < 0)
-        throw logic_error("Column count shouldn't drop below zero!");
+        throw LogicError("Column count shouldn't drop below zero!");
 
     return columnCount;
 }
@@ -144,7 +144,7 @@ int SqlitePreparedStatement::getColumnIndex(const string & fullColumnName) {
     auto indexes = columnIndexes();
     auto it = indexes.find(fullColumnName);
     if (it == indexes.end())
-        throw ColumnNotFoundException(fullColumnName);
+        throw SqlColumnNotFoundException(fullColumnName);
     return it->second;
 }
 

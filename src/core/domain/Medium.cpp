@@ -17,7 +17,7 @@ using namespace std;
 //Helper functions
 string pb2::buildEANString(const vector<int> & eanDigits) {
     if (eanDigits.size() != 13)
-        throw logic_error("EAN has not exactly 13 digits!");
+        throw LogicError("EAN has not exactly 13 digits!");
 
     string result;
     for (int digit : eanDigits)
@@ -27,7 +27,7 @@ string pb2::buildEANString(const vector<int> & eanDigits) {
 
 int pb2::calculateEANChecksum(const vector<int> & eanDigits) {
     if (eanDigits.size() < 12)
-        throw logic_error("Partial EAN with less than 12 digits given");
+        throw LogicError("Partial EAN with less than 12 digits given");
 
     /* Calculate checksum */
     int checksum = 0;
@@ -196,7 +196,7 @@ shared_ptr<Author> Medium::getAuthor() const {
 
 void Medium::setAuthor(shared_ptr<Author> author) {
     if (!author)
-        throw NullPointerException();
+        throw NullPointerException("Medium author must not be null!");
     priv->author.set(author);
 }
 

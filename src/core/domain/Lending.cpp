@@ -30,12 +30,12 @@ void parseDate(std::tm & tm, const string & isoDateString) {
 
     /* Call mktime for the first time to get any timezone inconsistencies */
     if (mktime(&tm) == -1)
-        throw logic_error("mktime failed");
+        throw LogicError("mktime failed");
 
     /* Make sure mktime didn't ruin everything...*/
     tm.tm_sec += (oldGmtOffset - tm.tm_gmtoff);
     if (mktime(&tm) == -1)
-        throw logic_error("mktime failed");
+        throw LogicError("mktime failed");
 }
 
 Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
@@ -143,7 +143,7 @@ void Lending::persistImpl() {
     else if (priv->libraryUser.isLoaded())
         primaryKey = priv->libraryUser.get()->getId();
     if (primaryKey == 0)
-        throw logic_error("Primary key for library user cannot be 0");
+        throw LogicError("Primary key for library user cannot be 0");
     statement.bind(4, primaryKey);
 
     /* Execute */
@@ -197,10 +197,10 @@ void Lending::extend(int days) {
 
 void Lending::extend(time_t reference, int days) {
     if (days < 0)
-        throw logic_error("Extend Days cannot be negative!");
+        throw LogicError("Extend Days cannot be negative!");
 
     if (isReturned())
-        throw logic_error("Cannot extend returned Lending!");
+        throw LogicError("Cannot extend an already returned Lending!");
 
     /* Calculate new due date */
     std::tm newDueDate = *localtime(&reference);
@@ -257,7 +257,7 @@ string Lending::getDueDateISOString() const {
 
 time_t Lending::getTimestampReturned() const {
     if (!priv->timestampReturned)
-        throw LendingNotReturnedException();
+        throw LogicError("The Lending is not yet returned!");
     return priv->timestampReturned;
 }
 
@@ -271,7 +271,7 @@ bool Lending::isReturned() const {
 
 void Lending::returnL(time_t timestampReturned) {
     if (isReturned())
-        throw logic_error("Already returned!");
+        throw LogicError("Cannot return: Lending already returned!");
     priv->timestampReturned = timestampReturned;
 }
 

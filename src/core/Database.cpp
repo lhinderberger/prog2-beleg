@@ -10,7 +10,7 @@ using namespace pb2;
 
 Database::Database(shared_ptr<SqliteConnection> connection) {
     if (!connection)
-        throw NullPointerException();
+        throw NullPointerException("No Connection given for database!");
 
     /* Initialize */
     priv = make_unique<Database_priv>();
@@ -40,10 +40,10 @@ shared_ptr<Database> Database::migrate(shared_ptr<SqliteConnection> connection) 
     if (version < getCurrentFormatVersion()) {
         /* We already are on the lowest format version, so this code path should
          * never be entered. */
-        throw logic_error("Error: getFormatVersion() returned lower than possible version");
+        throw LogicError("Error: getFormatVersion() returned lower than possible version");
     }
     else if (version > getCurrentFormatVersion())
-        throw DatabaseVersionException(version);
+        throw UnsupportedDatabaseVersionException(version);
 
     /* Open and return Database object */
     return open(connection);
@@ -53,7 +53,7 @@ shared_ptr<Database> Database::open(shared_ptr<SqliteConnection> connection) {
     /* Version check */
     int version = getFormatVersion(connection);
     if (version != getCurrentFormatVersion())
-        throw DatabaseVersionException(version);
+        throw UnsupportedDatabaseVersionException(version);
 
     /* Open and return Database object */
     return shared_ptr<Database>(new Database(connection));
@@ -83,7 +83,12 @@ const map<string,string>& Database::getMeta() const {
 }
 
 string Database::getMeta(const string & name) const {
-    return priv->meta.at(name);
+    try {
+        return priv->meta.at(name);
+    }
+    catch (out_of_range) {
+        throw LogicError("Meta key " + name + " does not exist!");
+    }
 }
 
 void Database::setMeta(const string & name, const string & value) {

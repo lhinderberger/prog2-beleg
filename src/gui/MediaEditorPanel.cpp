@@ -143,7 +143,7 @@ bool MediaEditorPanel::save() {
                 else if (type == "video")
                     medium = DatabaseObjectFactory<Video>(createDatabase).construct(ean);
                 else
-                    throw logic_error("Invalid type: " + type);
+                    throw LogicError("Invalid type: " + type);
             }
 
             /* Construct new mediumCopy / author objects */

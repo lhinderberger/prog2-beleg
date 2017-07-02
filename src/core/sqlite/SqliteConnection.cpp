@@ -29,7 +29,7 @@ SqliteConnection::SqliteConnection(const std::string &filename, bool create) {
     /* Check file exists constraints */
     bool exists = (filename != inMemoryDbFilename) && fileExists(filename);
     if ((exists && create) || (!exists && !create))
-        throw FileExistsException(filename);
+        throw DatabaseFileExistsException(filename);
 
     /* Open SQLite database */
     int res = sqlite3_open_v2(

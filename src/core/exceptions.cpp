@@ -5,36 +5,43 @@
 using namespace std;
 using namespace pb2;
 
-FileExistsException::FileExistsException(const string & filename) {
-    this->filename = filename;
-}
+Exception::Exception() : Exception("Unknown Error") {}
+Exception::Exception(const std::string & whatString) : whatString(whatString) {}
+const char* Exception::what() const noexcept { return whatString.c_str(); }
 
+BASIC_EXCEPTION_IMPL(CoreException, Exception, "Error in core")
 
-ColumnNotFoundException::ColumnNotFoundException(const string & fullColumnName) {
-    this->fullColumnName = fullColumnName;
-    description = "Column not found: " + fullColumnName;
-}
+/* === General Exceptions === */
+BASIC_EXCEPTION_IMPL(LogicError, Exception, "Program Logic Error")
+BASIC_EXCEPTION_IMPL(NotImplementedException, Exception, "Feature not implemented")
+BASIC_EXCEPTION_IMPL(NullPointerException, Exception, "Null pointer is not allowed here")
 
+/* === Core Exceptions === */
+BASIC_EXCEPTION_IMPL(DatabaseFileExistsException, CoreException, "The database file given would be overwritten")
+BASIC_EXCEPTION_IMPL(DatabaseFormatException, CoreException, "The database integrity has been compromised")
+BASIC_EXCEPTION_IMPL(DatabaseIntegrityException, CoreException, "The database integrity has been compromised")
+BASIC_EXCEPTION_IMPL(NotExtensibleException, CoreException, "The lending is not (yet) extensible")
+BASIC_EXCEPTION_IMPL(SqlColumnNotFoundException, CoreException, "A requested SQL column was not found in the result set")
+BASIC_EXCEPTION_IMPL(SqlStringTooLongException, CoreException, "A string passed into / from sqlite was too long")
+BASIC_EXCEPTION_IMPL(ValidationException, CoreException, "Input validation failed")
 
-SqliteException::SqliteException(int errorCode) {
+SqliteException::SqliteException(int errorCode) : CoreException(buildWhatString(errorCode)) {
     sqliteErrorCode = errorCode;
-    sqliteErrorString = sqlite3_errstr(errorCode);
-    buildWhatString();
 }
-
-SqliteException::SqliteException(sqlite3 * db) {
+SqliteException::SqliteException(sqlite3 * db) : CoreException(buildWhatString(db)) {
     sqliteErrorCode = sqlite3_extended_errcode(db);
-    sqliteErrorString = sqlite3_errmsg(db);
-    buildWhatString();
 }
 
-void SqliteException::buildWhatString() {
+string SqliteException::buildWhatString(int errorCode) {
+    return buildWhatString(errorCode, sqlite3_errstr(errorCode));
+}
+
+string SqliteException::buildWhatString(sqlite3 * db) {
+    return buildWhatString(sqlite3_extended_errcode(db), sqlite3_errmsg(db));
+}
+
+string SqliteException::buildWhatString(int errCode, const std::string & errString) {
     stringstream stream;
-    stream << "SqliteException - Code " << sqliteErrorCode << ": " << sqliteErrorString;
-    whatString = stream.str();
+    stream << "SqliteException - Code " << errCode << ": " << errString;
+    return stream.str();
 }
-
-const char * SqliteException::what() const noexcept {
-    return whatString.c_str();
-}
-
