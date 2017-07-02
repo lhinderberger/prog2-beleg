@@ -27,14 +27,12 @@ TEST_F(DatabaseFixture, MediumEANValidationTest) {
     auto softwareFactory = SoftwareFactory(database);
 
     /* Try to pass an invalid EAN */
-    //TODO: Check many types of invalid EANs?
     EXPECT_THROW(softwareFactory.construct(invalid_ean), ValidationException);
 
     /* Try to pass a valid EAN */
     EXPECT_NO_THROW(softwareFactory.construct(valid_ean));
 
     /* Try to pass an invalid ISBN */
-    //TODO: Check many types on invalid ISBNs?
     EXPECT_THROW(bookFactory.construct(invalid_isbn), ValidationException);
 
     /* Try to pass a valid ISBN */

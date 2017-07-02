@@ -6,6 +6,11 @@
 #include "Basket.h"
 
 namespace pb2 {
+    /**
+     * The BasketPanel is usually located in the sidebar of the application
+     * and provides a view of the Basket contents as well as a way to remove individual
+     * items from the Basket.
+     */
     class BasketPanel : public wxPanel {
     private:
         wxListBox * listBox = nullptr;

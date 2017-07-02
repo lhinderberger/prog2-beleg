@@ -7,6 +7,9 @@
 #include "core/domain/LibraryUser.h"
 
 namespace pb2 {
+    /**
+     * DatabaseSearchTable for LibraryUser entities.
+     */
     class UserSearchTable : public TwoQuerySearchTable {
     protected:
         virtual std::string getListSQL() override;

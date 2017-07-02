@@ -5,6 +5,9 @@
 #include "EditorPanel.h"
 
 namespace pb2 {
+    /*
+     * Editor panel for MediumCopy entities - can also create Medium and Author entities
+     */
     class MediaEditorPanel : public EditorPanel {
     private:
         std::shared_ptr<MediumCopy> editMediumCopy;

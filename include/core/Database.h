@@ -11,7 +11,11 @@ namespace pb2 {
     class Database_priv;
 
     /**
-     * TODO: Description
+     * Database specifically models a prog2-beleg Database file, as opposed to
+     * SqliteConnection, which models general Sqlite Database files.
+     *
+     * It provides methods for version handling, initializiation, configuration and
+     * example data.
      */
     class Database : public std::enable_shared_from_this<Database> {
     private:

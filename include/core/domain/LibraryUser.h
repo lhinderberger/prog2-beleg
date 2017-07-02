@@ -12,6 +12,14 @@ namespace pb2 {
     class LibraryUser_priv;
     class Lending;
 
+    /**
+     * Represents one LibraryUser entity in the Database.
+     *
+     * A Library User is any customer-like user of the Library, meaning a User using the
+     * library only in a consuming (i.e. lending media) non-administrative manner.
+     * Opposed to this, the user who is using for example prog2-beleg GUI
+     * is NOT a LibraryUser.
+     */
     class LibraryUser : public DatabaseObject {
         friend class DatabaseObjectFactory<LibraryUser>;
 
@@ -31,6 +39,7 @@ namespace pb2 {
         virtual void persistImpl() override;
 
     public:
+        static const std::string primaryKeyColumn;
         static const std::string tableName;
 
         virtual ~LibraryUser();

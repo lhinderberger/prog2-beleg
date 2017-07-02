@@ -25,6 +25,9 @@ namespace pb2 {
      * DatabaseObjectFactory.
      *
      * - A const static string containing the SQL table name
+     *
+     * Also, all constructors of implementing classes must require a shared_ptr<Database>
+     * as their first argument.
      */
     class DatabaseObject : public std::enable_shared_from_this<DatabaseObject> {
         friend class AbstractDatabaseObjectFactory;

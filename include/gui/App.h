@@ -22,7 +22,7 @@ namespace pb2 {
         virtual void OnFatalException() override;
         virtual void OnUnhandledException() override;
 
-        inline const MainFrame & getMainFrame() const { return *mainFrame; } //TODO: Is this correct?
+        inline const MainFrame & getMainFrame() const { return *mainFrame; }
         inline MainFrame & getMainFrame() { return *mainFrame; }
         inline wxLocale & getLocale() { return *locale; }
     };

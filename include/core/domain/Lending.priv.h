@@ -12,7 +12,7 @@ namespace pb2 {
     class Lending_priv {
     public:
         Lending_priv(std::shared_ptr<Database> database)
-                : libraryUser(database, "id") {}
+                : libraryUser(database) {}
 
         int id, mediumCopySerialNumber;
         std::shared_ptr<MediumCopy> mediumCopy;

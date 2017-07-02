@@ -6,6 +6,10 @@
 #include <wx/wx.h>
 
 namespace pb2 {
+    /**
+     * Contains the main window of prog2-beleg and is responsible for managing
+     * DatabasePanels. It provides the wiring for database creation / opening / closing.
+     */
     class MainFrame : public wxFrame {
     public:
         enum class ID { NEW_DATABASE, OPEN_DATABASE, CLOSE_DATABASE };

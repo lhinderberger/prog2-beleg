@@ -5,6 +5,9 @@
 #include "EditorPanel.h"
 
 namespace pb2 {
+    /**
+     * EditorPanel for LibraryUser entities - also creates PostalAddress entities.
+     */
     class UserEditorPanel : public EditorPanel {
     private:
         std::shared_ptr<LibraryUser> editUser;

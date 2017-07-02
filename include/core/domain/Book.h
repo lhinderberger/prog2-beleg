@@ -9,6 +9,9 @@
 namespace pb2 {
     class Book_priv;
 
+    /**
+     * Represents one Book type Medium entity in the Database.
+     */
     class Book : public Medium {
         friend class DatabaseObjectFactory<Book>;
 

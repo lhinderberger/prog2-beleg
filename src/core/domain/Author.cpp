@@ -19,9 +19,6 @@ Author::Author(
         const map<string, int> & columnIndexes
 ) : DatabaseObject(database) {
     priv = make_unique<Author_priv>();
-
-    //TODO: Is there a way to overload this constructor?
-    //TODO: Use template or macro?
     priv->id = query.columnInt(columnIndexes.at("id"));
     priv->firstName = query.columnString(columnIndexes.at("first_name"));
     priv->lastName = query.columnString(columnIndexes.at("last_name"));

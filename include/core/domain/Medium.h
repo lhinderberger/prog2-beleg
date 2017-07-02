@@ -13,6 +13,14 @@ namespace pb2 {
     class Medium_priv;
     class MediumCopy;
 
+    /**
+     * Represents one abstract Medium entity in the Database.
+     *
+     * A Medium can have multiple copies in different locations and in different statuses.
+     * At least one copy should be there in order for it to be visible in the GUI.
+     * LibraryUsers can lend MediumCopies; Medium entities only provide centralized,
+     * descriptive information for a set of MediumCopies.
+     */
     class Medium : public DatabaseObject {
     private:
         std::unique_ptr<Medium_priv> priv;
@@ -32,6 +40,7 @@ namespace pb2 {
 
     public:
         static const std::string tableName;
+        static const std::string primaryKeyColumn;
         static const std::set<std::string> & allowedFormats();
 
         static std::unique_ptr<AbstractDatabaseObjectFactory> polymorphicFactory(

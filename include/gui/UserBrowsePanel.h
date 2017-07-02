@@ -11,6 +11,11 @@
 #include "UserSearchTable.h"
 
 namespace pb2 {
+    /**
+     * BrowsePanel for LibraryUser and Lending entities.
+     * As soon as a LibraryUser has been chosen, this panel will list the Users Lendings
+     * in a second SearchTable.
+     */
     class UserBrowsePanel : public BrowsePanel {
     private:
         LendingsController lendingsController;

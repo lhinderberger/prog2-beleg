@@ -12,7 +12,7 @@
 namespace pb2 {
     class MediumCopy_priv {
     public:
-        MediumCopy_priv(std::shared_ptr<Database> database) : medium(database, "ean") {}
+        MediumCopy_priv(std::shared_ptr<Database> database) : medium(database) {}
 
         ManyToOneLazyLoader<Medium,std::string,PolymorphicDatabaseObjectFactory<Medium>> medium;
         bool deaccessioned;

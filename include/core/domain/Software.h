@@ -7,6 +7,9 @@
 namespace pb2 {
     class Software_priv;
 
+    /**
+     * Represents one Software type Medium entity in the Database.
+     */
     class Software : public Medium {
         friend class DatabaseObjectFactory<Software>;
 

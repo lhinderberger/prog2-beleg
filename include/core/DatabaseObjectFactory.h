@@ -172,6 +172,10 @@ namespace pb2 {
         /**
          * Generic factory function exposing private constructors as shared_ptr-only
          * public version.
+         * This will call the constructors (even if private) of the ConcreteDatabaseObject.
+         * It will forward the arguments given to it to that constructor, prepended with
+         * a shared pointer to the database (which should be the first argument for every
+         * DatabaseObject constructor).
          */
         template<typename ...ConstructorArgs>
         std::shared_ptr<ConcreteDatabaseObject> construct(ConstructorArgs... args) {

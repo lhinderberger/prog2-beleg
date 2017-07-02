@@ -4,7 +4,7 @@
 #include <wx/wx.h>
 
 /**
- * All custom events are declared in this file
+ * All custom events of prog2-beleg GUI are declared in this file
  */
 wxDECLARE_EVENT(PB2_EVT_ST_SELECTED, wxCommandEvent);
 wxDECLARE_EVENT(PB2_EVT_ST_NEW_ITEM, wxCommandEvent);

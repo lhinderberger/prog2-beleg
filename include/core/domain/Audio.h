@@ -7,6 +7,9 @@
 namespace pb2 {
     class Audio_priv;
 
+    /**
+     * Represents one Audio type Medium entity in the Database.
+     */
     class Audio : public Medium {
         friend class DatabaseObjectFactory<Audio>;
 

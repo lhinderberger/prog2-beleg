@@ -7,6 +7,9 @@
 #include "core/sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
+    /**
+     * DatabaseSearchTable for Lending entities.
+     */
     class LendingsSearchTable : public TwoQuerySearchTable {
     private:
         bool activeOnly;

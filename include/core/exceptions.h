@@ -4,6 +4,11 @@
 #include <stdexcept>
 #include <sqlite3.h>
 
+/**
+ * This file declares all Exception classes for prog2-beleg.
+ */
+
+/* === Macroes to mitigate duplicate code === */
 #define DEFAULT_EXCEPTION_CONSTRUCTORS(E_TYPE) E_TYPE(); \
 E_TYPE(const std::string & whatString);
 
@@ -14,6 +19,8 @@ public: \
 
 #define BASIC_EXCEPTION_IMPL(E_TYPE, PARENT_TYPE, defaultWhat) E_TYPE::E_TYPE() : PARENT_TYPE(defaultWhat) {} \
 E_TYPE::E_TYPE(const std::string & whatString) : PARENT_TYPE(std::string(defaultWhat) + "\n" + whatString) {}
+
+
 
 namespace pb2 {
     /** Base class for all exceptions thrown from prog2-beleg */

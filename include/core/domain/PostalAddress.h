@@ -9,6 +9,11 @@
 namespace pb2 {
     class PostalAddress_priv;
 
+    /**
+     * Represents a PostalAddress in the database.
+     * PostalAddresses are unique, meaning there cannot be multiple PostalAddresses
+     * pointing to the same location.
+     */
     class PostalAddress : public DatabaseObject {
         friend class DatabaseObjectFactory<PostalAddress>;
 
@@ -28,6 +33,7 @@ namespace pb2 {
         virtual void persistImpl() override;
 
     public:
+        static const std::string primaryKeyColumn;
         static const std::string tableName;
 
         virtual ~PostalAddress();

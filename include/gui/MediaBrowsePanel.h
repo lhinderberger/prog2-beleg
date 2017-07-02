@@ -9,6 +9,13 @@
 #include "MediaSearchTable.h"
 
 namespace pb2 {
+    /**
+     * BrowsePanel for MediumCopy entities.
+     *
+     * Note: In prog2-beleg GUI the word "MediumCopy" is not being used - I did not
+     * want to expose implementation details to the user, so for the user MediumCopies
+     * and Medium entities are essentially the same.
+     */
     class MediaBrowsePanel : public BrowsePanel {
     private:
         MediaSearchTable * searchTable = nullptr;

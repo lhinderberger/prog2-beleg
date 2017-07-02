@@ -10,6 +10,10 @@
 namespace pb2 {
     class SqlitePreparedStatement_priv;
 
+    /**
+     * SqlitePreparedStatement is a thin wrapper around SQLite for easier usage with C++
+     * Parts of its concepts are being directly adapted from prog1-beleg.
+     */
     class SqlitePreparedStatement {
     private:
         std::unique_ptr<SqlitePreparedStatement_priv> priv;

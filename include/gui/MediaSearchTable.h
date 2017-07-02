@@ -7,6 +7,9 @@
 #include "core/sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
+    /**
+     * DatabaseSearchTable for MediumCopy entities.
+     */
     class MediaSearchTable : public TwoQuerySearchTable {
     protected:
         virtual std::string getListSQL() override;

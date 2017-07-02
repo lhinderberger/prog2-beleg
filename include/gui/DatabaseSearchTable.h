@@ -10,6 +10,14 @@
 #include "core/sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
+    /**
+     * Base class for the most important GUI component of the prog2-beleg GUI: The Search Table
+     *
+     * Search Tables provide a way to view the results of a Database Query as well as
+     * to search these results.
+     * Also, they provide a button to add new items to the database (which by default
+     * does nothing but posting a custom event).
+     */
     class DatabaseSearchTable : public wxPanel {
     private:
         void buildColumns(const std::vector<wxString> & headings);

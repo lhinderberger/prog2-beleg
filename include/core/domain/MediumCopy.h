@@ -14,7 +14,7 @@ namespace pb2 {
      * locations within the library.
      * Each copy is identified by the medium's EAN and a serial number, starting with
      * 1 for the first copy, 2 for the second copy and so on.
-     * Copies can be lent to Users.
+     * MediumCopies can be lent to LibraryUsers.
      */
     class MediumCopy : public DatabaseObject {
         friend class DatabaseObjectFactory<MediumCopy>;

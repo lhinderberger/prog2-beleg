@@ -10,6 +10,9 @@
 namespace pb2 {
     class Author_priv;
 
+    /**
+     * Represents the Author entity of a Medium in the Database.
+     */
     class Author : public DatabaseObject {
         friend class DatabaseObjectFactory<Author>;
 
@@ -31,6 +34,7 @@ namespace pb2 {
 
         virtual void del() override;
 
+        static const std::string primaryKeyColumn;
         static const std::string tableName;
 
         int getId() const;

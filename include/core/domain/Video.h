@@ -7,6 +7,9 @@
 namespace pb2 {
     class Video_priv;
 
+    /**
+     * Represents one Video type Medium entity in the Database.
+     */
     class Video : public Medium {
         friend class DatabaseObjectFactory<Video>;
 
