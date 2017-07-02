@@ -6,7 +6,7 @@
 
 #include "Medium.h"
 #include "core/Database.h"
-#include "core/DatabaseObjectFactory.h"
+#include "core/PolymorphicDatabaseObjectFactory.h"
 #include "core/ManyToOneLazyLoader.h"
 
 namespace pb2 {

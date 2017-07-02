@@ -1,4 +1,4 @@
-#include "core/DatabaseObjectFactory.h"
+#include "core/AbstractDatabaseObjectFactory.h"
 #include "core/DatabaseObject.priv.h"
 
 using namespace pb2;
