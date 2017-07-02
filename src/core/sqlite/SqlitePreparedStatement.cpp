@@ -57,11 +57,6 @@ void SqlitePreparedStatement::reset() {
         throw priv->connection->buildException();
 }
 
-void SqlitePreparedStatement::bind(int paramIndex, void * value, int valueBytes) {
-    if (sqlite3_bind_blob(priv->statement, paramIndex, value, valueBytes, NULL) != SQLITE_OK)
-        throw priv->connection->buildException();
-}
-
 void SqlitePreparedStatement::bind(int paramIndex, int value) {
     if (sqlite3_bind_int(priv->statement, paramIndex, value) != SQLITE_OK)
         throw priv->connection->buildException();
@@ -79,24 +74,6 @@ void SqlitePreparedStatement::bind(int paramIndex, const string & value) {
 
     if (sqlite3_bind_text(priv->statement, paramIndex, value.c_str(), (int)value.size(), NULL) != SQLITE_OK)
         throw priv->connection->buildException();
-}
-
-const void * SqlitePreparedStatement::columnBlob(int columnIndex, int * bytesOut) {
-    const void * data = sqlite3_column_blob(priv->statement, columnIndex);
-
-    int errcode = sqlite3_errcode(priv->connection->priv->connection);
-    if (!data && errcode != SQLITE_OK && errcode != SQLITE_ROW)
-        throw priv->connection->buildException();
-    else if (!data && columnIsNull(columnIndex))
-        throw DatabaseIntegrityException("Column is NULL!");
-    if (bytesOut)
-        *bytesOut = sqlite3_column_bytes(priv->statement, columnIndex);
-
-    return data;
-}
-
-const void * SqlitePreparedStatement::columnBlob(const string & fullColumnName, int * bytesOut) {
-    return columnBlob(getColumnIndex(fullColumnName), bytesOut);
 }
 
 bool SqlitePreparedStatement::columnIsNull(int columnIndex) {

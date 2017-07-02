@@ -33,13 +33,6 @@ namespace pb2 {
         void reset();
 
         /**
-         * Binds a blob value to a parameter.
-         * The value passed in will be copied, so the value pointer only has to stay
-         * valid during the execution of this method.
-         */
-        void bind(int paramIndex, void * value, int valueBytes);
-
-        /**
          * Binds an integer value to a parameter.
          */
         void bind(int paramIndex, int value);
@@ -63,18 +56,6 @@ namespace pb2 {
          */
         bool columnIsNull(int columnIndex);
         bool columnIsNull(const std::string & fullColumnName);
-
-        /**
-         * Retrieve a Blob value from the current result row, either by its index or by
-         * its full column name.
-         * Caution: Throws DatabaseIntegrityException on NULL values.
-         *
-         * @param bytesOut Outgoing. The number of bytes in the result.
-         * @return An array of bytes, which has to be instantly evaluated, as it will
-         * be freed or overwritten by subsequent calls to this API.
-         */
-        const void * columnBlob(int columnIndex, int * bytesOut);
-        const void * columnBlob(const std::string & fullColumnName, int * bytesOut);
 
         /**
          * Retrieve an Integer value from the current result row, either by its index or by
