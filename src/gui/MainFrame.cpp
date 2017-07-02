@@ -28,6 +28,9 @@ MainFrame::MainFrame(const wxString & title, const wxPoint & pos, const wxSize &
 
     /* Set minimum size */
     SetMinSize(wxSize(1024, 768));
+
+    /* Maximize */
+    Maximize(true);
 }
 
 bool MainFrame::closeDatabase() {
