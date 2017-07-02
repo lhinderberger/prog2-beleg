@@ -66,10 +66,3 @@ TEST_F(DatabaseFixture, PersistAuthorTest) {
     EXPECT_EQ("Lucas", author2->getFirstName());
     EXPECT_EQ("Hinderberger", author2->getLastName());
 }
-
-/**
- * Basic test to ensure that rollback works as intended
- */
-TEST_F(DatabaseFixture, RollbackTest) {
-    //TODO
-}
