@@ -74,6 +74,7 @@ namespace pb2 {
         std::shared_ptr<MediumCopy> getMediumCopy();
         std::shared_ptr<LibraryUser> getLibraryUser();
         time_t getTimestampLent() const;
+        int getId() const;
 
         /**
          * Calls extend(int) with the default number of days specified in meta value

@@ -175,6 +175,10 @@ shared_ptr<MediumCopy> Lending::getMediumCopy() {
     return priv->mediumCopy;
 }
 
+int Lending::getId() const {
+    return priv->id;
+}
+
 shared_ptr<LibraryUser> Lending::getLibraryUser() {
     return priv->libraryUser.get();
 }
