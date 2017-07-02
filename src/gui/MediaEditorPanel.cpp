@@ -56,7 +56,7 @@ void MediaEditorPanel::buildFormControls() {
         sizer->Add(new wxStaticText(this, wxID_ANY, mediaTypeTranslation(medium->getType())));
 
     /* Build EAN field */
-    buildLabel(_("EAN / ISBN:"));
+    buildLabel(_("EAN / ISBN*:"));
     if (creating()) {
         eanTextBox = new wxTextCtrl(this, wxID_ANY);
         sizer->Add(eanTextBox, 1, wxEXPAND);
@@ -105,6 +105,26 @@ void MediaEditorPanel::buildFormControls() {
     accessionedCheckBox = new wxCheckBox(this, wxID_ANY, _("Exemplar ist im Bestand"));
     accessionedCheckBox->SetValue(creating() || !editMediumCopy->getDeaccessioned());
     sizer->Add(accessionedCheckBox);
+}
+
+bool MediaEditorPanel::checkMandatoryFields() {
+    vector<wxTextCtrl*> mandatory = {
+            titleTextBox, subtitleTextBox, authorFirstNameTextBox, authorLastNameTextBox,
+            locationTextBox
+    };
+
+    if (eanTextBox)
+        mandatory.push_back(eanTextBox);
+
+    /* Check default mandatory fields */
+    for (wxTextCtrl * m : mandatory) {
+        if (m->IsEmpty()) {
+            defaultMandatoryError();
+            return false;
+        }
+    }
+
+    return true;
 }
 
 bool MediaEditorPanel::save() {
@@ -187,19 +207,10 @@ bool MediaEditorPanel::save() {
         return true;
 
     }
-    catch (pb2::ValidationException & e) {
+    catch (pb2::CoreException & e) {
         database->getConnection()->rollback();
 
-        wxMessageBox(_("Ein Fehler ist aufgetreten:\n") + e.what(), _("Fehler"), wxICON_ERROR);
-        return false;
-    }
-    catch (pb2::SqliteException & e) {
-        database->getConnection()->rollback();
-
-        if (e.getSqliteErrorCode() == SQLITE_CONSTRAINT_NOTNULL)
-            wxMessageBox(_("Bitte füllen Sie alle Pflichtfelder aus!"), _("Fehler"), wxICON_ERROR);
-        else
-            wxMessageBox(_("Es ist ein Datenbankfehler aufgetreten!"), _("Fehler"), wxICON_ERROR);
+        wxMessageBox(_("Ein Fehler ist aufgetreten:\n\n") + e.what(), _("Fehler"), wxICON_ERROR);
         return false;
     }
 }

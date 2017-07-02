@@ -22,6 +22,9 @@ namespace pb2 {
     protected:
         wxSizer * formControlsSizer = nullptr;
         virtual bool save() = 0;
+        virtual bool checkMandatoryFields() = 0;
+
+        void defaultMandatoryError();
 
     public:
         enum class ID { BTN_ABORT = 1, BTN_SAVE = 2 };

@@ -28,12 +28,16 @@ EditorPanel::EditorPanel(wxAuiNotebook * parent)
     editorButtonsSizer->Add(new wxButton(this, (int)ID::BTN_SAVE, _("Speichern")), 0, wxALIGN_RIGHT);
 }
 
+void EditorPanel::defaultMandatoryError() {
+    wxMessageBox(_("Bitte füllen Sie alle Pflichtfelder aus!"), _("Fehler"), wxICON_ERROR);
+}
+
 void EditorPanel::evAbortClicked(wxCommandEvent & event) {
     closeTab();
 }
 
 void EditorPanel::evSaveClicked(wxCommandEvent & event) {
-    if (save()) {
+    if (checkMandatoryFields() && save()) {
         /* Before closing, send refresh event to all other panels */
         wxCommandEvent refreshEvent(PB2_EVT_REFRESH_REQUIRED, GetId());
         wxPostEvent(GetParent(), refreshEvent);

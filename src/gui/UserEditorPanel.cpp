@@ -69,6 +69,23 @@ void UserEditorPanel::buildFormControls() {
     sizer->Add(citySizer);
 }
 
+bool UserEditorPanel::checkMandatoryFields() {
+    vector<wxTextCtrl*> mandatory = {
+            firstNameTextBox, lastNameTextBox, streetTextBox, houseNumberTextBox,
+            zipTextBox, cityTextBox, phoneTextBox
+    };
+
+    /* Check default mandatory fields */
+    for (wxTextCtrl * m : mandatory) {
+        if (m->IsEmpty()) {
+            defaultMandatoryError();
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool UserEditorPanel::save() {
     auto database = creating() ? createDatabase : editUser->getDatabase();
 
@@ -134,19 +151,10 @@ bool UserEditorPanel::save() {
         return true;
 
     }
-    catch (pb2::ValidationException & e) {
+    catch (pb2::Exception & e) {
         database->getConnection()->rollback();
 
-        wxMessageBox(_("Ein Fehler ist aufgetreten:\n") + e.what(), _("Fehler"), wxICON_ERROR);
-        return false;
-    }
-    catch (pb2::SqliteException & e) {
-        database->getConnection()->rollback();
-
-        if (e.getSqliteErrorCode() == SQLITE_CONSTRAINT_NOTNULL)
-            wxMessageBox(_("Bitte füllen Sie alle Pflichtfelder aus!"), _("Fehler"), wxICON_ERROR);
-        else
-            wxMessageBox(_("Es ist ein Datenbankfehler aufgetreten!"), _("Fehler"), wxICON_ERROR);
+        wxMessageBox(_("Ein Fehler ist aufgetreten:\n\n") + e.what(), _("Fehler"), wxICON_ERROR);
         return false;
     }
 }

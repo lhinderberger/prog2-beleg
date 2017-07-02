@@ -30,6 +30,7 @@ namespace pb2 {
 
     protected:
         virtual bool save() override;
+        virtual bool checkMandatoryFields() override;
 
 
     public:
