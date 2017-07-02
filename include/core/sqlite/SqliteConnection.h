@@ -19,6 +19,8 @@ namespace pb2 {
 
     private:
         std::unique_ptr<SqliteConnection_priv> priv;
+
+    protected:
         SqliteConnection(const std::string & filename, bool create);
 
     public:
@@ -53,13 +55,13 @@ namespace pb2 {
         /**
          * Commits the current transaction and begins a new one.
          */
-        void commit();
+        virtual void commit();
 
         /**
          * Rolls back the current transaction, basically taking back all SQL commands
          * that have not been commited yet.
          */
-        void rollback();
+        virtual void rollback();
 
         /**
          * Executes the given SQL command.
@@ -69,7 +71,7 @@ namespace pb2 {
          * CAUTION: Do not use this for executing SQL based on user input - use prepared
          * statements instead. Otherwise you risk being vulnerable to SQL injection!
          */
-        void executeSQL(const std::string & query);
+        virtual void executeSQL(const std::string & query);
 
         /**
          * Constructs a SqliteException from the current error state of the underlying

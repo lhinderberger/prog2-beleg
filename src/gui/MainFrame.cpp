@@ -1,4 +1,5 @@
 #include "gui/MainFrame.h"
+#include "gui/StatusbarDbConnection.h"
 
 #include <wx/artprov.h>
 
@@ -88,7 +89,7 @@ void MainFrame::newDatabase() {
     }
 
     /* Initialize database */
-    auto connection = SqliteConnection::construct(filename, true);
+    auto connection = StatusbarDbConnection::construct(GetStatusBar(), filename, true);
     auto database = Database::initialize(connection);
 
     /* Ask to generate example data */
@@ -125,7 +126,7 @@ void MainFrame::openDatabase() {
 
     /* Open database + open DatabasePanel */
     try {
-        auto connection = SqliteConnection::construct(fileDialog.GetPath().ToStdString(), false);
+        auto connection = StatusbarDbConnection::construct(GetStatusBar(), fileDialog.GetPath().ToStdString(), false);
         setDatabaseAndOpenPanel(Database::open(connection));
     }
     catch (DatabaseVersionException & e) {
