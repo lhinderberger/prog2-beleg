@@ -104,7 +104,21 @@ bool UserEditorPanel::save() {
             || zip != address->getZip() || city != address->getCity()
         ) {
             // Replace address, do not change address - otherwise this would cause undesirable side effects
-            address = addressFactory.construct(-1);
+            /* Try to find matching address first */
+            SqlitePreparedStatement query(
+                    database->getConnection(),
+                    "SELECT * FROM postal_addresses WHERE street = ? AND house_number = ? AND zip = ? AND city = ?"
+            );
+            query.bind(1, street);
+            query.bind(2, houseNumber);
+            query.bind(3, zip);
+            query.bind(4, city);
+            if (query.step())
+                address = addressFactory.load(query);
+            else // Otherwise construct new address
+                address = addressFactory.construct(-1);
+
+            /* Fill in data */
             address->setStreet(street);
             address->setHouseNumber(houseNumber);
             address->setZip(zip);
