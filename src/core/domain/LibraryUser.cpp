@@ -7,6 +7,7 @@
 using namespace std;
 using namespace pb2;
 
+const string LibraryUser::primaryKeyColumn = "id";
 const string LibraryUser::tableName = "library_users";
 
 LibraryUser::LibraryUser(shared_ptr<Database> database, int id)

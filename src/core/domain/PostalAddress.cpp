@@ -5,6 +5,7 @@
 using namespace std;
 using namespace pb2;
 
+const string PostalAddress::primaryKeyColumn = "id";
 const string PostalAddress::tableName = "postal_addresses";
 
 PostalAddress::PostalAddress(shared_ptr<Database> database, int id)

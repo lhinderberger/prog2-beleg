@@ -64,6 +64,7 @@ vector<int> pb2::extractEANDigits(const string & eanString) {
 
 
 const string Medium::tableName = "media";
+const string Medium::primaryKeyColumn = "ean";
 
 Medium::Medium(shared_ptr<Database> database, const string & ean)
         : Medium(database, extractEANDigits(ean)){

@@ -6,6 +6,7 @@
 using namespace std;
 using namespace pb2;
 
+const string Author::primaryKeyColumn = "id";
 const string Author::tableName = "authors";
 
 Author::Author(shared_ptr<Database> database, int id) : DatabaseObject(database) {

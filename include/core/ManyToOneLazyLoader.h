@@ -10,6 +10,18 @@
 #include "sqlite/SqlitePreparedStatement.h"
 
 namespace pb2 {
+    /**
+     * The ManyToOneLazyLoader gives DatabaseObjects the ability to delay loading of
+     * related objects until the time of their actual usage (Lazy Loading).
+     *
+     * Currently, this only supports referenced objects in Many-To-One relations that have
+     * one primary key column. It is important that referenced classes define a public
+     * static string named primaryKeyColumn that contains the name of the primary key
+     * column (without table name).
+     *
+     * @tparam ConcreteDatabaseObject When refering a Polymorphic Type, insert the base class here.
+     * @tparam FactoryClass Pass in PolymorphicDatabaseObjectFactory to be able to reference polymorphic types
+     */
     template<class ConcreteDatabaseObject, typename PrimaryKeyType, class FactoryClass = DatabaseObjectFactory<ConcreteDatabaseObject>>
     class ManyToOneLazyLoader {
         static_assert(std::is_base_of<DatabaseObject, ConcreteDatabaseObject>::value,
@@ -18,7 +30,6 @@ namespace pb2 {
         std::shared_ptr<Database> database = nullptr;
         std::shared_ptr<ConcreteDatabaseObject> ptr = nullptr;
         std::unique_ptr<PrimaryKeyType> primaryKey = nullptr;
-        std::string primaryKeyName; // TODO: Can this be a static property of ConcreteDatabaseObject?
 
         void load() {
             if (!primaryKey)
@@ -26,7 +37,7 @@ namespace pb2 {
 
             /* Prepare statement */
             auto sql = std::string("SELECT * FROM ") + ConcreteDatabaseObject::tableName + " WHERE "
-                         + primaryKeyName + " = ?";
+                         + ConcreteDatabaseObject::primaryKeyColumn + " = ?";
             SqlitePreparedStatement query(database->getConnection(), sql);
 
             /* Create new object from statement result */
@@ -38,13 +49,11 @@ namespace pb2 {
         }
 
     public:
-        ManyToOneLazyLoader(const std::shared_ptr<Database> & database,
-                            const std::string & primaryKeyName) {
+        ManyToOneLazyLoader(const std::shared_ptr<Database> & database) {
             if (!database)
                 throw NullPointerException("No database set for ManyToOneLazyLoader");
 
             this->database = database;
-            this->primaryKeyName = primaryKeyName;
         }
 
         /**
