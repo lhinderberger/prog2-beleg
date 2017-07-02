@@ -17,9 +17,17 @@ LendingFixture::LendingFixture() {
     auto mediumCopyFactory = DatabaseObjectFactory<MediumCopy>(database);
     auto libraryUserFactory = DatabaseObjectFactory<LibraryUser>(database);
     auto postalAddressFactory = DatabaseObjectFactory<PostalAddress>(database);
+    auto authorFactory = DatabaseObjectFactory<Author>(database);
+
+    /* Create an author for the medium */
+    auto author = authorFactory.construct(-1);
+    author->setFirstName("Max");
+    author->setLastName("Mustermann");
+    author->persist();
 
     /* Create a medium incl. copy */
     auto medium = bookFactory.construct(valid_ean);
+    medium->setAuthor(author);
     medium->setTitle("Test Book");
     medium->persist();
 
