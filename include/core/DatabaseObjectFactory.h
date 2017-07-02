@@ -303,25 +303,15 @@ namespace pb2 {
             auto result = std::vector<std::shared_ptr<DatabaseObject>>();
 
             /* Query multiple objects */
-            if (n < 0) {
-                // Query until there are no more rows left
+            if (n != 0) {
+                int nLoaded = 0;
                 do {
-                    //TODO: Unify!
                     auto factory = retrieveFactory(query.columnString(typeIndex));
                     if (!factory)
                         continue;
                     result.push_back(factory->abstractLoad(query, columnIndexes));
-                } while(query.step());
-            } else {
-                // Query until there are either no more rows left or n rows have been read
-                for (int i = 0; i < n; i++) {
-                    auto factory = retrieveFactory(query.columnString(typeIndex));
-                    if (!factory)
-                        continue;
-                    result.push_back(factory->abstractLoad(query, columnIndexes));
-                    if (!query.step())
-                        break;
-                }
+                    nLoaded++;
+                } while (query.step() && nLoaded != n);
             }
 
             /* Finalize */
