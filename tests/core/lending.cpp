@@ -59,10 +59,12 @@ TEST_F(LendingFixture, LendingDateAndStateTest) {
  * Tests load / persist for Lending objects
  */
 TEST_F(LendingFixture, LendingLoadPersistTest) {
+    auto mediumCopy = lending->getMediumCopy();
+
     /* Persist lending */
-    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), string("now"));
+    EXPECT_EQ(mediumCopy->getAvailabilityHint(), string("now"));
     lending->persist();
-    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), lending->getDueDateISOString());
+    EXPECT_EQ(mediumCopy->getAvailabilityHint(), lending->getDueDateISOString());
 
     /* Load lending from database */
     SqlitePreparedStatement query(connection, string("SELECT * FROM ") + Lending::tableName);
@@ -72,8 +74,8 @@ TEST_F(LendingFixture, LendingLoadPersistTest) {
     /* Verify */
     EXPECT_EQ(lending->getTimesExtended(), lending2->getTimesExtended());
     EXPECT_EQ(lending->getLibraryUser()->getId(), lending2->getLibraryUser()->getId());
-    EXPECT_EQ(lending->getMediumCopy()->getMedium()->getEAN(), lending2->getMediumCopy()->getMedium()->getEAN());
-    EXPECT_EQ(lending->getMediumCopy()->getSerialNumber(), lending2->getMediumCopy()->getSerialNumber());
+    EXPECT_EQ(mediumCopy->getMedium()->getEAN(), lending2->getMediumCopy()->getMedium()->getEAN());
+    EXPECT_EQ(mediumCopy->getSerialNumber(), lending2->getMediumCopy()->getSerialNumber());
     EXPECT_EQ(lending->getTimestampLent(), lending2->getTimestampLent());
     EXPECT_EQ(lending->isReturned(), lending2->isReturned());
 
@@ -86,13 +88,36 @@ TEST_F(LendingFixture, LendingLoadPersistTest) {
     /* Extend, return and verify availability hint */
     string oldDueDate = lending->getDueDateISOString();
     lending->extend();
-    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), oldDueDate);
+    EXPECT_EQ(mediumCopy->getAvailabilityHint(), oldDueDate);
     lending->persist();
-    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), lending->getDueDateISOString());
+    EXPECT_EQ(mediumCopy->getAvailabilityHint(), lending->getDueDateISOString());
 
     oldDueDate = lending->getDueDateISOString();
     lending->returnL();
-    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), oldDueDate);
+    EXPECT_EQ(mediumCopy->getAvailabilityHint(), oldDueDate);
     lending->persist();
-    EXPECT_EQ(lending->getMediumCopy()->getAvailabilityHint(), string("now"));
+    EXPECT_EQ(mediumCopy->getAvailabilityHint(), string("now"));
+}
+
+/*
+ * Ensures no two lendings can be created for the same MediumCopy at a time.
+ * Also tests getActiveLending().
+ */
+TEST_F(LendingFixture, LendingDuplicateTest) {
+    auto mediumCopy = lending->getMediumCopy();
+
+    EXPECT_EQ(nullptr, mediumCopy->getActiveLending());
+    lending->persist();
+    EXPECT_EQ(lending->getId(), mediumCopy->getActiveLending()->getId());
+
+    auto lending2 = DatabaseObjectFactory<Lending>(database).construct(mediumCopy, lending->getLibraryUser(), time(NULL));
+    EXPECT_THROW(lending2->persist(), SqliteException);
+
+    lending->returnL();
+    EXPECT_EQ(lending->getId(), mediumCopy->getActiveLending()->getId());
+    lending->persist();
+    EXPECT_EQ(nullptr, mediumCopy->getActiveLending());
+
+    lending2->persist();
+    EXPECT_EQ(lending2->getId(), mediumCopy->getActiveLending()->getId());
 }
