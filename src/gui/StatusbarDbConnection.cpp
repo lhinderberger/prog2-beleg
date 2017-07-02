@@ -17,11 +17,13 @@ std::shared_ptr<SqliteConnection> StatusbarDbConnection::construct(
 
 
 void StatusbarDbConnection::commit() {
+    SqliteConnection::commit();
     if (statusBar)
         statusBar->SetStatusText(_("Die Änderungen wurden gespeichert."));
 }
 
 void StatusbarDbConnection::rollback() {
+    SqliteConnection::rollback();
     if (statusBar)
         statusBar->SetStatusText(_("Die Änderungen wurden verworfen."));
 }
