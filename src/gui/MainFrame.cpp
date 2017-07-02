@@ -124,8 +124,24 @@ void MainFrame::openDatabase() {
         return;
 
     /* Open database + open DatabasePanel */
-    auto connection = SqliteConnection::construct(fileDialog.GetPath().ToStdString(), false);
-    setDatabaseAndOpenPanel(Database::open(connection));
+    try {
+        auto connection = SqliteConnection::construct(fileDialog.GetPath().ToStdString(), false);
+        setDatabaseAndOpenPanel(Database::open(connection));
+    }
+    catch (DatabaseVersionException & e) {
+        wxMessageBox(
+                _("Die Datenbank verwendet eine neuere Version. Bitte installieren Sie die neueste Version der Software!"),
+                _("Fehler"), wxICON_ERROR
+        );
+        return;
+    }
+    catch (SqliteException & e) {
+        wxMessageBox(
+                _("Die Datenbankdatei konnte nicht geöffnet werden!\n") + e.what(),
+                _("Fehler"), wxICON_ERROR
+        );
+        return;
+    }
 
     /* Set status bar text */
     SetStatusText(_("Datenbank wurde geöffnet."));
