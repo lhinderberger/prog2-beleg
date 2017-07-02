@@ -155,7 +155,8 @@ bool LendingsController::returnL(shared_ptr<Lending> lending) {
     }
 
     /* Warn user if lending is overdue */
-    warnOverdue(lending, dialogCaption);
+    if (!warnOverdue(lending, dialogCaption))
+        return false;
 
     /* Present summary and ask for confirmation */
     wxString message;

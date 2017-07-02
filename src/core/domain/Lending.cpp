@@ -12,16 +12,30 @@ using namespace pb2;
 const string Lending::tableName = "lendings";
 
 void parseDate(std::tm & tm, const string & isoDateString) {
-    memset(&tm, 0, sizeof(std::tm));
+    /* Initialize time struct with current time zone */
+    time_t now = time(NULL);
+    tm = *localtime(&now);
+
+    /* Set time to 11:59:59PM */
     tm.tm_hour = 23;
     tm.tm_min = tm.tm_sec = 59;
     tm.tm_wday = tm.tm_yday = 0;
+    int oldGmtOffset = tm.tm_gmtoff;
+
+    /* Load + format date */
     if (sscanf(isoDateString.c_str(), "%d-%d-%d", &tm.tm_year, &tm.tm_mon, &tm.tm_mday) != 3)
         throw DatabaseIntegrityException("Invalid due date format in Database!");
     tm.tm_year -= 1900;
     tm.tm_mon -= 1;
+
+    /* Call mktime for the first time to get any timezone inconsistencies */
     if (mktime(&tm) == -1)
-        throw logic_error("mktime failed - what a surprise...");
+        throw logic_error("mktime failed");
+
+    /* Make sure mktime didn't ruin everything...*/
+    tm.tm_sec += (oldGmtOffset - tm.tm_gmtoff);
+    if (mktime(&tm) == -1)
+        throw logic_error("mktime failed");
 }
 
 Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCopy,
@@ -46,7 +60,7 @@ Lending::Lending(shared_ptr<Database> database, shared_ptr<MediumCopy> mediumCop
     priv->timestampLent = timestampLent;
 
     /* Initialize due date with default value */
-    priv->dueDate = *gmtime(&priv->timestampLent);
+    priv->dueDate = *localtime(&priv->timestampLent);
     priv->dueDate.tm_hour = 23;
     priv->dueDate.tm_min = priv->dueDate.tm_sec = 59;
     priv->dueDate.tm_mday += getDefaultLendingRuntime(getDatabase());
@@ -84,6 +98,10 @@ int Lending::getDefaultExtensionDays(shared_ptr<Database> database) {
 
 int Lending::getDefaultLendingRuntime(shared_ptr<Database> database) {
     return atoi(database->getMeta("default_lending_runtime").c_str());
+}
+
+void Lending::normalizeTm(tm & timeStruct) {
+    timeStruct.tm_hour = timeStruct.tm_min = timeStruct.tm_sec = 0;
 }
 
 
@@ -174,14 +192,14 @@ void Lending::extend(int days) {
 }
 
 void Lending::extend(time_t reference, int days) {
-    if (days <= 0)
-        throw logic_error("Extend Days cannot be zero or negative!");
+    if (days < 0)
+        throw logic_error("Extend Days cannot be negative!");
 
     if (isReturned())
         throw logic_error("Cannot extend returned Lending!");
 
     /* Calculate new due date */
-    std::tm newDueDate = *gmtime(&reference);
+    std::tm newDueDate = *localtime(&reference);
     newDueDate.tm_mday += days;
     newDueDate.tm_hour = 23;
     newDueDate.tm_min = newDueDate.tm_sec = 59;
@@ -204,7 +222,21 @@ int Lending::getDaysLeft() const {
 int Lending::getDaysLeft(time_t reference) const {
     if (isReturned() && priv->timestampReturned < reference)
         reference = priv->timestampReturned;
-    return (int)((mktime(&priv->dueDate) + priv->dueDate.tm_gmtoff - reference) / 60 / 60 / 24);
+
+    /* Convert reference to tm struct, then normalize time to 0:00AM */
+    tm referenceTm = *localtime(&reference);
+    normalizeTm(referenceTm);
+    time_t referenceNorm = mktime(&referenceTm);
+
+    /* Cache + normalize due date */
+    tm dueDateCache = priv->dueDate;
+    normalizeTm(dueDateCache);
+    time_t dueDateNorm = mktime(&dueDateCache);
+
+    /* Calculate difference in seconds between the two dates */
+    int differenceSeconds = (int)difftime(dueDateNorm, referenceNorm);
+
+    return differenceSeconds / 60 / 60 / 24;
 }
 
 tm Lending::getDueDate() const {

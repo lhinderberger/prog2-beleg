@@ -5,6 +5,21 @@
 using namespace std;
 using namespace pb2;
 
+const int secondsPerDay = 60*60*24;
+
+void testAgainstNormalizedDueDate(shared_ptr<Lending> lending) {
+    /* Fetch and normalize due date */
+    tm dueDate = lending->getDueDate();
+    Lending::normalizeTm(dueDate);
+    time_t tsDueDateBegin = mktime(&dueDate);
+
+    /* Perform tests */
+    EXPECT_EQ(1, lending->getDaysLeft(tsDueDateBegin - 1));
+    EXPECT_EQ(0, lending->getDaysLeft(tsDueDateBegin));
+    EXPECT_EQ(0, lending->getDaysLeft(tsDueDateBegin + secondsPerDay - 1));
+    EXPECT_EQ(-1, lending->getDaysLeft(tsDueDateBegin + secondsPerDay));
+}
+
 /*
  * Test date calculation assumptions for Lending objects
  */
@@ -13,32 +28,31 @@ TEST_F(LendingFixture, LendingDateAndStateTest) {
     int defaultExtension = Lending::getDefaultExtensionDays(database);
 
     /* Check initial state */
-    EXPECT_EQ(lending->isReturned(), false);
-    EXPECT_EQ(lending->getTimesExtended(), 0);
+    EXPECT_EQ(false, lending->isReturned());
+    EXPECT_EQ(0, lending->getTimesExtended());
+
+    /* Calculate some reference points */
+    time_t tsLent = lending->getTimestampLent();
 
     /* Check days left before any extension */
-    EXPECT_EQ(lending->getDaysLeft(someTimestamp), defaultRuntime);
-    EXPECT_EQ(lending->getDaysLeft(someTimestamp + 1), defaultRuntime);
-    EXPECT_EQ(lending->getDaysLeft(someTimestamp + 86399), defaultRuntime);
-    EXPECT_EQ(lending->getDaysLeft(someTimestamp + 86400), defaultRuntime - 1);
-    EXPECT_EQ(lending->getDaysLeft(someTimestamp + 86401), defaultRuntime - 1);
+    EXPECT_EQ(defaultRuntime, lending->getDaysLeft(tsLent));
+    testAgainstNormalizedDueDate(lending);
 
     /* Check days left after extension */
-    time_t extensionPoint = someTimestamp + (defaultRuntime - 1) * 86400;
+    time_t extensionPoint = tsLent + (defaultRuntime - 1) * secondsPerDay;
     lending->extend(extensionPoint, defaultExtension);
-    EXPECT_EQ(lending->isReturned(), false);
-    EXPECT_EQ(lending->getTimesExtended(), 1);
-    EXPECT_EQ(lending->getDaysLeft(extensionPoint), defaultExtension);
-    EXPECT_EQ(lending->getDaysLeft(extensionPoint + 1), defaultExtension);
-    EXPECT_EQ(lending->getDaysLeft(extensionPoint + 86399), defaultExtension);
-    EXPECT_EQ(lending->getDaysLeft(extensionPoint + 86400), defaultExtension - 1);
-    EXPECT_EQ(lending->getDaysLeft(extensionPoint + 86401), defaultExtension - 1);
+
+    EXPECT_EQ(false, lending->isReturned());
+    EXPECT_EQ(1, lending->getTimesExtended());
+
+    EXPECT_EQ(defaultExtension, lending->getDaysLeft(extensionPoint));
+    testAgainstNormalizedDueDate(lending);
 
     /* Check days left after return */
-    lending->returnL(extensionPoint + 90000);
-    EXPECT_EQ(lending->isReturned(), true);
-    EXPECT_EQ(lending->getTimesExtended(), 1);
-    EXPECT_EQ(lending->getDaysLeft(extensionPoint + 9999999), defaultExtension - 1);
+    lending->returnL(extensionPoint);
+    EXPECT_EQ(true, lending->isReturned());
+    EXPECT_EQ(1, lending->getTimesExtended());
+    EXPECT_EQ(defaultExtension, lending->getDaysLeft(extensionPoint + 9999999));
 }
 
 /*

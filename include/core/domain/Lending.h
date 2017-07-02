@@ -63,6 +63,9 @@ namespace pb2 {
         static int getDefaultExtensionDays(std::shared_ptr<Database> database);
         static int getDefaultLendingRuntime(std::shared_ptr<Database> database);
 
+        /** Normalizes a time structure to 0:00AM */
+        static void normalizeTm(std::tm & timeStruct);
+
         virtual ~Lending();
 
         virtual void del() override;
