@@ -110,7 +110,7 @@ TEST_F(LendingFixture, LendingDuplicateTest) {
     lending->persist();
     EXPECT_EQ(lending->getId(), mediumCopy->getActiveLending()->getId());
 
-    auto lending2 = DatabaseObjectFactory<Lending>(database).construct(mediumCopy, lending->getLibraryUser(), time(NULL));
+    auto lending2 = DatabaseObjectFactory<Lending>(database).construct(mediumCopy, lending->getLibraryUser(), -1);
     EXPECT_THROW(lending2->persist(), SqliteException);
 
     lending->returnL();

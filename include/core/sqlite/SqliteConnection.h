@@ -2,6 +2,7 @@
 #define PROG2_BELEG_SQL_CONNECTION_H
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 #include "core/exceptions.h"
@@ -84,6 +85,11 @@ namespace pb2 {
          * Returns the row ID of the last insert (i.e. for auto-generation of primary keys).
          */
         sqlite3_int64 lastInsertRowId();
+
+        /**
+         * Returns the write lock mutex that should be used for any writing operations.
+         */
+        std::mutex & getWriteLock() const;
     };
 }
 

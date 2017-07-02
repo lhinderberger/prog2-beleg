@@ -77,6 +77,7 @@ bool SqliteConnection::isTransactionActive() const {
 }
 
 void SqliteConnection::commit() {
+    lock_guard<mutex> guard(getWriteLock());
     executeSQL("COMMIT; BEGIN;");
 }
 
@@ -90,5 +91,10 @@ void SqliteConnection::executeSQL(const string & query) {
 }
 
 sqlite3_int64 SqliteConnection::lastInsertRowId() {
+    lock_guard<mutex> guard(getWriteLock());
     return sqlite3_last_insert_rowid(priv->connection);
+}
+
+std::mutex& SqliteConnection::getWriteLock() const {
+    return priv->writeLock;
 }
