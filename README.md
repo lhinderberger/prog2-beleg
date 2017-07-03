@@ -2,6 +2,8 @@ Lucas Hinderberger, HTW Dresden, summer term 2017
 
 # Beleg Programmierung 2
 
+![Screenshot](./doc/screenshot.png)
+
 The source code documentation for this program is written in English.
 For more details on the development of this exam, read the german readme file `README.de`.
 
