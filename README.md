@@ -20,6 +20,7 @@ This program links against and might include code of the following third-party l
 - SQLite (Public Domain, https://sqlite.org)
 
 Only for Testing, this also needs to be installed:
+
 - Google Test (3-Clause-BSD, https://github.com/google/googletest)
 
 ## Structure
