@@ -8,4 +8,5 @@ cmake-build-debug/
 
 /bin/
 /lib/
+/release/
 public_html/cgi-bin

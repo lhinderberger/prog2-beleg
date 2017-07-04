@@ -1,0 +1,9 @@
+/* This file is part of prog2-beleg
+ * Written by Lucas Hinderberger, HTW Dresden, summer term of 2017
+ *
+ * CAUTION: THIS IS PURELY EDUCATIONAL AND WILL CONTAIN ERRORS AND FAULTS!
+ * DO NOT REDISTRIBUTE - DO NOT USE IN A PRACTICAL OR COMMERCIAL ENVIRONMENT!
+ *
+ * See README.md for details
+ */
+
