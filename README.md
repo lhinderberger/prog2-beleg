@@ -2,12 +2,14 @@ Lucas Hinderberger, HTW Dresden, summer term 2017
 
 # Beleg Programmierung 2
 
-![Screenshot](./doc/screenshot.png)
+![Screenshot](./doc/renderings/screenshot.png)
 
 The source code documentation for this program is written in English.
 For more details on the development of this exam, read the german readme file `README.de`.
 
 #### Copyright + Third Party Libraries
+The rules apply as written in the German README.de - below is just a summary!
+
 This program was created by Lucas Hinderberger in the summer term of 2017 at
 HTW Dresden for purely educational purposes and isn't intended to be used in any
 commercial, industrial or other real-life environment. Do not distribute this software!

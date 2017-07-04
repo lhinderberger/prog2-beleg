@@ -2,44 +2,148 @@ Lucas Hinderberger, HTW Dresden, summer term 2017
 
 # Beleg Programmierung 2
 
-![Screenshot](./doc/screenshot.png)
+![Screenshot](./doc/renderings/screenshot.png)
 
-The source code documentation for this program is written in English.
-For more details on the development of this exam, read the german readme file `README.de`.
+Dieses README enthält sowohl allgemeine Informationen inkl. Informationen über den
+Build-Prozess, wie auch Informationen über die Entwicklung dieses Belegs.
+Die Sourcecode-Dokumentation für dieses Programm ist in Englischer Sprache geschrieben.
 
-#### Copyright + Third Party Libraries
-This program was created by Lucas Hinderberger in the summer term of 2017 at
-HTW Dresden for purely educational purposes and isn't intended to be used in any
-commercial, industrial or other real-life environment. Do not distribute this software!
+#### Copyright + Bibliotheken von Drittanbietern
+Diese Programm wurde durch Lucas Hinderberger im Sommersemester 2017 an der HTW
+ausschließlich zu Ausbildungszwecken als Beleg angefertigt. Es ist nicht für den realen
+Einsatz bestimmt und insbesondere nicht für die kommerzielle/industrielle Nutzung (auch
+nicht für die Nutzung in einem kommerziellen / industriellen Umfeld) freigegeben.
+Die Weiterverbreitung ist untersagt!
 
-This program links against and might include code of the following third-party libraries:
+Dieses Programm linkt gegen und inkludiert (Header-)Code von folgenden
+Drittanbieter-Bibliotheken:
 
 - wxWidgets (LGPL, https://wxwidgets.org)
 - SQLite (Public Domain, https://sqlite.org)
 
-Only for Testing, this also needs to be installed:
+Nur zur Kompilierung und Ausführung der Testfälle wird ebenfalls benötigt:
 - Google Test (3-Clause-BSD, https://github.com/google/googletest)
 
-## Structure
+## Struktur
 ```
 \prog2-beleg
-|--doc     - Contains UML + Screen design files as well as screen shots / renderings for
-             those without access to UML / Screen Design tools.
-|--include - Contains public and private include files for the core library + GUI.
-|--src     - Contains source files for the included modules.
-|--tests   - Contains test cases that can also be called using the `test` make target.
+|--doc     - Enthält UML + Screen-Design-Dateien sowie Screenshots / Renderings für
+             diejenigen ohne Zugriff auf die verwendeten UML / Screen-Design-Tools.
+|--include - Enthält öffentliche und private Include-Dateien für die Module der
+             core-Bibliothek und GUI.
+|--src     - Enthält die C++-Quelldateien der enthaltenen Module.
+|--tests   - Enthält Testfälle, die auch mittels des `test` Make-Targets ausgeführt werden
+             können.
 |
-|-CMakeLists.txt - Use this file to build the project using CMake
+|-CMakeLists.txt - Benutzen Sie diese Datei, um das Projekt mittels CMake zu kompilieren.
 ```
 
-## How to build
-Simply type `cmake .` followed by `make gui` to build the GUI and run `./bin/gui` to
-execute the program.
+## Build-Prozess
+Zum Kompilieren diese Beleges wird ein C++14-fähiger Compiler (z.B. GCC ab Version 5)
+sowie die Entwicklungsbibliotheken für oben genannte Abhängigkeiten vorausgesetzt.
 
-To execute all tests, run `make test`. You should see an evaluation of all test cases
-returned to you. Be advised that for this you need to have the Google Test development
-libraries installed!
+Geben Sie einfach `cmake .`, gefolgt von `make gui` ein, um die GUI zu kompilieren und
+führen Sie `./bin/gui` aus, um das Programm anschließend zu starten.
 
-Note: `make` / `make all` will also build the test target so it might fail if you don't
-have Google Test installed. However `make gui` and `make core` should work fine without
-testing dependencies installed.
+Um alle Testfälle auszuführen, führen Sie `make test` aus. Es sollte eine Evaluation aller
+Testfälle zurückgegeben werden. `make test` kompiliert allerdings nur, wenn die
+Entwicklungsbibliotheken für Google Test installiert sind!
+
+Achtung: `make` / `make all` kompiliert auch das Test-Target mit. Es kann also
+fehlschlagen, wenn Sie Google Test nicht installiert haben. `make gui` and `make core`
+sollten hingegen anstandslos funktionieren, selbst mit fehlenden Test-Abhängigkeiten.
+
+## Entwicklung
+Ursprünglich geplant war, eine REST-Schnittstelle mittels CGI zu realisieren.
+Aus Zeitgründen (und um den Rahmen der Aufgabenstellung nicht völlig zu sprengen) habe ich
+mich nach Fertigstellung der core-Bibliothek dazu entschlossen, statt einem REST-Frontend
+eine wxWidgets-basierende Grafische Benutzeroberfläche zu schreiben.
+
+### Domänenmodell
+Folgendes Domänenmodell wurde aus der Aufgabenstellung erarbeitet:
+
+![Domänenmodell](./doc/renderings/domain-model.png)
+
+Zu Bemerken ist hier die Herauslösung des Autors aus der Klasse Medium sowie die
+Unterscheidung zwischen Medium (abstrakt, enthält allgemeine Informationen zum Medium)
+und Exemplar (genannt "MediumCopy", konkret, modelliert ein physisches Exemplar des
+Mediums).
+
+### core-Bibliothek
+Die core-Bibliothek wurde mit dem Ziel geschaffen, als Grundlage für eine Webanwendung
+eingesetzt zu werden. Demenstprechend wurde viel Wert auf Speichersicherheit und defensive
+Programmierung gelegt.
+
+Dies war ein perfekter Einsatzbereich, um die neuen Features in C++11 und C++14 zu
+erproben, insbesondere Smart Pointer.
+
+Zur Dateiarbeit wurde - wie auch schon letztes Semester im Beleg Programmierung 1 -
+SQLite verwendet.
+
+Schnell wurde klar, dass zum flexiblen Konstruieren von Datenbankobjekten eine
+Template-basierte Lösung erforderlich ist - diese wurde mit AbstractDatabaseObjectFactory
+und seinen jeweiligen Realisierungen umgesetzt.
+
+### Screen-Design
+Die Grafische Benutzeroberfläche (GUI) wurde als Tab-basierte Anwendung konzipiert.
+Dem Benutzer soll es insbesondere möglich sein, die jeweiligen Such- und Editierfenster
+flexibel anzuordnen. Hierzu bot sich die Komponente wxAuiNotebook an.
+
+Die Fenster unterteilen sich in Browser- und Editorfenster, wobei Editorfenster jeweils
+von den Browserfenstern (bzw. -tabs) aus geöffnet werden können.
+
+Zur Verwaltung von Ausleihen reicht eine Tabelle der Ausleihen inkl. modaler Dialoge
+für die jeweiligen Aktionen "verlängern", "zurückgeben", "ausleihen" aus.
+
+Zur Ausleihe neuer Medien wurde das Konzept eines Warenkorbes umgesetzt: Im Medienbrowser
+können Medien ausgewählt und dem Warenkorb hinzugefügt werden. Im Benutzerbrowser kann
+danach ein Benutzer ausgewählt und eine neue Ausleihe aus dem Inhalt des Warenkorbs
+angelegt werden.
+
+Für die GUI wurden folgende Fenster konzipiert:
+
+#### Medienbrowser (Haupt- / Einstiegsfenster)
+![Medienbrowser](./doc/renderings/media_browser.png)
+
+#### Benutzerbrowser
+Wird ein Benutzer ausgewählt, so zeigt der Benutzerbrowser dessen Ausleihen an.
+
+![Benutzerbrowser (kein Benutzer gewählt)](./doc/renderings/user_browser_no_user_selected.png)
+![Benutzerbrowser](./doc/renderings/user_browser.png)
+
+#### Medieneditor
+Der Medieneditor editiert streng genommen Medienexemplare (MediumCopy), kann aber beim
+Anlegen neuer Medien auch die zugehörige Medium-Klasse automatisch mit erzeugen.
+
+![Medieneditor](./doc/renderings/media_editor.png)
+
+#### Benutzereditor
+Über den Benutzereditor können Benutzerstammdaten sowie die zugehörige Postaddresse
+editiert werden.
+
+![Medieneditor](./doc/renderings/user_editor.png)
+
+### Umsetzung mittels wxWidgets
+Für die Umsetzung mittels wxWidgets wurde auf die automatische Generierung der Oberfläche
+mittels einschlägiger Tools (ähnlich Glade) verzichtet und stattdessen die Oberfläche
+direkt im Quellcode implementiert. Dies ging nach kurzer Einarbeitungszeit erstaunlich
+gut von der Hand.
+
+Ein Screenshot der Umsetzung ist ganz oben zu sehen.
+
+##### Randnotiz
+
+Auffällig bei der Benutzung von wxWidgets aus der Perspektive eines C++-Programmieres, der
+die neuesten Standards C++11 und C++14 verinnerlicht hat: Das Speichermanagement von
+wxWidgets (einer immerhin schon 25 Jahre alten Bibliothek) ist implizit und auf den
+ersten Blick gefährlich (`new` ohne `delete`). Auf den zweiten Blick sieht man, dass die
+Speichersicherheit gewährleistet wird, indem implizit das Eigentum auf die jeweiligen
+Zeiger bei gewissen Methodenaufrufen auf die gerufene Klasse übertragen wird.
+Außerdem verwendet wxWidgets keine Exceptions zur Fehlerbehandlung. Beides ist der
+Entwicklungsgeschichte und dem Alter von wxWidgets geschuldet - zum Zeitpunkt seiner
+Konzeption im Jahre 1992 waren Exception-basierte Fehlerbehandlung und speichersichere
+Pointer noch wenig bis gar nicht verbreitet. Ähnliches ist für Qt festzustellen.
+
+Ein moderner, speichersicherer Rewrite einer C++-GUI-Bibliothek würde sich heute
+angesichts der Verbreitung von Wrappern von GUI-Toolkits in moderneren Programmiersprachen
+(bzw. im Falle von Java gar ganz eigener Toolkits) wahrscheinlich auch nicht mehr lohnen.
